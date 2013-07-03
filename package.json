@@ -1,0 +1,11 @@
+{
+  "name": "plonk.js",
+  "version": "0.0.1",
+  "description": "Timer and utility micro-library",
+  "main": "src/plonk.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/prtcl/plonk.js.git"
+  },
+  "author": "Cory O'Brien"
+}
