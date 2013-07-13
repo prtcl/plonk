@@ -51,10 +51,36 @@
         return setTimeout(callback.bind(context || this), Math.round(time));
     };
 
-    // poor mans next tick
-    plonk.tick = function (callback, context) {
-        setTimeout(callback.bind(context || this), 0);
-    };
+    // poor mans nextTick polyfill
+    plonk.tick = (function () {
+        if (typeof process === 'object' && 'nextTick' in process) {
+            return function (callback, context) {
+                process.nextTick(callback.bind(context || this));
+            };
+        } else if (window && 'setImmediate' in window) {
+            return function (callback, context) {
+                setImmediate(callback.bind(context || this));
+            };
+        } else if (window && 'postMessage' in window) {
+            return (function(){
+                var callbacks = {};
+                window.addEventListener('message', function (e) {
+                    var name = e.data;
+                    if (e.source !== window && !(name in callbacks)) return;
+                    callbacks[name]();
+                    delete callbacks[name];
+                }, true);
+                return function (callback, context) {
+                    var name = 'tick-' + Math.random();
+                    callbacks[name] = callback.bind(context || this);
+                    postMessage(name, '*');
+                };
+            }).apply(this);
+        }
+        return function (callback, context) {
+            setTimeout(callback.bind(context || this), 0);
+        };
+    }).apply(this);
 
     // returns a function that will only be executed N milliseconds after the last call
     plonk.limit = function (time, callback, context) {
