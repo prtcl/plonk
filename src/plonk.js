@@ -4,11 +4,6 @@
 
     var plonk = {};
 
-    // returns the current datetime in milliseconds since epoch
-    plonk.now = function () {
-        return (new Date).valueOf();
-    };
-
     // returns a random number between min and max
     plonk.rand = function (min, max) {
         return Math.random() * (max - min) + min;
