@@ -4,6 +4,14 @@
 
     var plonk = {};
 
+    // Function.prototype.bind fallback
+    plonk.bind = function (fn, context) {
+        if (fn.bind) return fn.bind(context || this);
+        return function () {
+            return fn.apply(context || this, arguments);
+        };
+    };
+
     // returns the current datetime in milliseconds since epoch
     plonk.now = (Date.now || function () {
         return (new Date).valueOf();
@@ -48,18 +56,18 @@
 
     // simple wrapper for setTimeout
     plonk.wait = function (time, callback, context) {
-        return setTimeout(callback.bind(context || this), Math.round(time));
+        return setTimeout(plonk.bind(callback, context || this), Math.round(time));
     };
 
     // poor mans nextTick polyfill
     plonk.tick = (function () {
         if (typeof process === 'object' && 'nextTick' in process) {
             return function (callback, context) {
-                process.nextTick(callback.bind(context || this));
+                process.nextTick(plonk.bind(callback, context || this));
             };
         } else if (window && 'setImmediate' in window) {
             return function (callback, context) {
-                setImmediate(callback.bind(context || this));
+                setImmediate(plonk.bind(callback, context || this));
             };
         } else if (window && 'postMessage' in window) {
             return (function(){
@@ -72,13 +80,13 @@
                 }, true);
                 return function (callback, context) {
                     var name = 'tick-' + Math.random();
-                    callbacks[name] = callback.bind(context || this);
+                    callbacks[name] = plonk.bind(callback, context || this);
                     postMessage(name, '*');
                 };
             }).apply(this);
         }
         return function (callback, context) {
-            setTimeout(callback.bind(context || this), 0);
+            setTimeout(plonk.bind(callback, context || this), 0);
         };
     }).apply(this);
 
@@ -87,7 +95,7 @@
         var timer;
         return function () {
             timer && clearTimeout(timer);
-            timer = setTimeout(callback.bind(context || this), Math.round(time));
+            timer = setTimeout(plonk.bind(callback, context || this), Math.round(time));
         };
     };
 
