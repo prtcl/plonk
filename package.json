@@ -1,8 +1,8 @@
 {
   "name": "plonk.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Timer and utility micro-library",
-  "main": "src/plonk.js",
+  "main": "plonk.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/prtcl/plonk.js.git"
