@@ -101,23 +101,21 @@
 
     // simple wrapper for setInterval with stop function
     plonk.metro = function (time, callback, context) {
-        var stop = function () { clearInterval(timer); },
-            i = 0, timer;
+        var i = 0, timer;
         timer = setInterval(function(){
-            callback.apply(context || this, [i++, stop]);
+            var cont = callback.apply(context || this, [i++]);
+            if (cont === false) clearInterval(timer);
         }, Math.round(time));
     };
 
     // timer function that jitters between min and max milliseconds
     plonk.dust = function (min, max, callback, context) {
-        var stop = function () { next = false; },
-            next = true,
-            i = 0;
+        var i = 0;
         (function dust () {
             var time = Math.round(plonk.rand(min, max));
             setTimeout(function(){
-                callback.apply(context || this, [time, i++, stop]);
-                if (next) dust();
+                var cont = callback.apply(context || this, [time, i++]);
+                if (cont !== false) dust();
             }, time);
         })();
     };
@@ -125,14 +123,12 @@
     // timer function that performs a "drunk walk" between min and max milliseconds
     plonk.walk = function (min, max, callback, context) {
         var drunk = plonk.drunk(min, max),
-            stop = function () { next = false; },
-            next = true,
             i = 0;
         (function walk () {
             var time = Math.round(drunk());
             setTimeout(function(){
-                callback.apply(context || this, [time, i++, stop]);
-                if (next) walk();
+                var cont = callback.apply(context || this, [time, i++]);
+                if (cont !== false) walk();
             }, time);
         })();
     };
