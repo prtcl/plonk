@@ -62,35 +62,34 @@
     };
 
     // poor mans nextTick polyfill
-    plonk.tick = (function () {
-        if (typeof process === 'object' && 'nextTick' in process) {
+    if (typeof process === 'object' && 'nextTick' in process) {
+        plonk.tick = function (callback, context) {
+            process.nextTick(plonk.bind(callback, context || this));
+        };
+    } else if (window && 'setImmediate' in window) {
+        plonk.tick = function (callback, context) {
+            setImmediate(plonk.bind(callback, context || this));
+        };
+    } else if (window && 'postMessage' in window) {
+        plonk.tick = (function(){
+            var callbacks = {};
+            window.addEventListener('message', function (e) {
+                var name = e.data;
+                if (e.source !== window || !(name in callbacks)) return;
+                callbacks[name]();
+                delete callbacks[name];
+            }, true);
             return function (callback, context) {
-                process.nextTick(plonk.bind(callback, context || this));
+                var name = 'tick-' + Math.random();
+                callbacks[name] = plonk.bind(callback, context || this);
+                postMessage(name, '*');
             };
-        } else if (window && 'setImmediate' in window) {
-            return function (callback, context) {
-                setImmediate(plonk.bind(callback, context || this));
-            };
-        } else if (window && 'postMessage' in window) {
-            return (function(){
-                var callbacks = {};
-                window.addEventListener('message', function (e) {
-                    var name = e.data;
-                    if (e.source !== window && !(name in callbacks)) return;
-                    callbacks[name]();
-                    delete callbacks[name];
-                }, true);
-                return function (callback, context) {
-                    var name = 'tick-' + Math.random();
-                    callbacks[name] = plonk.bind(callback, context || this);
-                    postMessage(name, '*');
-                };
-            }).apply(this);
-        }
-        return function (callback, context) {
+        })();
+    } else {
+        plonk.tick = function (callback, context) {
             setTimeout(plonk.bind(callback, context || this), 0);
         };
-    }).apply(this);
+    }
 
     // returns a function that will only be executed N milliseconds after the last call
     plonk.limit = function (time, callback, context) {
