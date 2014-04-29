@@ -12,10 +12,12 @@
         };
     };
 
-    // returns the current datetime in milliseconds since epoch
-    plonk.now = (Date.now || function () {
-        return (new Date).valueOf();
-    });
+    // returns performance.now or Date.now for time measurement purposes
+    if (performance && performance.now) {
+        plonk.now = function () { return performance.now(); };
+    } else {
+        plonk.now = (Date.now || function () { return (new Date).getTime(); });
+    }
 
     // returns a random number between min and max
     plonk.rand = function (min, max) {
