@@ -91,6 +91,26 @@
         };
     }
 
+    // animation loop and requestAnimationFrame polyfill with stop function
+    plonk.frames = (function () {
+        var frame = requestAnimationFrame,
+            prefix = ['ms', 'moz', 'webkit', 'o'];
+        for (var i = prefix.length - 1; i >= 0; i--) {
+            frame || (frame = this[prefix[i] + 'RequestAnimationFrame']);
+        }
+        if (!frame) frame = function (callback) { setTimeout(callback, 16); };
+        return function (callback, context) {
+            var start = plonk.now(),
+                cont = true, i = 0;
+            frame(function next () {
+                if (cont === false) return;
+                var time = plonk.now();
+                cont = callback.apply(context || this, [time, start, i++]);
+                frame(next);
+            });
+        };
+    }).apply(this);
+
     // returns a function that will only be executed N milliseconds after the last call
     plonk.limit = function (time, callback, context) {
         var timer;
