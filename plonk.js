@@ -13,7 +13,7 @@
     };
 
     // returns performance.now or Date.now for time measurement purposes
-    if (performance && performance.now) {
+    if (typeof performance !== 'undefined' && performance.now) {
         plonk.now = function () { return performance.now(); };
     } else {
         plonk.now = (Date.now || function () { return (new Date).getTime(); });
