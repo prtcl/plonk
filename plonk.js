@@ -12,12 +12,16 @@
         };
     };
 
-    // returns performance.now or Date.now for time measurement purposes
-    if (typeof performance !== 'undefined' && performance.now) {
-        plonk.now = function () { return performance.now(); };
-    } else {
-        plonk.now = (Date.now || function () { return (new Date).getTime(); });
-    }
+    // performance.now fallback
+    plonk.now = (function () {
+        if (typeof performance !== 'undefined' && ('now' in performance)) {
+            return function () { return performance.now(); };
+        } else {
+            var now = (Date.now || function () { return (new Date).getTime(); }),
+                offset = now();
+            return function () { return now() - offset; };
+        }
+    })();
 
     // returns a random number between min and max
     plonk.rand = function (min, max) {
@@ -93,10 +97,18 @@
 
     // animation loop and requestAnimationFrame polyfill with stop function
     plonk.frames = (function () {
-        var frame = requestAnimationFrame,
-            prefix = ['ms', 'moz', 'webkit', 'o'];
-        for (var i = prefix.length - 1; i >= 0; i--) {
-            frame || (frame = this[prefix[i] + 'RequestAnimationFrame']);
+        var frame;
+        if (typeof window === 'object') {
+            var availableFrames = [
+                window.requestAnimationFrame,
+                window.mozRequestAnimationFrame,
+                window.webkitRequestAnimationFrame,
+                window.msRequestAnimationFrame,
+                window.oRequestAnimationFrame
+                ];
+            for (var i = 0; i < availableFrames.length; i++) {
+                frame || (frame = (availableFrames[i] ? availableFrames[i] : null));
+            };
         }
         if (!frame) frame = function (callback) { setTimeout(callback, 16); };
         return function (callback, context) {
@@ -109,7 +121,7 @@
                 frame(next);
             });
         };
-    }).apply(this);
+    })();
 
     // returns a function that will only be executed N milliseconds after the last call
     plonk.limit = function (time, callback, context) {
