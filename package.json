@@ -1,5 +1,5 @@
 {
-  "name": "plonk.js",
+  "name": "plonk",
   "version": "0.0.2",
   "description": "Timer and utility micro-library",
   "main": "plonk.js",
