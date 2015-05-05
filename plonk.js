@@ -136,7 +136,7 @@
     plonk.metro = function (time, callback, context) {
         var metro = {}, i = 0, timer;
         timer = setInterval(function () {
-            var cont = metro.callback.apply(context || this, [i++]);
+            var cont = callback.apply(context || this, [i++]);
             if (cont === false) metro.stop();
         }, Math.round(time));
         metro.stop = function () { clearTimeout(timer); };
