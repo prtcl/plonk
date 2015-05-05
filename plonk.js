@@ -134,43 +134,48 @@
 
     // simple wrapper for setInterval with stop function
     plonk.metro = function (time, callback, context) {
-        var i = 0, timer;
-        timer = setInterval(function(){
-            var cont = callback.apply(context || this, [i++]);
-            if (cont === false) clearInterval(timer);
+        var metro = {}, i = 0, timer;
+        timer = setInterval(function () {
+            var cont = metro.callback.apply(context || this, [i++]);
+            if (cont === false) metro.stop();
         }, Math.round(time));
+        metro.stop = function () { clearTimeout(timer); };
+        return metro;
     };
 
     // timer function that jitters between min and max milliseconds
     plonk.dust = function (min, max, callback, context) {
-        var i = 0;
+        var dust = {}, i = 0, isPlaying = true;
         (function dust () {
             var time = Math.round(plonk.rand(min, max));
             setTimeout(function(){
+                if (!isPlaying) return;
                 var cont = callback.apply(context || this, [time, i++]);
                 if (cont !== false) dust();
             }, time);
         })();
+        dust.stop = function () { isPlaying = false; };
+        return dust;
     };
 
     // timer function that performs a "drunk walk" between min and max milliseconds
     plonk.walk = function (min, max, callback, context) {
-        var drunk = plonk.drunk(min, max),
-            i = 0;
+        var drunk = plonk.drunk(min, max), walk = {}, i = 0, isPlaying = true;
         (function walk () {
             var time = Math.round(drunk());
             setTimeout(function(){
+                if (!isPlaying) return;
                 var cont = callback.apply(context || this, [time, i++]);
                 if (cont !== false) walk();
             }, time);
         })();
+        walk.stop = function () { isPlaying = false; };
+        return walk;
     };
 
     // interpolate between value and target over time
     plonk.env = function (value, target, time, callback, context) {
-        var steps = Math.round(time / 10),
-            i = 0,
-            timer;
+        var steps = Math.round(time / 10), i = 0, timer;
         if (time > 10) {
             timer = setInterval(function(){
                 i++;
