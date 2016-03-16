@@ -9,7 +9,8 @@
   },
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "scripts": {
-    "jshint": "jshint -c .jshintrc lib/ || true",
+    "jshint": "jshint -c .jshintrc lib/ test/ || true",
+    "test": "npm run jshint && mocha",
     "build": "mkdir -p dist && npm run browserify && npm run min",
     "browserify": "browserify . -p bundle-collapser/plugin -s plonk | derequire > dist/plonk.js",
     "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js"
@@ -17,8 +18,11 @@
   "devDependencies": {
     "browserify": "^13.0.0",
     "bundle-collapser": "^1.2.1",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
     "derequire": "^2.0.3",
     "jshint": "^2.9.1",
+    "mocha": "^2.4.5",
     "uglifyjs": "^2.4.10"
   }
 }
