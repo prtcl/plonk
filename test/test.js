@@ -75,7 +75,21 @@ describe('plonk', function () {
   });
 
   describe('metro', function () {
-
+    it('should be a wrapper for setInterval that returns a promise', function () {
+      plonk.should.have.property('metro');
+      var start = plonk.now();
+      return plonk.metro(10, function () {
+        plonk.now().should.be.above(start);
+        return false;
+      });
+    });
+    it('should pass a stop function and iteration count into the tick callback', function () {
+      return plonk.metro(10, function (i, stop) {
+        i.should.be.a('number');
+        stop.should.be.a('function');
+        if (i === 2) stop(i);
+      }).should.eventually.equal(2);
+    });
   });
 
   describe('now', function () {
