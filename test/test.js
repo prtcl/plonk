@@ -105,7 +105,10 @@ describe('plonk', function () {
   });
 
   describe('wait', function () {
-
+    it('should be a wrapper for setTimeout that returns a promise', function () {
+      plonk.should.have.property('wait');
+      return plonk.wait(Math.random() * 1000).should.eventually.be.a('number');
+    });
   });
 
   describe('walk', function () {
