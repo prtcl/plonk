@@ -79,9 +79,14 @@ describe('plonk', function () {
   });
 
   describe('now', function () {
-    it('should call performance.now and return a number', function () {
+    it('should call performance.now and return a number', function (done) {
       plonk.should.have.property('now');
       plonk.now().should.be.a('number');
+      var start = plonk.now();
+      setTimeout(function () {
+        plonk.now().should.be.above(start);
+        done();
+      }, 10);
     });
   });
 
