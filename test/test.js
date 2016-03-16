@@ -20,7 +20,21 @@ describe('plonk', function () {
   });
 
   describe('debounce', function () {
-
+    it('should be a factory', function () {
+      plonk.should.have.property('debounce');
+      plonk.debounce(100).should.be.a('function');
+    });
+    it('should only execute the callback once, N milliseconds after the last call', function (done) {
+      var n = 0;
+      var debounced = plonk.debounce(100, function () { n++; });
+      for (var i = 0; i < 10; i++) {
+        setTimeout(debounced, 0);
+      }
+      setTimeout(function () {
+        n.should.equal(1);
+        done();
+      }, 500);
+    });
   });
 
   describe('drunk', function () {
