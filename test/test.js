@@ -1,5 +1,6 @@
 
 var plonk = require('../lib');
+var Promise = require('native-or-lie');
 
 var chai = require('chai');
 chai.use(require("chai-as-promised"));
@@ -34,6 +35,31 @@ describe('plonk', function () {
         n.should.equal(1);
         done();
       }, 500);
+    });
+  });
+
+  describe('defer', function () {
+    it('should return a wrapper around Promise with resolve, reject, and notify methods', function () {
+      plonk.should.have.property('defer');
+      var def = plonk.defer();
+      def.should.be.a('object');
+      def.should.have.property('resolve').that.is.a('function');
+      def.should.have.property('reject').that.is.a('function');
+      def.should.have.property('notify').that.is.a('function');
+      def.promise.should.be.an.instanceof(Promise);
+      def.promise.should.have.property('progress');
+      def.promise.progress.should.be.a('function');
+      def.promise.progress().should.equal(def.promise);
+      setTimeout(function () {
+        def.notify(50);
+      }, 50);
+      setTimeout(function () {
+        def.resolve(100);
+      }, 100);
+      def.promise.progress(function (val) {
+        val.should.equal(50);
+      });
+      return def.promise.should.eventually.equal(100);
     });
   });
 
@@ -77,10 +103,11 @@ describe('plonk', function () {
   describe('metro', function () {
     it('should be a wrapper for setInterval that returns a promise', function () {
       plonk.should.have.property('metro');
+      plonk.metro(10, function (i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
-      return plonk.metro(10, function () {
+      return plonk.metro(10, function (i, stop) {
         plonk.now().should.be.above(start);
-        return false;
+        stop();
       });
     });
     it('should pass a stop function and iteration count into the tick callback', function () {
@@ -88,6 +115,7 @@ describe('plonk', function () {
         i.should.be.a('number');
         stop.should.be.a('function');
         if (i === 2) stop(i);
+        return i;
       }).should.eventually.equal(2);
     });
   });
