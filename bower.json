@@ -1,0 +1,28 @@
+{
+  "name": "plonk",
+  "main": "plonk.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/prtcl/plonk.js",
+  "authors": [
+    "Cory O'Brien <cory@prtcl.cc>"
+  ],
+  "description": "Timer and utility micro-library",
+  "main": "dist/plonk.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "timer",
+    "utility"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
