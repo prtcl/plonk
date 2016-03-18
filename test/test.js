@@ -63,6 +63,27 @@ describe('plonk', function () {
     });
   });
 
+  describe('delay', function () {
+    it('should be a timer that returns a promise', function () {
+      plonk.should.have.property('delay');
+      plonk.delay(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
+      var start = plonk.now();
+      return plonk.delay(10, function (time, i, stop) {
+        plonk.now().should.be.above(start);
+        stop();
+      });
+    });
+    it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
+      return plonk.delay(Math.random() * 100, function (time, i, stop) {
+        time.should.be.a('number');
+        i.should.be.a('number');
+        stop.should.be.a('function');
+        if (i === 2) stop();
+        return Math.random() * 100;
+      }).should.eventually.be.a('number');
+    });
+  });
+
   describe('drunk', function () {
     it('should be a factory', function () {
       plonk.should.have.property('drunk');
@@ -213,27 +234,6 @@ describe('plonk', function () {
       });
       n.should.be.a('number').and.equal(0);
       setTimeout(done, 50);
-    });
-  });
-
-  describe('variable', function () {
-    it('should be a timer that returns a promise', function () {
-      plonk.should.have.property('variable');
-      plonk.variable(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
-      var start = plonk.now();
-      return plonk.variable(10, function (time, i, stop) {
-        plonk.now().should.be.above(start);
-        stop();
-      });
-    });
-    it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
-      return plonk.variable(Math.random() * 100, function (time, i, stop) {
-        time.should.be.a('number');
-        i.should.be.a('number');
-        stop.should.be.a('function');
-        if (i === 2) stop();
-        return Math.random() * 100;
-      }).should.eventually.be.a('number');
     });
   });
 
