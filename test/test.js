@@ -198,12 +198,14 @@ describe('plonk', function () {
     it('should be a fallback for process.nextTick', function (done) {
       plonk.should.have.property('tick');
       var n = 0;
-      plonk.tick(function () {
-        n = 1;
-        n.should.be.a('number').and.equal(1);
-        done();
+      [1,2,3,4].forEach(function (n) {
+        plonk.tick(function () {
+          n++;
+          n.should.be.a('number').and.equal(n);
+        });
       });
       n.should.be.a('number').and.equal(0);
+      setTimeout(done, 50);
     });
   });
 
