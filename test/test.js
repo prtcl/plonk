@@ -79,7 +79,24 @@ describe('plonk', function () {
   });
 
   describe('dust', function () {
-
+    it('should be a timer that returns a promise', function () {
+      plonk.should.have.property('dust');
+      plonk.dust(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
+      var start = plonk.now();
+      return plonk.dust(10, 100, function (time, i, stop) {
+        plonk.now().should.be.above(start);
+        stop();
+      });
+    });
+    it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
+      return plonk.dust(10, 100, function (time, i, stop) {
+        time.should.be.a('number');
+        i.should.be.a('number');
+        stop.should.be.a('function');
+        if (i === 2) stop(i);
+        return i;
+      }).should.eventually.equal(2);
+    });
   });
 
   describe('env', function () {
@@ -121,7 +138,7 @@ describe('plonk', function () {
   });
 
   describe('now', function () {
-    it('should call performance.now and return a number', function (done) {
+    it('should be a fallback for performance.now and return a number', function (done) {
       plonk.should.have.property('now');
       plonk.now().should.be.a('number');
       var start = plonk.now();
@@ -177,7 +194,7 @@ describe('plonk', function () {
   describe('wait', function () {
     it('should be a wrapper for setTimeout that returns a promise', function () {
       plonk.should.have.property('wait');
-      return plonk.wait(Math.random() * 500).should.eventually.be.a('number');
+      return plonk.wait(10).should.eventually.be.a('number');
     });
   });
 
