@@ -99,7 +99,14 @@ describe('plonk', function () {
   });
 
   describe('env', function () {
-
+    it('should interpolate between value and target over time', function () {
+      plonk.should.have.property('env');
+      return plonk.env(0, 1, 100)
+        .progress(function (val) {
+          val.should.be.a('number');
+        })
+        .should.eventually.equal(1);
+    });
   });
 
   describe('frames', function () {
@@ -138,7 +145,7 @@ describe('plonk', function () {
       plonk.metro(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
       return plonk.metro(10, function (time, i, stop) {
-        plonk.now().should.be.above(start + 10);
+        plonk.now().should.be.above(start + 9);
         stop();
       });
     });
