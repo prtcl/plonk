@@ -182,7 +182,24 @@ describe('plonk', function () {
   });
 
   describe('walk', function () {
-
+    it('should be a timer that returns a promise', function () {
+      plonk.should.have.property('walk');
+      plonk.walk(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
+      var start = plonk.now();
+      return plonk.walk(10, 100, function (time, i, stop) {
+        plonk.now().should.be.above(start);
+        stop();
+      });
+    });
+    it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
+      return plonk.walk(10, 100, function (time, i, stop) {
+        time.should.be.a('number');
+        i.should.be.a('number');
+        stop.should.be.a('function');
+        if (i === 2) stop(i);
+        return i;
+      }).should.eventually.equal(2);
+    });
   });
 
 });
