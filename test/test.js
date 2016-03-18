@@ -135,15 +135,16 @@ describe('plonk', function () {
   describe('metro', function () {
     it('should be a wrapper for setInterval that returns a promise', function () {
       plonk.should.have.property('metro');
-      plonk.metro(10, function (i, stop) { stop(); }).should.be.an.instanceof(Promise);
+      plonk.metro(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
-      return plonk.metro(10, function (i, stop) {
-        plonk.now().should.be.above(start);
+      return plonk.metro(10, function (time, i, stop) {
+        plonk.now().should.be.above(start + 10);
         stop();
       });
     });
-    it('should pass a stop function and iteration count into the tick callback', function () {
-      return plonk.metro(10, function (i, stop) {
+    it('should pass a stop function, interval time, and iteration count into the tick callback', function () {
+      return plonk.metro(10, function (time, i, stop) {
+        time.should.be.a('number');
         i.should.be.a('number');
         stop.should.be.a('function');
         if (i === 2) stop(i);
