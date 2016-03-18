@@ -2,5 +2,14 @@
   "browser": true,
   "node": true,
   "strict": false,
-  "expr": true
+  "expr": true,
+  "undef": true,
+  "predef": [
+    "process",
+    "global",
+    "require",
+    "console",
+    "describe",
+    "it"
+  ]
 }
