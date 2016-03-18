@@ -34,7 +34,7 @@ describe('plonk', function () {
       setTimeout(function () {
         n.should.equal(1);
         done();
-      }, 500);
+      }, 200);
     });
   });
 
@@ -162,13 +162,22 @@ describe('plonk', function () {
   });
 
   describe('tick', function () {
-
+    it('should be a fallback for process.nextTick', function (done) {
+      plonk.should.have.property('tick');
+      var n = 0;
+      plonk.tick(function () {
+        n = 1;
+        n.should.be.a('number').and.equal(1);
+        done();
+      });
+      n.should.be.a('number').and.equal(0);
+    });
   });
 
   describe('wait', function () {
     it('should be a wrapper for setTimeout that returns a promise', function () {
       plonk.should.have.property('wait');
-      return plonk.wait(Math.random() * 1000).should.eventually.be.a('number');
+      return plonk.wait(Math.random() * 500).should.eventually.be.a('number');
     });
   });
 
