@@ -62,26 +62,34 @@ module.exports = function (n, a1, a2, b1, b2) {
 
 },{"1":1}],6:[function(_dereq_,module,exports){
 
-var rand = _dereq_(4);
+var defer = _dereq_(14),
+    rand = _dereq_(4);
 
-// timer function that jitters between min and max milliseconds
+// timer function where the interval jitters between min and max milliseconds
 
 module.exports = function (min, max, callback) {
-  var dust = {}, i = 0, isPlaying = true;
+  min || (min = 0);
+  if (arguments.length === 2) {
+    max = min;
+    min = 0;
+  }
+  var def = defer(), cont = true, i = 0, progress;
   (function dust () {
     var time = Math.round(rand(min, max));
     setTimeout(function(){
-      if (!isPlaying) return;
-      var cont;
-      callback && (cont = callback(time, i++));
-      if (cont !== false) dust();
+      callback && (progress = callback(time, i++, stop));
+      def.notify(progress);
+      if (cont === true) dust();
     }, time);
   })();
-  dust.stop = function () { isPlaying = false; };
-  return dust;
+  function stop (val) {
+    cont = false;
+    def.resolve(val);
+  }
+  return def.promise;
 };
 
-},{"4":4}],7:[function(_dereq_,module,exports){
+},{"14":14,"4":4}],7:[function(_dereq_,module,exports){
 
 var scale = _dereq_(5);
 
@@ -104,9 +112,12 @@ module.exports = function (value, target, time, callback) {
 
 },{"5":5}],8:[function(_dereq_,module,exports){
 
+var defer = _dereq_(14),
+    now = _dereq_(15);
+
 // animation loop and requestAnimationFrame polyfill with stop function
 
-var frame = (function () {
+var frameHandler = (function () {
   var frame;
   if (typeof window === 'object') {
     var availableFrames = [
@@ -125,16 +136,26 @@ var frame = (function () {
 })();
 
 module.exports = function (callback) {
-  var start = plonk.now(), cont = true, i = 0;
-  frame(function next () {
-    if (cont === false) return;
-    var time = plonk.now();
-    callback && (cont = callback(time, start, i++));
-    frame(next);
+  var def = defer();
+  if (!callback || typeof callback !== 'function') {
+    var err = new Error('plonk.frames requires a callback as argument');
+    throw err;
+  }
+  var start = now(), cont = true, progress, i = 0;
+  frameHandler(function next () {
+    var time = now();
+    callback && (progress = callback(time, start, i++, stop));
+    def.notify(progress);
+    if (cont === true) frameHandler(next);
   });
+  function stop (val) {
+    cont = false;
+    def.resolve(val);
+  }
+  return def.promise;
 };
 
-},{}],9:[function(_dereq_,module,exports){
+},{"14":14,"15":15}],9:[function(_dereq_,module,exports){
 
 var defer = _dereq_(14);
 

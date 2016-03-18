@@ -104,7 +104,23 @@ describe('plonk', function () {
   });
 
   describe('frames', function () {
-
+    it('should be a wrapper for requestAnimationFrame that returns a promise', function () {
+      plonk.should.have.property('frames');
+      var start = plonk.now();
+      return plonk.frames(function (time, start, i, stop) {
+        plonk.now().should.be.above(start);
+        stop();
+      });
+    });
+    it('should pass the playback time, start time, iteration count, and stop function into the tick callback', function () {
+      return plonk.frames(function (time, start, i, stop) {
+        time.should.be.a('number');
+        start.should.be.a('number');
+        i.should.be.a('number');
+        stop.should.be.a('function');
+        if (i === 10) stop();
+      });
+    });
   });
 
   describe('log', function () {
