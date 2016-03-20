@@ -222,6 +222,30 @@ describe('plonk', function () {
     });
   });
 
+  describe('sine', function () {
+    it('should be a sine LFO that returns a promise', function () {
+      var n = 0;
+      return plonk.sine(100, function (val, elapsed, total, stop) {
+        n++;
+        if (n === 2) {
+          stop(0);
+        }
+      })
+      .progress(function (val) {
+        val.should.be.a('number');
+      }).should.eventually.equal(0);
+    });
+    it('should pass sine value, elapsed cycle time, total running time, and stop function into the tick callback', function () {
+      return plonk.sine(100, function (val, elapsed, total, stop) {
+        val.should.be.a('number');
+        elapsed.should.be.a('number');
+        total.should.be.a('number');
+        stop.should.be.a('function');
+        stop(0);
+      }).should.eventually.equal(0);
+    });
+  });
+
   describe('tick', function () {
     it('should be a fallback for process.nextTick', function (done) {
       plonk.should.have.property('tick');
