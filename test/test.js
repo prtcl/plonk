@@ -29,7 +29,18 @@ describe('plonk', function () {
       var n = 0;
       var debounced = plonk.debounce(100, function () { n++; });
       for (var i = 0; i < 10; i++) {
-        setTimeout(debounced, 0);
+        plonk.tick(debounced);
+      }
+      setTimeout(function () {
+        n.should.equal(1);
+        done();
+      }, 200);
+    });
+    it('should should take an optional time argument', function (done) {
+      var n = 0;
+      var debounced = plonk.debounce(function () { n++; });
+      for (var i = 0; i < 10; i++) {
+        plonk.tick(debounced);
       }
       setTimeout(function () {
         n.should.equal(1);
@@ -69,18 +80,28 @@ describe('plonk', function () {
       plonk.delay(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
       return plonk.delay(10, function (time, i, stop) {
-        plonk.now().should.be.above(start);
+        plonk.now().should.be.above(start + 9);
         stop();
       });
     });
     it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
       return plonk.delay(Math.random() * 100, function (time, i, stop) {
-        time.should.be.a('number');
-        i.should.be.a('number');
+        time.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(120);
+        i.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(2);
         stop.should.be.a('function');
         if (i === 2) stop();
         return Math.random() * 100;
       }).should.eventually.be.a('number');
+    });
+    it('should update the next interval with the tick function return value', function () {
+      return plonk.delay(10, function (time, i, stop) {
+        if (i === 1) stop(time);
+        return 20;
+      }).should.eventually.be.at.least(30);
     });
   });
 
@@ -97,6 +118,14 @@ describe('plonk', function () {
           .and.at.most(1);
       }
     });
+    it('should accept 0-2 arguments', function () {
+      var drunk = plonk.drunk(20);
+      for (var i = 0; i < 100; i++) {
+        drunk().should.be.a('number')
+          .and.at.least(0)
+          .and.at.most(20);
+      }
+    });
   });
 
   describe('dust', function () {
@@ -111,8 +140,12 @@ describe('plonk', function () {
     });
     it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
       return plonk.dust(10, 100, function (time, i, stop) {
-        time.should.be.a('number');
-        i.should.be.a('number');
+        time.should.be.a('number')
+          .and.be.at.least(10)
+          .and.be.at.most(120);
+        i.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(2);
         stop.should.be.a('function');
         if (i === 2) stop();
       }).should.eventually.be.a('number');
@@ -124,7 +157,9 @@ describe('plonk', function () {
       plonk.should.have.property('env');
       return plonk.env(0, 1, 100)
         .progress(function (val) {
-          val.should.be.a('number');
+          val.should.be.a('number')
+            .and.be.at.least(0)
+            .and.be.at.most(1);
         })
         .should.eventually.equal(1);
     });
@@ -163,17 +198,21 @@ describe('plonk', function () {
   describe('metro', function () {
     it('should be a wrapper for setInterval that returns a promise', function () {
       plonk.should.have.property('metro');
-      plonk.metro(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
+      plonk.metro(10, function (interval, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
-      return plonk.metro(10, function (time, i, stop) {
+      return plonk.metro(10, function (interval, i, stop) {
         plonk.now().should.be.above(start + 9);
         stop();
       });
     });
     it('should pass a stop function, interval time, and iteration count into the tick callback', function () {
-      return plonk.metro(10, function (time, i, stop) {
-        time.should.be.a('number');
-        i.should.be.a('number');
+      return plonk.metro(10, function (interval, i, stop) {
+        interval.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(20);
+        i.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(2);
         stop.should.be.a('function');
         if (i === 2) stop(i);
         return i;
@@ -187,7 +226,7 @@ describe('plonk', function () {
       plonk.now().should.be.a('number');
       var start = plonk.now();
       setTimeout(function () {
-        plonk.now().should.be.above(start);
+        plonk.now().should.be.above(start + 9);
         done();
       }, 10);
     });
@@ -204,6 +243,19 @@ describe('plonk', function () {
         plonk.rand(-1, 1).should.be.a('number')
           .and.at.least(-1)
           .and.at.most(1);
+      }
+    });
+    it('should accept 0-2 arguments', function () {
+      /*jshint -W004 */
+      for (var i = 0; i < 100; i++) {
+        plonk.rand().should.be.a('number')
+          .and.at.least(0)
+          .and.at.most(1);
+      }
+      for (var i = 0; i < 100; i++) {
+        plonk.rand(30).should.be.a('number')
+          .and.at.least(0)
+          .and.at.most(30);
       }
     });
   });
@@ -236,12 +288,18 @@ describe('plonk', function () {
       }).should.eventually.equal(0);
     });
     it('should pass sine value, elapsed cycle time, total running time, and stop function into the tick callback', function () {
-      return plonk.sine(100, function (val, elapsed, total, stop) {
-        val.should.be.a('number');
-        elapsed.should.be.a('number');
-        total.should.be.a('number');
+      return plonk.sine(100, function (val, cycle, total, stop) {
+        val.should.be.a('number')
+          .and.be.at.least(-1)
+          .and.be.at.most(1);
+        cycle.should.be.a('number')
+          .and.be.at.least(3)
+          .and.be.at.most(150);
+        total.should.be.a('number')
+          .and.be.at.least(3)
+          .and.be.at.most(150);
         stop.should.be.a('function');
-        stop(0);
+        if (cycle >= 90) stop(0);
       }).should.eventually.equal(0);
     });
   });
@@ -261,6 +319,17 @@ describe('plonk', function () {
     });
   });
 
+  describe('toNumber', function () {
+    it('should take any input value, return the value if a number, or default value otherwise', function () {
+      var x;
+      plonk.should.have.property('toNumber');
+      plonk.toNumber(10).should.equal(10);
+      plonk.toNumber('10').should.equal(10);
+      plonk.toNumber(x, 10).should.equal(10);
+      plonk.toNumber('a2').should.equal(0);
+    });
+  });
+
   describe('wait', function () {
     it('should be a wrapper for setTimeout that returns a promise', function () {
       plonk.should.have.property('wait');
@@ -274,14 +343,18 @@ describe('plonk', function () {
       plonk.walk(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
       return plonk.walk(10, 100, function (time, i, stop) {
-        plonk.now().should.be.above(start);
+        plonk.now().should.be.above(start + 9);
         stop();
       });
     });
     it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
       return plonk.walk(10, 100, function (time, i, stop) {
-        time.should.be.a('number');
-        i.should.be.a('number');
+        time.should.be.a('number')
+          .and.be.at.least(9)
+          .and.be.at.most(120);
+        i.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(2);
         stop.should.be.a('function');
         if (i === 2) stop();
       }).should.eventually.be.a('number');
