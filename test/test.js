@@ -319,6 +319,36 @@ describe('plonk', function () {
     });
   });
 
+  describe('toMilliseconds', function () {
+    it('should be aliased by .ms()', function () {
+      plonk.should.have.property('toMilliseconds');
+      plonk.should.have.property('ms');
+      plonk.toMilliseconds.should.equal(plonk.ms);
+    });
+    it('should return default when input is null, undefined, or NaN', function () {
+      plonk.toMilliseconds(null).should.equal(0);
+      var n;
+      plonk.toMilliseconds(n, 's', 10).should.equal(10);
+      plonk.toMilliseconds('abc').should.equal(0);
+    });
+    it('should pass unformatted value to output when set to milliseconds format', function () {
+      plonk.toMilliseconds(100).should.equal(100);
+      plonk.toMilliseconds('66ms').should.equal(66);
+    });
+    it('should multiply input by 1000 when set to seconds format', function () {
+      plonk.toMilliseconds(1, 's').should.equal(1000);
+      plonk.toMilliseconds('1s').should.equal(1000);
+      plonk.toMilliseconds('0.875s').should.equal(875);
+      var s = Math.random() * 3;
+      plonk.toMilliseconds(s, 's').should.equal(s * 1000);
+    });
+    it('should convert from hertz to milliseconds using (1 / hz) * 1000', function () {
+      plonk.toMilliseconds('1hz').should.equal(1000);
+      plonk.toMilliseconds('0.5hz').should.equal(2000);
+      plonk.toMilliseconds(2, 'hz').should.equal(500);
+    });
+  });
+
   describe('toNumber', function () {
     it('should take any input value, return the value if a number, or default value otherwise', function () {
       var x;
