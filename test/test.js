@@ -80,13 +80,14 @@ describe('plonk', function () {
       plonk.delay(10, function (time, i, stop) { stop(); }).should.be.an.instanceof(Promise);
       var start = plonk.now();
       return plonk.delay(10, function (time, i, stop) {
-        plonk.now().should.be.above(start + 9);
+        Math.round(plonk.now()).should.be.at.least(Math.round(start + 10));
         stop();
       });
     });
     it('should pass a stop function, delay time, and iteration count into the tick callback', function () {
       return plonk.delay(Math.random() * 100, function (time, i, stop) {
-        time.should.be.a('number')
+        time.should.be.a('number');
+        Math.round(time).should.be.a('number')
           .and.be.at.least(0)
           .and.be.at.most(120);
         i.should.be.a('number')
@@ -169,16 +170,28 @@ describe('plonk', function () {
     it('should be a wrapper for requestAnimationFrame that returns a promise', function () {
       plonk.should.have.property('frames');
       var start = plonk.now();
-      return plonk.frames(function (time, start, i, stop) {
-        plonk.now().should.be.above(start);
-        stop();
+      return plonk.frames(function (interval, elapsed, i, stop) {
+        Math.floor(plonk.now()).should.be.at.least(Math.floor(start + interval));
+        if (i === 2) stop();
+      })
+      .progress(function (interval) {
+        interval.should.be.a('number');
+      })
+      .then(function (elapsed) {
+        elapsed.should.be.a('number');
       });
     });
-    it('should pass the playback time, start time, iteration count, and stop function into the tick callback', function () {
-      return plonk.frames(function (time, start, i, stop) {
-        time.should.be.a('number');
-        start.should.be.a('number');
-        i.should.be.a('number');
+    it('should pass the frame interval time, elapsed running time, iteration count, and stop function into the tick callback', function () {
+      var frameRate = 60,
+          minInterval = Math.floor(1000 / frameRate);
+      return plonk.frames(frameRate, function (interval, elapsed, i, stop) {
+        Math.floor(interval).should.be.a('number')
+          .and.be.at.least(minInterval);
+        Math.floor(elapsed).should.be.a('number')
+          .and.be.at.least(minInterval);
+        i.should.be.a('number')
+          .and.be.at.least(0)
+          .and.be.at.most(10);
         stop.should.be.a('function');
         if (i === 10) stop();
       });
