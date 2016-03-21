@@ -171,7 +171,6 @@ describe('plonk', function () {
       plonk.should.have.property('frames');
       var start = plonk.now();
       return plonk.frames(function (interval, elapsed, i, stop) {
-        Math.floor(plonk.now()).should.be.at.least(Math.floor(start + interval));
         if (i === 2) stop();
       })
       .progress(function (interval) {
@@ -183,12 +182,12 @@ describe('plonk', function () {
     });
     it('should pass the frame interval time, elapsed running time, iteration count, and stop function into the tick callback', function () {
       var frameRate = 60,
-          minInterval = Math.floor(1000 / frameRate);
+          start = plonk.now();
       return plonk.frames(frameRate, function (interval, elapsed, i, stop) {
         Math.floor(interval).should.be.a('number')
-          .and.be.at.least(minInterval);
+          .and.be.at.least(interval - start);
         Math.floor(elapsed).should.be.a('number')
-          .and.be.at.least(minInterval);
+          .and.be.at.least(elapsed - start);
         i.should.be.a('number')
           .and.be.at.least(0)
           .and.be.at.most(10);
