@@ -11,6 +11,7 @@
   "scripts": {
     "jshint": "jshint -c .jshintrc lib/ test/ || true",
     "test": "npm run jshint && mocha test/test.js || true",
+    "zuul": "zuul --local 8080 --ui mocha-bdd test/test.js",
     "build": "mkdir -p dist && npm run browserify && npm run min",
     "browserify": "browserify . -p bundle-collapser/plugin -s plonk | derequire > dist/plonk.js",
     "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js"
@@ -23,7 +24,8 @@
     "derequire": "^2.0.3",
     "jshint": "^2.9.1",
     "mocha": "^2.4.5",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "zuul": "^3.10.1"
   },
   "dependencies": {
     "native-or-lie": "^1.0.0"
