@@ -166,6 +166,16 @@ describe('plonk', function () {
     });
   });
 
+  describe('exp', function () {
+    it('should exponentially map a number in 0...1 range by eulers constant', function () {
+      plonk.should.have.property('exp');
+      plonk.exp(0).should.be.a('number').and.equal(0);
+      plonk.exp(0.5).should.be.a('number').and.equal(0.15195522325791297);
+      plonk.exp(1).should.be.a('number').and.equal(1);
+      plonk.exp(-3.12).should.be.a('number').and.equal(0);
+    });
+  });
+
   describe('frames', function () {
     it('should be a wrapper for requestAnimationFrame that returns a promise', function () {
       plonk.should.have.property('frames');
@@ -195,16 +205,6 @@ describe('plonk', function () {
         stop.should.be.a('function');
         if (i === 10) stop();
       });
-    });
-  });
-
-  describe('log', function () {
-    it('should scale a number in 0...1 range by eulers constant', function () {
-      plonk.should.have.property('log');
-      plonk.log(0).should.be.a('number').and.equal(0);
-      plonk.log(0.5).should.be.a('number').and.equal(0.15195522325791297);
-      plonk.log(1).should.be.a('number').and.equal(1);
-      plonk.log(-3.12).should.be.a('number').and.equal(0);
     });
   });
 
