@@ -1,27 +1,127 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.plonk = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 
+var delay = _dereq_(10),
+    rand = _dereq_(8),
+    toNumber = _dereq_(19);
+
+// timer function where the interval jitters between min and max milliseconds
+
+module.exports = function (min, max, callback) {
+  min = toNumber(min, 10);
+  max = toNumber(max, 100);
+  if (arguments.length <= 2) {
+    max = min;
+    min = 0;
+  }
+  return delay(rand(min, max), function (time, i, stop) {
+    callback && callback(time, i, stop);
+    return rand(min, max);
+  });
+};
+
+},{"10":10,"19":19,"8":8}],2:[function(_dereq_,module,exports){
+
+var scale = _dereq_(9),
+    metro = _dereq_(12),
+    toNumber = _dereq_(19);
+
+// linear interpolation of value to target over time
+
+module.exports = function (value, target, time, callback) {
+  value = toNumber(value, 0);
+  target = toNumber(target, 1);
+  time = toNumber(time, 100);
+  var elapsed = 0;
+  return metro(4, function (interval, i, stop) {
+    if (elapsed >= time) stop(target);
+    var interpolated = scale(elapsed, 0, time, value, target);
+    elapsed += interval;
+    callback && callback(interpolated);
+    return interpolated;
+  });
+};
+
+},{"12":12,"19":19,"9":9}],3:[function(_dereq_,module,exports){
+
+var scale = _dereq_(9),
+    constrain = _dereq_(5),
+    metro = _dereq_(12),
+    toNumber = _dereq_(19);
+
+// a sine wave LFO with cycle time passed as ms
+
+var period = (Math.PI * 2) - 0.0001;
+
+module.exports = function (time, callback) {
+  time = toNumber(time, 0);
+  var cycle = 0, total = 0, progress;
+  return metro(4, function (interval, i, stop) {
+    var rad = scale(cycle, 0, time, 0, period);
+    if (cycle >= time) {
+      cycle = 0;
+    } else {
+      cycle += interval;
+    }
+    total += interval;
+    var sin = constrain(Math.sin(rad), -1, 1);
+    callback && (progress = callback(sin, cycle, total, stop));
+    time = toNumber(progress, time);
+    return sin;
+  });
+};
+
+},{"12":12,"19":19,"5":5,"9":9}],4:[function(_dereq_,module,exports){
+
+var delay = _dereq_(10),
+    drunk = _dereq_(6),
+    toNumber = _dereq_(19);
+
+// timer function where the interval is decided by a "drunk walk" between min and max milliseconds
+
+module.exports = function (min, max, callback) {
+  min = toNumber(min, 10);
+  max = toNumber(max, 100);
+  if (arguments.length <= 2) {
+    max = min;
+    min = 0;
+  }
+  var d = drunk(min, max);
+  return delay(d(), function (time, i, stop) {
+    callback && callback(time, i, stop);
+    return d();
+  });
+};
+
+},{"10":10,"19":19,"6":6}],5:[function(_dereq_,module,exports){
+
+var toNumber = _dereq_(19);
+
 // constrain value between min and max
 
 module.exports = function (n, min, max) {
-  min || (min = 0);
-  if (arguments.length === 2) {
+  n = toNumber(n, 0);
+  min = toNumber(min, 0);
+  max = toNumber(max, 1);
+  if (arguments.length <= 2) {
     max = min;
     min = 0;
   }
   return Math.min(Math.max(n, min), max);
 };
 
-},{}],2:[function(_dereq_,module,exports){
+},{"19":19}],6:[function(_dereq_,module,exports){
+
+var constrain = _dereq_(5),
+    rand = _dereq_(8),
+    toNumber = _dereq_(19);
 
 // returns a function that performs a "drunk walk" between min and max
 
-var constrain = _dereq_(1),
-    rand = _dereq_(4);
-
 module.exports = function (min, max, step) {
-  min || (min = 0);
-  step || (step = 0.1);
-  if (arguments.length === 1) {
+  min = toNumber(min, 0);
+  max = toNumber(max, 1);
+  step = toNumber(step, 0.1);
+  if (arguments.length <= 1) {
     max = min;
     min = 0;
   }
@@ -32,88 +132,87 @@ module.exports = function (min, max, step) {
   };
 };
 
-},{"1":1,"4":4}],3:[function(_dereq_,module,exports){
+},{"19":19,"5":5,"8":8}],7:[function(_dereq_,module,exports){
 
-var constrain = _dereq_(1);
+var constrain = _dereq_(5),
+    toNumber = _dereq_(19);
 
 // poor mans logarithmic map
 
 module.exports = function (n) {
+  n = toNumber(n, 0);
   return Math.pow(constrain(n, 0, 1), Math.E);
 };
 
-},{"1":1}],4:[function(_dereq_,module,exports){
+},{"19":19,"5":5}],8:[function(_dereq_,module,exports){
+
+var toNumber = _dereq_(19);
 
 // just returns a random number between min and max
 
 module.exports = function (min, max) {
+  if (arguments.length <= 1) {
+    max = toNumber(min, 1);
+    min = 0;
+  } else {
+    min = toNumber(min, 0);
+    max = toNumber(max, 1);
+  }
   return Math.random() * (max - min) + min;
 };
 
-},{}],5:[function(_dereq_,module,exports){
+},{"19":19}],9:[function(_dereq_,module,exports){
 
-var constrain = _dereq_(1);
+var constrain = _dereq_(5),
+    toNumber = _dereq_(19);
 
 // linear map of input value from input range to output range
 
 module.exports = function (n, a1, a2, b1, b2) {
+  n = toNumber(n, 0);
+  a1 = toNumber(a1, 0);
+  a2 = toNumber(a2, 1);
+  b1 = toNumber(b1, 0);
+  b2 = toNumber(b2, 1);
   return b1 + (constrain(n, a1, a2) - a1) * (b2 - b1) / (a2 - a1);
 };
 
-},{"1":1}],6:[function(_dereq_,module,exports){
+},{"19":19,"5":5}],10:[function(_dereq_,module,exports){
 
-var defer = _dereq_(14),
-    rand = _dereq_(4);
+var defer = _dereq_(15),
+    now = _dereq_(16),
+    toNumber = _dereq_(19);
 
-// timer function where the interval jitters between min and max milliseconds
+// timer function where the next interval is decided by the return value of the tick callback
+// the tick interval time as reported by performance.now() is passed into the notify callback
 
-module.exports = function (min, max, callback) {
-  min || (min = 0);
-  if (arguments.length === 2) {
-    max = min;
-    min = 0;
-  }
-  var def = defer(), cont = true, i = 0, progress;
-  (function dust () {
-    var time = Math.round(rand(min, max));
-    setTimeout(function(){
-      callback && (progress = callback(time, i++, stop));
-      def.notify(progress);
-      if (cont === true) dust();
+module.exports = function (time, callback) {
+  time = toNumber(time, 10);
+  var def = defer(), prev = now(), cont = true, i = 0, total = 0, interval, progress;
+  (function next () {
+    setTimeout(function() {
+      interval = now() - prev;
+      total += interval;
+      prev = now();
+      callback && (progress = callback(interval, i++, stop));
+      time = toNumber(progress, time);
+      def.notify(interval);
+      if (cont === true) next();
     }, time);
   })();
-  function stop (val) {
+  function stop () {
     cont = false;
-    def.resolve(val);
+    def.resolve(total);
   }
   return def.promise;
 };
 
-},{"14":14,"4":4}],7:[function(_dereq_,module,exports){
+},{"15":15,"16":16,"19":19}],11:[function(_dereq_,module,exports){
 
-var scale = _dereq_(5);
-
-// interpolate between value and target over time
-
-module.exports = function (value, target, time, callback) {
-  var steps = Math.round(time / 10), i = 0, timer;
-  if (time > 10) {
-    timer = setInterval(function(){
-      i++;
-      callback && callback(scale(i, 1, steps, value, target), i);
-      if (steps === i) clearInterval(timer);
-    }, 10);
-  } else {
-    timer = setTimeout(function(){
-      callback && callback(target);
-    }, time);
-  }
-};
-
-},{"5":5}],8:[function(_dereq_,module,exports){
-
-var defer = _dereq_(14),
-    now = _dereq_(15);
+var defer = _dereq_(15),
+    now = _dereq_(16),
+    tick = _dereq_(17),
+    toNumber = _dereq_(19);
 
 // animation loop and requestAnimationFrame polyfill with stop function
 
@@ -122,52 +221,70 @@ var frameHandler = (function () {
   if (typeof window === 'object') {
     var availableFrames = [
       window.requestAnimationFrame,
-      window.mozRequestAnimationFrame,
       window.webkitRequestAnimationFrame,
+      window.mozRequestAnimationFrame,
       window.msRequestAnimationFrame,
       window.oRequestAnimationFrame
     ];
     for (var i = 0; i < availableFrames.length; i++) {
       frame || (frame = (availableFrames[i] ? availableFrames[i] : null));
+      if (frame) break;
     }
   }
-  if (!frame) frame = function (callback) { setTimeout(callback, 1000 / 16); };
+  if (!frame) frame = function (callback) { setTimeout(callback, 1000 / 60); };
   return frame;
 })();
 
-module.exports = function (callback) {
-  var def = defer();
-  if (!callback || typeof callback !== 'function') {
-    var err = new Error('plonk.frames requires a callback as argument');
-    throw err;
+module.exports = function (frameRate, callback) {
+  if (arguments.length === 2) {
+    frameRate = toNumber(frameRate, 60);
+  } else if (arguments.length === 1) {
+    callback = frameRate;
+    frameRate = 60;
   }
-  var start = now(), cont = true, progress, i = 0;
+  if (!callback || typeof callback !== 'function') {
+    throw new Error('plonk.frames requires a callback as argument');
+  }
+  var def = defer(), prev = now(), elapsed = 0, i = 0, cont = true, interval, progress;
   frameHandler(function next () {
-    var time = now();
-    callback && (progress = callback(time, start, i++, stop));
-    def.notify(progress);
+    interval = now() - prev;
+    if (elapsed && interval <= ((1000 / frameRate) - 5)) {
+      return tick(frameHandler(next));
+    }
+    prev = now();
+    elapsed += interval;
+    callback && (progress = callback(interval, elapsed, i++, stop));
+    frameRate = toNumber(progress, frameRate);
+    if (frameRate === 0) stop();
+    def.notify(interval);
     if (cont === true) frameHandler(next);
   });
-  function stop (val) {
+  function stop () {
     cont = false;
-    def.resolve(val);
+    def.resolve(elapsed);
   }
   return def.promise;
 };
 
-},{"14":14,"15":15}],9:[function(_dereq_,module,exports){
+},{"15":15,"16":16,"17":17,"19":19}],12:[function(_dereq_,module,exports){
 
-var defer = _dereq_(14);
+var defer = _dereq_(15),
+    now = _dereq_(16),
+    toNumber = _dereq_(19);
 
 // wrapper for setInterval with stop function
 // returns a promise that is resolved when the timer stops
+// the tick interval time as reported by performance.now() is passed into the tick callback
 // the promise is notified on every tick with the tick function's return value
+// and a value passed to stop(value) will be passed to the promise resolve method
 
 module.exports = function (time, callback) {
-  time = Math.round(time || 0);
-  var def = defer(), i = 0, progress;
+  time = toNumber(time, 4);
+  var def = defer(), i = 0, prev = now(), interval, progress;
   var timer = setInterval(function () {
-    callback && (progress = callback(i++, stop));
+    interval = now() - prev;
+    prev = now();
+    callback && (progress = callback(interval, i++, stop));
     def.notify(progress);
   }, time);
   function stop (val) {
@@ -177,70 +294,39 @@ module.exports = function (time, callback) {
   return def.promise;
 };
 
-},{"14":14}],10:[function(_dereq_,module,exports){
+},{"15":15,"16":16,"19":19}],13:[function(_dereq_,module,exports){
 
-// execute the callback function with increasing speed, starting with delay
-
-module.exports = function (delay, callback) {
-  (function env (i) {
-    var step = Math.floor(delay / i--);
-    setTimeout(function(){
-      callback && callback(step);
-      if (i > 0) env(i);
-    }, step);
-  })(11);
-};
-
-},{}],11:[function(_dereq_,module,exports){
-
-var defer = _dereq_(14);
+var defer = _dereq_(15),
+    now = _dereq_(16),
+    toNumber = _dereq_(19);
 
 // simple wrapper for setTimeout that returns a promise
+// execution time as reported by performance.now is passed to the resolve callback
 
 module.exports = function (time, callback) {
-  time = Math.round(time || 0);
-  var def = defer();
+  time = toNumber(time, 0);
+  var def = defer(), start = now();
   setTimeout(function () {
-    callback && callback(time);
-    def.resolve(time);
+    var end = now() - start;
+    callback && callback(end);
+    def.resolve(end);
   }, time);
   return def.promise;
 };
 
-},{"14":14}],12:[function(_dereq_,module,exports){
+},{"15":15,"16":16,"19":19}],14:[function(_dereq_,module,exports){
 
-var defer = _dereq_(14),
-    drunk = _dereq_(2);
-
-// timer function where the interval is decided by a "drunk walk" between min and max milliseconds
-
-module.exports = function (min, max, callback) {
-  min || (min = 0);
-  if (arguments.length === 2) {
-    max = min;
-    min = 0;
-  }
-  var def = defer(), d = drunk(min, max), cont = true, i = 0, progress;
-  (function walk () {
-    var time = Math.round(d());
-    setTimeout(function(){
-      callback && (progress = callback(time, i++, stop));
-      def.notify(progress);
-      if (cont === true) walk();
-    }, time);
-  })();
-  function stop (val) {
-    cont = false;
-    def.resolve(val);
-  }
-  return def.promise;
-};
-
-},{"14":14,"2":2}],13:[function(_dereq_,module,exports){
+var toNumber = _dereq_(19);
 
 // returns a function that will only be executed once, N milliseconds after the last call
 
 module.exports = function (time, callback) {
+  if (arguments.length === 2) {
+    time = toNumber(time, 100);
+  } else if (arguments.length === 1) {
+    callback = time;
+    time = 100;
+  }
   var timer;
   return function () {
     timer && clearTimeout(timer);
@@ -248,10 +334,10 @@ module.exports = function (time, callback) {
   };
 };
 
-},{}],14:[function(_dereq_,module,exports){
+},{"19":19}],15:[function(_dereq_,module,exports){
 
-var Promise = _dereq_(19),
-    tick = _dereq_(16);
+var Promise = _dereq_(22),
+    tick = _dereq_(17);
 
 module.exports = function () {
   var _progressHandlers = [], _resolveHandler, _rejectHandler,
@@ -293,7 +379,7 @@ module.exports = function () {
   return defer;
 };
 
-},{"16":16,"19":19}],15:[function(_dereq_,module,exports){
+},{"17":17,"22":22}],16:[function(_dereq_,module,exports){
 (function (process){
 /*jshint -W058 */
 
@@ -317,8 +403,8 @@ module.exports = (function () {
   }
 })();
 
-}).call(this,_dereq_(20))
-},{"20":20}],16:[function(_dereq_,module,exports){
+}).call(this,_dereq_(23))
+},{"23":23}],17:[function(_dereq_,module,exports){
 (function (process){
 
 // poor mans nextTick polyfill
@@ -364,6 +450,7 @@ if (typeof process === 'object' && process.toString() === '[object process]' && 
 }
 
 module.exports = function (task) {
+  if (typeof task !== 'function') return;
   tasks.push(task);
   if (!isRunning) {
     isRunning = true;
@@ -371,8 +458,58 @@ module.exports = function (task) {
   }
 };
 
-}).call(this,_dereq_(20))
-},{"20":20}],17:[function(_dereq_,module,exports){
+}).call(this,_dereq_(23))
+},{"23":23}],18:[function(_dereq_,module,exports){
+
+var toNumber = _dereq_(19);
+
+var formats = ['hz', 'ms', 's', 'm'];
+
+module.exports = function (val, format, def) {
+  format || (format = 'ms');
+  var ms = toNumber(def, 0);
+  if (typeof val === 'string') {
+    val = val.toLowerCase();
+    for (var i = 0; i < formats.length; i++) {
+      if (val.indexOf(formats[i]) !== -1) {
+        format = formats[i];
+        val = val.replace(' ', '').replace(formats[i], '');
+        break;
+      }
+    }
+    val = +val;
+  }
+  if (val === null || typeof val === 'undefined') {
+    return ms;
+  }
+  if (isNaN(val)) return ms;
+  if (format === 'hz') {
+    ms = (1 / val) * 1000;
+  } else if (format === 'ms') {
+    ms = val;
+  } else if (format === 's') {
+    ms = val * 1000;
+  } else if (format === 'm') {
+    ms = val * 60 * 1000;
+  }
+  return ms;
+};
+
+},{"19":19}],19:[function(_dereq_,module,exports){
+
+module.exports = function (n, def) {
+  def || (def = 0);
+  if (n === null || typeof n === 'undefined') {
+    return def;
+  }
+  if (typeof n === 'string') {
+    n = +n;
+  }
+  if (isNaN(n)) return def;
+  return n;
+};
+
+},{}],20:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 var Mutation = global.MutationObserver || global.WebKitMutationObserver;
@@ -445,9 +582,9 @@ function immediate(task) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],18:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 'use strict';
-var immediate = _dereq_(17);
+var immediate = _dereq_(20);
 
 /* istanbul ignore next */
 function INTERNAL() {}
@@ -700,10 +837,10 @@ function race(iterable) {
   }
 }
 
-},{"17":17}],19:[function(_dereq_,module,exports){
-module.exports = typeof Promise === 'function' ? Promise : _dereq_(18);
+},{"20":20}],22:[function(_dereq_,module,exports){
+module.exports = typeof Promise === 'function' ? Promise : _dereq_(21);
 
-},{"18":18}],20:[function(_dereq_,module,exports){
+},{"21":21}],23:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -796,26 +933,30 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],24:[function(_dereq_,module,exports){
 
 module.exports = {
-  constrain: _dereq_(1),
-  debounce: _dereq_(13),
-  defer: _dereq_(14),
-  drunk: _dereq_(2),
-  dust: _dereq_(6),
-  env: _dereq_(7),
-  frames: _dereq_(8),
-  log: _dereq_(3),
-  metro: _dereq_(9),
-  now: _dereq_(15),
-  ramp: _dereq_(10),
-  rand: _dereq_(4),
-  scale: _dereq_(5),
-  tick: _dereq_(16),
-  wait: _dereq_(11),
-  walk: _dereq_(12)
+  constrain: _dereq_(5),
+  debounce: _dereq_(14),
+  defer: _dereq_(15),
+  delay: _dereq_(10),
+  drunk: _dereq_(6),
+  dust: _dereq_(1),
+  env: _dereq_(2),
+  frames: _dereq_(11),
+  log: _dereq_(7),
+  metro: _dereq_(12),
+  ms: _dereq_(18),
+  now: _dereq_(16),
+  rand: _dereq_(8),
+  scale: _dereq_(9),
+  sine: _dereq_(3),
+  tick: _dereq_(17),
+  toMilliseconds: _dereq_(18),
+  toNumber: _dereq_(19),
+  wait: _dereq_(13),
+  walk: _dereq_(4)
 };
 
-},{"1":1,"10":10,"11":11,"12":12,"13":13,"14":14,"15":15,"16":16,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}]},{},[21])(21)
+},{"1":1,"10":10,"11":11,"12":12,"13":13,"14":14,"15":15,"16":16,"17":17,"18":18,"19":19,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}]},{},[24])(24)
 });
