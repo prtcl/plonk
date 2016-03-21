@@ -232,10 +232,6 @@ describe('plonk', function () {
     });
   });
 
-  describe('ramp', function () {
-
-  });
-
   describe('rand', function () {
     it('should return a random number in min...max range', function () {
       plonk.should.have.property('rand');
