@@ -1,21 +1,21 @@
 
-# plonk.js
+# plonk
 
-plonk is a micro-library that provides creative coding essentials like timers, envelopes, random number generators, and environment normalizing polyfills. It is designed to work independently of any specific medium or framework, in Node, the browser, or web workers.
+plonk is a JavaScript micro-library that provides creative coding essentials like timers, envelopes, and random generators. It is designed to work independently of any specific medium or framework; in Node, the browser, or web workers.
 
-Check out the [docs](blob/master/doc/) for more info.
+Check out the [docs](tree/v0.1.0/doc) for more info.
 
 ## Installation
 
-```npm install plonk```
+`npm install plonk`
 
-```bower install plonk```
+`bower install plonk`
 
-You can then ```var plonk = require('plonk')```, or include the UMD browser build at ```dist/plonk[.min].s```.
+You can then ```var plonk = require('plonk')```, or use the UMD browser build at ```dist/plonk[.min].s```.
 
-If you're using Browserify and don't want to include the whole library, you can also cherrypick methods from `lib/`:
+If you're using Browserify and don't want to include the whole library, it is safe to cherrypick methods from `lib/`:
 
-```var drunk = require('plonk/lib/math/drunk');```
+`var drunk = require('plonk/lib/math/drunk');`
 
 ## Dependencies
 

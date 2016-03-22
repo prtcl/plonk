@@ -9,19 +9,24 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "main": "lib/index.js",
+  "browser": {
+    "plonk": "dist/plonk.js"
+  },
   "scripts": {
     "jshint": "jshint -c .jshintrc lib/ test/ || true",
     "test": "npm run jshint && mocha test/test.js || true",
     "zuul": "zuul --local 8080 --ui mocha-bdd test/test.js",
     "build": "mkdir -p dist && npm run browserify && npm run min",
     "browserify": "browserify lib/index.js -p bundle-collapser/plugin -s plonk > dist/plonk.js",
-    "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js"
+    "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js",
+    "doc": "mkdir -p doc && documentation lint lib/index.js && documentation build lib/index.js -f md > doc/README.md"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
     "bundle-collapser": "^1.2.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
+    "documentation": "^4.0.0-beta1",
     "jshint": "^2.9.1",
     "mocha": "^2.4.5",
     "uglifyjs": "^2.4.10",
