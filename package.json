@@ -2,18 +2,19 @@
   "name": "plonk",
   "version": "0.1.0",
   "description": "Timer and utility micro-library",
-  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/prtcl/plonk.js.git"
   },
   "author": "Cory O'Brien <cory@prtcl.cc>",
+  "license": "MIT",
+  "main": "lib/index.js",
   "scripts": {
     "jshint": "jshint -c .jshintrc lib/ test/ || true",
     "test": "npm run jshint && mocha test/test.js || true",
     "zuul": "zuul --local 8080 --ui mocha-bdd test/test.js",
     "build": "mkdir -p dist && npm run browserify && npm run min",
-    "browserify": "browserify . -p bundle-collapser/plugin -s plonk | derequire > dist/plonk.js",
+    "browserify": "browserify lib/index.js --bare -p bundle-collapser/plugin -s plonk > dist/plonk.js",
     "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js"
   },
   "devDependencies": {
@@ -21,13 +22,12 @@
     "bundle-collapser": "^1.2.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
-    "derequire": "^2.0.3",
     "jshint": "^2.9.1",
     "mocha": "^2.4.5",
     "uglifyjs": "^2.4.10",
     "zuul": "^3.10.1"
   },
   "dependencies": {
-    "native-or-lie": "^1.0.0"
+    "promise": "^7.1.1"
   }
 }

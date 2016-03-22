@@ -1,6 +1,6 @@
 
 var plonk = require('../lib');
-var Promise = require('native-or-lie');
+var Promise = require('promise');
 
 var chai = require('chai');
 chai.use(require("chai-as-promised"));

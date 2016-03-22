@@ -19,4 +19,4 @@ If you're using Browserify and don't want to include the whole library, you can 
 
 ## Dependencies
 
-plonk uses [native-or-lie](https://github.com/nolanlawson/native-or-lie) to ensure native Promise compatibility.
+plonk uses [promise](https://github.com/then/promise) to ensure native Promise compatibility.
