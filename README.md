@@ -3,7 +3,7 @@
 
 plonk is a JavaScript micro-library that provides creative coding essentials like timers, envelopes, and random generators. It is designed to work independently of any specific medium or framework; in Node, the browser, or web workers.
 
-Check out the [docs](tree/v0.1.0/doc) for more info.
+Check out the [docs](doc/) for more info.
 
 ## Installation
 
