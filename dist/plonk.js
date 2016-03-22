@@ -13,8 +13,8 @@ module.exports = function (min, max, callback) {
     max = min;
     min = 0;
   }
-  return delay(rand(min, max), function (time, i, stop) {
-    callback && callback(time, i, stop);
+  return delay(rand(min, max), function (interval, i, stop) {
+    callback && callback(interval, i, stop);
     return rand(min, max);
   });
 };
@@ -54,7 +54,7 @@ var period = (Math.PI * 2) - 0.0001;
 
 module.exports = function (time, callback) {
   time = toNumber(time, 0);
-  var cycle = 0, total = 0, progress;
+  var cycle = 0, elapsed = 0, progress;
   return metro(4, function (interval, i, stop) {
     var rad = scale(cycle, 0, time, 0, period);
     if (cycle >= time) {
@@ -62,9 +62,9 @@ module.exports = function (time, callback) {
     } else {
       cycle += interval;
     }
-    total += interval;
+    elapsed += interval;
     var sin = constrain(Math.sin(rad), -1, 1);
-    callback && (progress = callback(sin, cycle, total, stop));
+    callback && (progress = callback(sin, cycle, elapsed, stop));
     time = toNumber(progress, time);
     return sin;
   });
@@ -85,10 +85,10 @@ module.exports = function (min, max, callback) {
     max = min;
     min = 0;
   }
-  var d = drunk(min, max);
+  var d = drunk(min, max), progress;
   return delay(d(), function (time, i, stop) {
-    callback && callback(time, i, stop);
-    return d();
+    callback && (progress = callback(time, i, stop));
+    return d(progress);
   });
 };
 
@@ -103,7 +103,7 @@ module.exports = function (n, min, max) {
   min = toNumber(min, 0);
   max = toNumber(max, 1);
   if (arguments.length <= 2) {
-    max = min;
+    max = min || 1;
     min = 0;
   }
   return Math.min(Math.max(n, min), max);
@@ -120,13 +120,14 @@ var constrain = _dereq_(5),
 module.exports = function (min, max, step) {
   min = toNumber(min, 0);
   max = toNumber(max, 1);
-  step = toNumber(step, 0.1);
+  step = constrain(toNumber(step, 0.1), 0, 1);
   if (arguments.length <= 1) {
-    max = min;
+    max = min || 1;
     min = 0;
   }
   var n = rand(min, max);
-  return function () {
+  return function (s) {
+    step = toNumber(s, step);
     n = constrain(n + (max * rand(-1, 1) * step), min, max);
     return n;
   };
@@ -137,7 +138,7 @@ module.exports = function (min, max, step) {
 var constrain = _dereq_(5),
     toNumber = _dereq_(19);
 
-// poor mans logarithmic map
+// poor mans exponential map
 
 module.exports = function (n) {
   n = toNumber(n, 0);
@@ -188,11 +189,11 @@ var defer = _dereq_(15),
 
 module.exports = function (time, callback) {
   time = toNumber(time, 10);
-  var def = defer(), prev = now(), cont = true, i = 0, total = 0, interval, progress;
+  var def = defer(), prev = now(), cont = true, i = 0, elapsed = 0, interval, progress;
   (function next () {
     setTimeout(function() {
       interval = now() - prev;
-      total += interval;
+      elapsed += interval;
       prev = now();
       callback && (progress = callback(interval, i++, stop));
       time = toNumber(progress, time);
@@ -202,7 +203,7 @@ module.exports = function (time, callback) {
   })();
   function stop () {
     cont = false;
-    def.resolve(total);
+    def.resolve(elapsed);
   }
   return def.promise;
 };
@@ -943,8 +944,8 @@ module.exports = {
   drunk: _dereq_(6),
   dust: _dereq_(1),
   env: _dereq_(2),
+  exp: _dereq_(7),
   frames: _dereq_(11),
-  log: _dereq_(7),
   metro: _dereq_(12),
   ms: _dereq_(18),
   now: _dereq_(16),
