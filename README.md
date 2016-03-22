@@ -13,9 +13,9 @@ Check out the [docs](blob/master/doc/) for more info.
 
 You can then ```var plonk = require('plonk')```, or include the UMD browser build at ```dist/plonk[.min].s```.
 
-If you're using a CommonJS environment, you can also cherrypick methods without loading the whole library:
+If you're using Browserify and don't want to include the whole library, you can also cherrypick methods from `lib/`:
 
-```var drunk = require('plonk/math/drunk');```
+```var drunk = require('plonk/lib/math/drunk');```
 
 ## Dependencies
 
