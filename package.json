@@ -14,7 +14,7 @@
     "test": "npm run jshint && mocha test/test.js || true",
     "zuul": "zuul --local 8080 --ui mocha-bdd test/test.js",
     "build": "mkdir -p dist && npm run browserify && npm run min",
-    "browserify": "browserify lib/index.js --bare -p bundle-collapser/plugin -s plonk > dist/plonk.js",
+    "browserify": "browserify lib/index.js -p bundle-collapser/plugin -s plonk > dist/plonk.js",
     "min": "uglifyjs -mc warnings=false dist/plonk.js > dist/plonk.min.js"
   },
   "devDependencies": {
