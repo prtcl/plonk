@@ -1,6 +1,6 @@
 {
   "name": "plonk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Timer and utility micro-library",
   "repository": {
     "type": "git",
