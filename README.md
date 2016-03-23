@@ -13,10 +13,6 @@ Check out the [docs](doc/) for more info.
 
 You can then ```var plonk = require('plonk')```, or use the UMD browser build at ```dist/plonk[.min].s```.
 
-If you're using Browserify and don't want to include the whole library, it is safe to cherrypick methods from `lib/`:
-
-`var drunk = require('plonk/lib/math/drunk');`
-
 ## Dependencies
 
 plonk uses [promise](https://github.com/then/promise) to ensure native Promise compatibility.
