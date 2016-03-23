@@ -9,9 +9,6 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "main": "lib/index.js",
-  "browser": {
-    "plonk": "dist/plonk.js"
-  },
   "scripts": {
     "jshint": "jshint -c .jshintrc lib/ test/ || true",
     "test": "npm run jshint && mocha test/test.js || true",
