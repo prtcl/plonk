@@ -1,4 +1,7 @@
-ui: mocha-bdd
+ui: tape
+browserify:
+  - transform:
+      name: babelify
 browsers:
   - name: chrome
     version: latest

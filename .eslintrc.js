@@ -7,6 +7,9 @@ module.exports = {
     "mocha": true
   },
   "extends": "eslint:recommended",
+  "parserOptions": {
+    "sourceType": "module",
+  },
   "rules": {
     "accessor-pairs": "error",
     "array-bracket-spacing": [
@@ -234,7 +237,7 @@ module.exports = {
         "before": false
       }
     ],
-    "sort-imports": "error",
+    "sort-imports": "off",
     "sort-vars": "off",
     "space-before-blocks": "error",
     "space-before-function-paren": "error",
