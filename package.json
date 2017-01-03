@@ -4,7 +4,7 @@
   "description": "Timer and utility micro-library",
   "repository": {
     "type": "git",
-    "url": "git://github.com/prtcl/plonk.js.git"
+    "url": "git://github.com/prtcl/plonk.git"
   },
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
