@@ -10,7 +10,7 @@
   "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
-    "lint": "$(npm bin)/eslint ./lib || true",
+    "lint": "$(npm bin)/eslint ./lib ./test || true",
     "test": "npm run test:electron",
     "test:local": "$(npm bin)/zuul --local -- test/**/*.spec.js",
     "test:electron": "$(npm bin)/zuul --electron -- test/**/*.spec.js | $(npm bin)/tap-spec || true",
