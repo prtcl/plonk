@@ -2,7 +2,7 @@
 import test from 'tape';
 import Promise from 'promise';
 
-import dust from '../../lib/timers/dust';
+import dust from '../../lib/time/dust';
 import now from '../../lib/util/now';
 
 test('timers/dust', (t) => {
