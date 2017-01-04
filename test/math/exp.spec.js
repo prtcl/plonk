@@ -4,7 +4,7 @@ import test from 'tape';
 import exp from '../../lib/math/exp';
 
 test('math/exp', (t) => {
-  t.equal(typeof exp, 'function', 'typeof exp === function');
+  t.equal(typeof exp, 'function', 'exp is a function');
 
   var arr = [
     { i: -1, o: 0 },
@@ -18,7 +18,7 @@ test('math/exp', (t) => {
 
   arr.forEach((d) => {
     var n = exp(d.i);
-    t.ok(n === d.o, `exp(${d.i}) === ${d.o}`);
+    t.ok(n === d.o, `exp(${d.i}) equals ${d.o}`);
   });
 
   t.end();
