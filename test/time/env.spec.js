@@ -19,8 +19,8 @@ test('time/env', (t) => {
       var interval = now() - prev;
       prev = now();
 
-      t.ok(interval >= 16 && interval <= 26, `tick: ${interval} is in 16...26`);
-      t.ok(val >= -1 && val <= 1, `tick: ${val} is in -1...1`);
+      t.ok(interval >= 16 && interval <= 26, `progress: ${interval} is in 16...26`);
+      t.ok(val >= -1 && val <= 1, `progress: ${val} is in -1...1`);
 
     })
     .then((val) => {

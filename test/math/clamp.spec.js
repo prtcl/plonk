@@ -7,7 +7,7 @@ import rand from '../../lib/math/rand';
 test('math/clamp', (t) => {
   t.equals(typeof clamp, 'function', 'clamp is a function');
 
-  var arr = new Array(10).fill()
+  const arr = new Array(10).fill()
     .map(() => rand(-1.2, 1.2));
 
   arr.forEach((n) => {

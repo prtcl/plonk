@@ -9,7 +9,7 @@ test('math/drunk', (t) => {
   const d = drunk(-10, 10, 0.1);
   t.equal(typeof d, 'function', 'drunk() is a function factory');
 
-  var arr = new Array(10).fill()
+  const arr = new Array(10).fill()
     .map(() => d());
 
   var prev;

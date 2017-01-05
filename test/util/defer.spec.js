@@ -11,20 +11,20 @@ test('util/defer', (t) => {
 
   t.ok(defer() instanceof Deferred, 'defer() returns an instance of Deferred');
 
-  var def = new Deferred();
+  const def = new Deferred();
 
-  t.notOk(def.isResolved, 'def.isResolved is false');
-  t.notOk(def.isRejected, 'def.isRejected is false');
-  t.equal(typeof def.resolveHandler, 'function', 'def.resolveHandler is a function');
-  t.equal(typeof def.rejectHandler, 'function', 'def.rejectHandler is a function');
-  t.ok(typeof def.progressHandlers === 'object' && def.progressHandlers.length === 0, 'def.progressHandlers is an array');
+  t.notOk(def.isResolved, 'isResolved is false');
+  t.notOk(def.isRejected, 'isRejected is false');
+  t.equal(typeof def.resolveHandler, 'function', 'resolveHandler is a function');
+  t.equal(typeof def.rejectHandler, 'function', 'rejectHandler is a function');
+  t.ok(typeof def.progressHandlers === 'object' && def.progressHandlers.length === 0, 'progressHandlers is an array');
 
-  t.ok(def.promise instanceof Promise, 'def.promise is an instance of Promise');
-  t.equal(typeof def.promise.progress, 'function', 'def.promise.progress is a function');
-  t.deepEqual(def.promise.progress(), def.promise, 'def.promise.progress() returns def.promise');
+  t.ok(def.promise instanceof Promise, 'promise is an instance of Promise');
+  t.equal(typeof def.promise.progress, 'function', 'promise.progress is a function');
+  t.deepEqual(def.promise.progress(), def.promise, 'promise.progress() returns def.promise');
 
   ['resolve', 'reject', 'notify'].forEach((name) => {
-    t.equal(typeof def[name], 'function', `def.${name} is a function`);
+    t.equal(typeof def[name], 'function', `${name} is a function`);
   });
 
   var n = 0;
@@ -37,14 +37,14 @@ test('util/defer', (t) => {
     }
   });
 
-  t.equal(def.progressHandlers.length, 1, 'def.progressHandlers.length length is 1');
+  t.equal(def.progressHandlers.length, 1, 'progressHandlers.length length is 1');
 
   def.notify(++n);
 
   def.promise.then((val) => {
     t.equal(val, 10, `then: ${val} equals 10 at ${now()}`);
-    t.ok(def.isResolved, 'def.isResolved is true');
-    t.notOk(def.isRejected, 'def.isRejected is false');
+    t.ok(def.isResolved, 'isResolved is true');
+    t.notOk(def.isRejected, 'isRejected is false');
 
     t.end();
   });

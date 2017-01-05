@@ -9,7 +9,7 @@ test('time/timer', (t) => {
 
   var prev = now();
 
-  var timer = new Timer(50, (interval, i) => {
+  const timer = new Timer(50, (interval, i) => {
     t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
     t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
     t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);

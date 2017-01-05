@@ -6,7 +6,7 @@ import exp from '../../lib/math/exp';
 test('math/exp', (t) => {
   t.equal(typeof exp, 'function', 'exp is a function');
 
-  var arr = [
+  const arr = [
     { i: -1, o: 0 },
     { i: 0, o: 0 },
     { i: 0.25, o: 0.023090389875362178 },
