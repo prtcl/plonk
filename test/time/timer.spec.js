@@ -10,8 +10,13 @@ test('time/timer', (t) => {
   var prev = now();
 
   const timer = new Timer(50, (interval, i) => {
-    t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
-    t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+    if (i === 0) {
+      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `tick: ${interval} equals 0`);
+    } else {
+      t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
+      t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+    }
     t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);
 
     prev = now();
@@ -19,7 +24,7 @@ test('time/timer', (t) => {
     if (i === 19) {
       let elapsed = timer.stop();
 
-      t.ok(elapsed >= 1000 && elapsed <= 1200, `stop: ${elapsed} is in 1000...1200`);
+      t.ok(elapsed >= 950 && elapsed <= 1150, `stop: ${elapsed} is in 1000...1200`);
 
       setTimeout(() => {
         t.equal(timer.isRunning, false, 'reset: isRunning equals false');
