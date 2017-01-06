@@ -1,35 +1,50 @@
 
-// TODO this test is failing partially because notify/progress is not being called the last time after stop()
-//  since we're refactoring dust() and delay() anyway, just commenting out until after that's finished
+import Promise from 'promise/lib/es6-extensions';
+import test from 'tape';
 
-// import test from 'tape';
-// import Promise from 'promise';
+import dust from '../../lib/time/dust';
+import now from '../../lib/util/now';
 
-// import dust from '../../lib/time/dust';
-// import now from '../../lib/util/now';
+test('time/dust', (t) => {
+  t.equal(typeof dust, 'function', 'dust is a function');
 
-// test('timers/dust', (t) => {
-//   t.expects(43);
+  var prev = now();
 
-//   t.equal(typeof dust, 'function', 'dust is a function');
-//   t.ok(dust(10) instanceof Promise, 'dust() returns a Promise');
+  const p = dust(10, 100, (interval, i, elapsed, stop) => {
+    if (i === 0) {
+      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `tick: ${interval} equals 0`);
+      t.ok(i === 0, `tick: ${i} equals 0`);
+      t.ok(elapsed === 0, `tick: ${elapsed} equals 0`);
+      t.equal(typeof stop, 'function', 'stop is a function');
+    } else {
+      t.ok(now() >= prev + 10, `tick: ${now()} is greater than ${prev + 10}`);
+      t.ok(interval >= 10 && interval <= 110, `tick: ${interval} is in 10...110`);
+      t.ok(i >= 0 && i <= 10, `tick: ${i} is in 0...10`);
+      t.ok(elapsed >= (i * 10) && elapsed <= (i * 110), `tick: ${elapsed} is in 0...${(i * 110)}`);
+    }
 
-//   var start = now();
-//   dust(10, 100, (interval, i, stop) => {
-//     t.ok(i >= 0 && i <= 9, `${i} is in 0...9`);
-//     t.equal(typeof stop, 'function', 'stop is a function');
-//     t.ok(interval >= 10 && interval <= 100, `${interval} is in 10...100`);
+    prev = now();
 
-//     if (i === 9) {
-//       stop();
-//     }
-//   })
-//   .progress((interval) => {
-//     t.ok(interval >= 10 && interval <= 100, `${interval} is in 10...100`);
-//   })
-//   .then((elapsed) => {
-//     t.ok(elapsed <= start + (100 * 10), `${elapsed} is less than ${start + (100 * 10)}`);
-//     t.end();
-//   });
+    if (i == 10) {
+      stop();
+    }
+  });
 
-// });
+  t.ok(p instanceof Promise, 'dust() returns a Promise');
+
+  p
+    .progress((interval) => {
+      if (interval === 0) {
+        t.ok(interval === 0, 'progress: interval equals 0');
+      } else {
+        t.ok(interval >= 10 && interval <= 110, `progress: ${interval} is in 10...110`);
+      }
+    })
+    .then((elapsed) => {
+      t.ok(elapsed >= (10 * 10) && elapsed <= (10 * 110), `then: ${elapsed} is in ${(10 * 10)}...${(10 * 110)}`);
+
+      t.end();
+    });
+
+});
