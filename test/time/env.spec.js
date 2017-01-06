@@ -8,7 +8,8 @@ import now from '../../lib/util/now';
 test('time/env', (t) => {
   t.equal(typeof env, 'function', 'env is a function');
 
-  var prev = now();
+  var prev = now(),
+      iterations = 0;
 
   const p = env(-1, 1, 100);
 
@@ -16,7 +17,7 @@ test('time/env', (t) => {
 
   p
     .progress((val) => {
-      var interval = now() - prev;
+      var interval = (iterations === 0 ? 16 : now() - prev);
       prev = now();
 
       t.ok(interval >= 16 && interval <= 26, `progress: ${interval} is in 16...26`);

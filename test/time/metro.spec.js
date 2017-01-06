@@ -10,10 +10,16 @@ test('time/metro', (t) => {
 
   var prev = now();
 
-  const p = metro(50, (interval, i, stop) => {
-    t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
-    t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+  const p = metro(50, (interval, i, elapsed, stop) => {
+    if (i === 0) {
+      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `tick: ${interval} equals 0`);
+    } else {
+      t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
+      t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+    }
     t.ok(i >= 0 && i <= 10, `tick: ${i} is in 0...10`);
+    t.ok(elapsed >= (i * 50) && elapsed <= (i * 60), `tick: ${elapsed} is in ${(i * 50)}...${(i * 60)}`);
     t.equal(typeof stop, 'function', 'stop is a function');
 
     prev = now();
