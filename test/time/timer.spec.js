@@ -17,25 +17,31 @@ test('time/timer', (t) => {
     prev = now();
 
     if (i === 19) {
-      timer.stop();
+      let elapsed = timer.stop();
 
-      t.equal(timer.isRunning, false, 'init: isRunning equals false');
-      t.equal(timer.time, 50, 'init: time equals 50');
-      t.equal(timer.index, 0, 'init: index equals 0');
-      t.equal(timer.interval, 0, 'init: interval equals 0');
-      t.equal(timer.prev, 0, 'init: prev equals 0');
+      t.ok(elapsed >= 1000 && elapsed <= 1200, `stop: ${elapsed} is in 1000...1200`);
 
-      t.end();
+      setTimeout(() => {
+        t.equal(timer.isRunning, false, 'reset: isRunning equals false');
+        t.equal(timer.elapsed, 0, 'reset: elapsed equals 0');
+        t.equal(timer.index, 0, 'reset: index equals 0');
+        t.equal(timer.interval, 0, 'reset: interval equals 0');
+        t.equal(timer.prev, 0, 'reset: prev equals 0');
+        t.equal(timer.time, timer.initialTime, `reset: time equals ${timer.initialTime}`);
+
+        t.end();
+      }, 0);
     }
   });
 
   t.equal(timer.isRunning, false, 'init: isRunning equals false');
-  t.equal(timer.time, 50, 'init: time equals 50');
+  t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
   t.equal(timer.index, 0, 'init: index equals 0');
   t.equal(timer.interval, 0, 'init: interval equals 0');
   t.equal(timer.prev, 0, 'init: prev equals 0');
+  t.equal(timer.time, 50, 'init: time equals 50');
 
-  ['callback', 'run', 'tick', 'stop', 'clear'].forEach((name) => {
+  ['callback', 'run', 'tick', 'stop', 'reset'].forEach((name) => {
     t.equal(typeof timer[name], 'function', `init: ${name} is a function`);
   });
 
