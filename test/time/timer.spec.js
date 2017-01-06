@@ -29,7 +29,7 @@ test('time/timer', (t) => {
       setTimeout(() => {
         t.equal(timer.isRunning, false, 'reset: isRunning equals false');
         t.equal(timer.elapsed, 0, 'reset: elapsed equals 0');
-        t.equal(timer.index, 0, 'reset: index equals 0');
+        t.equal(timer.iterations, 0, 'reset: iterations equals 0');
         t.equal(timer.interval, 0, 'reset: interval equals 0');
         t.equal(timer.prev, 0, 'reset: prev equals 0');
         t.equal(timer.time, timer.initialTime, `reset: time equals ${timer.initialTime}`);
@@ -41,7 +41,7 @@ test('time/timer', (t) => {
 
   t.equal(timer.isRunning, false, 'init: isRunning equals false');
   t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
-  t.equal(timer.index, 0, 'init: index equals 0');
+  t.equal(timer.iterations, 0, 'init: iterations equals 0');
   t.equal(timer.interval, 0, 'init: interval equals 0');
   t.equal(timer.prev, 0, 'init: prev equals 0');
   t.equal(timer.time, 50, 'init: time equals 50');
