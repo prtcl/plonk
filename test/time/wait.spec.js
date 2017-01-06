@@ -8,7 +8,7 @@ test('time/wait', (t) => {
   t.equal(typeof wait, 'function', 'wait is a function');
   t.ok(wait() instanceof Promise, 'wait() returns a Promise');
 
-  wait()
+  wait(1)
     .then((elapsed) => {
       t.ok(elapsed >= 0 && elapsed <= 10, `then: ${elapsed} is in 0...10`);
 
