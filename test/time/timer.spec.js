@@ -1,5 +1,6 @@
 
 import test from 'tape';
+import asap from 'asap';
 
 import now from '../../lib/util/now';
 import Timer from '../../lib/time/timer';
@@ -9,7 +10,7 @@ test('time/timer', (t) => {
 
   var prev = now();
 
-  const timer = new Timer(50, (interval, i) => {
+  const timer = new Timer(50, (interval, i, elapsed) => {
     if (i === 0) {
       t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
       t.ok(interval === 0, `tick: ${interval} equals 0`);
@@ -18,12 +19,14 @@ test('time/timer', (t) => {
       t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
     }
     t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);
+    t.ok(elapsed >= (i * 50) && elapsed <= (i * 60), `tick: ${elapsed} is in ${(i * 50)}...${(i * 60)}`);
 
     prev = now();
 
     if (i === 19) {
-      let elapsed = timer.stop();
+      let finished = timer.stop();
 
+      t.equal(finished, elapsed, 'stop: stop() returns final elapsed time');
       t.ok(elapsed >= 950 && elapsed <= 1150, `stop: ${elapsed} is in 1000...1200`);
 
       setTimeout(() => {
@@ -39,6 +42,8 @@ test('time/timer', (t) => {
     }
   });
 
+  t.equal(typeof timer._tickHandler, 'function', 'init: _tickHandler is a function');
+  t.equal(timer._tickHandler, asap, '_tickHandler is asap');
   t.equal(timer.isRunning, false, 'init: isRunning equals false');
   t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
   t.equal(timer.iterations, 0, 'init: iterations equals 0');
