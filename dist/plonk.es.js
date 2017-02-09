@@ -3,17 +3,9 @@
  * (c) Cory O'Brien <cory@prtcl.cc>
  * License MIT
  */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-function _interopDefault(ex) {
-  return ex && (typeof ex === 'undefined' ? 'undefined' : babelHelpers.typeof(ex)) === 'object' && 'default' in ex ? ex['default'] : ex;
-}
-
-var asap = _interopDefault(require('asap'));
-var Promise$1 = _interopDefault(require('promise/lib/es6-extensions'));
+ 
+import asap from 'asap';
+import Promise$1 from 'promise/lib/es6-extensions';
 
 /**
  * Passes `value` unaltered if it is a Number, converts to Number if it's a coercible String, or returns `default` if null, undefined, or NaN.
@@ -73,13 +65,23 @@ function clamp(n, min, max) {
 
 function noop() {}
 
-var _typeof = typeof Symbol === "function" && babelHelpers.typeof(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === 'undefined' ? 'undefined' : babelHelpers.typeof(obj);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === 'undefined' ? 'undefined' : babelHelpers.typeof(obj);
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-var classCallCheck = function classCallCheck(instance, Constructor) {
+
+
+
+
+
+
+
+
+
+
+var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
@@ -103,9 +105,17 @@ var createClass = function () {
   };
 }();
 
-var inherits = function inherits(subClass, superClass) {
+
+
+
+
+
+
+
+
+var inherits = function (subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : babelHelpers.typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
   }
 
   subClass.prototype = Object.create(superClass && superClass.prototype, {
@@ -119,12 +129,22 @@ var inherits = function inherits(subClass, superClass) {
   if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 };
 
-var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+
+
+
+
+
+
+
+
+
+
+var possibleConstructorReturn = function (self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
 
-  return call && ((typeof call === 'undefined' ? 'undefined' : babelHelpers.typeof(call)) === "object" || typeof call === "function") ? call : self;
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
 // a simple Deferred class that is used for all promises internally
@@ -644,6 +664,7 @@ function exp(n) {
 function frames(frameRate) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
+
   if (arguments.length === 2) {
     frameRate = clamp(toNumber(frameRate, 60), 1, 60);
   } else if (arguments.length === 1) {
@@ -910,19 +931,4 @@ function walk(min, max, callback) {
   });
 }
 
-exports.clamp = clamp;
-exports.defer = defer;
-exports.delay = delay;
-exports.drunk = drunk;
-exports.dust = dust;
-exports.env = env;
-exports.exp = exp;
-exports.frames = frames;
-exports.metro = metro;
-exports.now = now;
-exports.rand = rand;
-exports.scale = scale;
-exports.sine = sine;
-exports.ms = toMilliseconds;
-exports.wait = wait;
-exports.walk = walk;
+export { clamp, defer, delay, drunk, dust, env, exp, frames, metro, now, rand, scale, sine, toMilliseconds as ms, wait, walk };

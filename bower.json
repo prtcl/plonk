@@ -1,13 +1,13 @@
 {
   "name": "plonk",
   "main": "plonk.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/prtcl/plonk",
   "authors": [
     "Cory O'Brien <cory@prtcl.cc>"
   ],
   "description": "Timer and utility micro-library",
-  "main": "dist/plonk.js",
+  "main": "dist/plonk.umd.js",
   "moduleType": [
     "amd",
     "globals",
