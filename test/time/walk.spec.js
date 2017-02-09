@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import now from '../../lib/util/now';
-import walk from '../../lib/time/walk';
+import now from '../../src/util/now';
+import walk from '../../src/time/walk';
 
 test('time/walk', (t) => {
   t.equal(typeof walk, 'function', 'walk is a function');

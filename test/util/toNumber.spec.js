@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import toNumber from '../../lib/util/toNumber';
+import toNumber from '../../src/util/toNumber';
 
 test('util/toNumber', (t) => {
   t.equal(typeof toNumber, 'function', 'toNumber is a function');

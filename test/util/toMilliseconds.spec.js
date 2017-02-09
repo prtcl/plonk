@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import toMilliseconds, { FORMAT_IDENTIFIERS } from '../../lib/util/toMilliseconds';
+import toMilliseconds, { FORMAT_IDENTIFIERS } from '../../src/util/toMilliseconds';
 
 test('util/toMilliseconds', (t) => {
   t.equal(typeof toMilliseconds, 'function', 'toMilliseconds is a function');

@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import defer, { Deferred } from '../../lib/util/defer';
-import now from '../../lib/util/now';
+import defer, { Deferred } from '../../src/util/defer';
+import now from '../../src/util/now';
 
 test('util/defer', (t) => {
   t.equal(typeof defer, 'function', 'defer is a function');

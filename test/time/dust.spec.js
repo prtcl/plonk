@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import dust from '../../lib/time/dust';
-import now from '../../lib/util/now';
+import dust from '../../src/time/dust';
+import now from '../../src/util/now';
 
 test('time/dust', (t) => {
   t.equal(typeof dust, 'function', 'dust is a function');

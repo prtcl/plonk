@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import exp from '../../lib/math/exp';
+import exp from '../../src/math/exp';
 
 test('math/exp', (t) => {
   t.equal(typeof exp, 'function', 'exp is a function');

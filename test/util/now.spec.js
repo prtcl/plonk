@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import now, { performanceNowHandler } from '../../lib/util/now';
+import now, { performanceNowHandler } from '../../src/util/now';
 
 test('util/now', (t) => {
   t.equal(typeof now, 'function', 'now is a function');

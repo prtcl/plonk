@@ -2,9 +2,9 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import delay from '../../lib/time/delay';
-import now from '../../lib/util/now';
-import rand from '../../lib/math/rand';
+import delay from '../../src/time/delay';
+import now from '../../src/util/now';
+import rand from '../../src/math/rand';
 
 test('time/delay', (t) => {
   t.equal(typeof delay, 'function', 'delay is a function');

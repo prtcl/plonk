@@ -11,7 +11,7 @@
   "main": "dist/plonk.js",
   "module": "dist/plonk.es.js",
   "scripts": {
-    "lint": "$(npm bin)/eslint ./lib ./test || true",
+    "lint": "$(npm bin)/eslint ./src ./test || true",
     "test": "cp .babelrc--tape .babelrc && npm run lint && npm run test:node && npm run test:electron",
     "test:node": "$(npm bin)/tape -r babel-register ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
     "test:local": "$(npm bin)/zuul --local -- ./test/**/*.spec.js ./test/index.spec.js ",

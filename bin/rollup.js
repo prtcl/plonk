@@ -22,7 +22,7 @@ const banner = `/*
  `;
 
 rollup({
-  entry: 'lib/index.js',
+  entry: 'src/index.js',
   external,
   plugins: [
     babel({ exclude: 'node_modules/**' })
@@ -47,7 +47,7 @@ rollup({
   });
 
 rollup({
-  entry: 'lib/index.js',
+  entry: 'src/index.js',
   banner,
   plugins: [
     babel({ exclude: 'node_modules/**' }),

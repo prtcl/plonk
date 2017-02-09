@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import drunk from '../../lib/math/drunk';
+import drunk from '../../src/math/drunk';
 
 test('math/drunk', (t) => {
   t.equal(typeof drunk, 'function', 'drunk is a function');

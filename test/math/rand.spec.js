@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import rand from '../../lib/math/rand';
+import rand from '../../src/math/rand';
 
 test('math/rand', (t) => {
   t.equal(typeof rand, 'function', 'rand is a function');

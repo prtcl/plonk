@@ -1,8 +1,8 @@
 
 import test from 'tape';
 
-import clamp from '../../lib/math/clamp';
-import rand from '../../lib/math/rand';
+import clamp from '../../src/math/clamp';
+import rand from '../../src/math/rand';
 
 test('math/clamp', (t) => {
   t.equals(typeof clamp, 'function', 'clamp is a function');

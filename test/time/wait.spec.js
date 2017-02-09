@@ -2,7 +2,7 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import wait from '../../lib/time/wait';
+import wait from '../../src/time/wait';
 
 test('time/wait', (t) => {
   t.equal(typeof wait, 'function', 'wait is a function');

@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import env from '../../lib/time/env';
-import now from '../../lib/util/now';
+import env from '../../src/time/env';
+import now from '../../src/util/now';
 
 test('time/env', (t) => {
   t.equal(typeof env, 'function', 'env is a function');

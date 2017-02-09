@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import scale from '../../lib/math/scale';
+import scale from '../../src/math/scale';
 
 test('math/scale', (t) => {
   t.equal(typeof scale, 'function', 'scale is a function');

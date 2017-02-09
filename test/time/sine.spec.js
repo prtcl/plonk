@@ -2,7 +2,7 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import sine from '../../lib/time/sine';
+import sine from '../../src/time/sine';
 
 test('time/sine', (t) => {
   t.equal(typeof sine, 'function', 'sine is a function');

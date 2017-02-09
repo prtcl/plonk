@@ -2,8 +2,8 @@
 import test from 'tape';
 import asap from 'asap';
 
-import now from '../../lib/util/now';
-import Timer from '../../lib/time/timer';
+import now from '../../src/util/now';
+import Timer from '../../src/time/timer';
 
 test('time/timer', (t) => {
   t.equal(typeof Timer, 'function', 'Timer is a function');

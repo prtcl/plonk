@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import metro from '../../lib/time/metro';
-import now from '../../lib/util/now';
+import metro from '../../src/time/metro';
+import now from '../../src/util/now';
 
 test('time/metro', (t) => {
   t.equal(typeof metro, 'function', 'metro is a function');

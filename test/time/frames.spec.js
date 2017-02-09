@@ -2,8 +2,8 @@
 import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
-import frames, { Frames, frameHandler } from '../../lib/time/frames';
-import now from '../../lib/util/now';
+import frames, { Frames, frameHandler } from '../../src/time/frames';
+import now from '../../src/util/now';
 
 
 const SIXTY_FPS = 1000 / 60;

@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import * as plonk from '../lib';
+import * as plonk from '../src';
 
 test('plonk', (t) => {
 
