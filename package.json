@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "$(npm bin)/eslint ./lib ./test || true",
     "test": "npm run lint && npm run test:node && npm run test:electron",
-    "test:node": "$(npm bin)/tape -r babel-register test/**/*.js | $(npm bin)/tap-spec || true",
+    "test:node": "$(npm bin)/tape -r babel-register test/**/*.spec.js | $(npm bin)/tap-spec || true",
     "test:local": "$(npm bin)/zuul --local -- test/**/*.spec.js",
     "test:sauce": "$(npm bin)/zuul -- test/**/*.spec.js | $(npm bin)/tap-spec || true",
     "test:electron": "$(npm bin)/zuul --electron -- test/**/*.spec.js | $(npm bin)/tap-spec || true",
