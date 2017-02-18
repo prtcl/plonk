@@ -5,7 +5,7 @@ import toNumber from '../util/toNumber';
 import Timer from './timer';
 
 /**
- * Simple wrapper for setTimeout that returns a promise.
+ * A simple wait delay (like setTimeout) that returns a promise.
  * @static
  * @memberof plonk
  * @name wait
