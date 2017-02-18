@@ -772,7 +772,7 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-// A simple Deferred class that is used for all promises internally
+// A basic Deferred class that is used for all promises internally
 // It's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
 
 function defer() {
@@ -789,7 +789,6 @@ var Deferred = function () {
     this._isRejected = false;
     this._resolveHandler = noop$1;
     this._rejectHandler = noop$1;
-    this.progressHandlers = [];
 
     this.promise = new _Promise(function (resolve, reject) {
       _this._resolveHandler = resolve;
@@ -851,12 +850,18 @@ var _Promise = function (_Promise2) {
   }, {
     key: 'then',
     value: function then(resolver) {
+      if (typeof resolver !== 'function') {
+        return get(_Promise.prototype.__proto__ || Object.getPrototypeOf(_Promise.prototype), 'then', this).call(this, resolver);
+      }
+
       var res = get(_Promise.prototype.__proto__ || Object.getPrototypeOf(_Promise.prototype), 'then', this).call(this, function () {
         var ret = resolver.apply(undefined, arguments);
 
-        ret.progress(function (val) {
-          _notify(promise, val);
-        });
+        if (ret instanceof _Promise) {
+          ret.progress(function (val) {
+            _notify(promise, val);
+          });
+        }
 
         return ret;
       });

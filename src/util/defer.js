@@ -4,7 +4,7 @@ import Promise from 'promise/lib/es6-extensions';
 
 import noop from './noop';
 
-// A simple Deferred class that is used for all promises internally
+// A basic Deferred class that is used for all promises internally
 // It's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
 
 export default function defer () {
@@ -18,7 +18,6 @@ export class Deferred {
     this._isRejected = false;
     this._resolveHandler = noop;
     this._rejectHandler = noop;
-    this.progressHandlers = [];
 
     this.promise = new _Promise((resolve, reject) => {
       this._resolveHandler = resolve;
@@ -61,12 +60,18 @@ export class _Promise extends Promise {
   }
 
   then (resolver) {
+    if (typeof resolver !== 'function') {
+      return super.then(resolver);
+    }
+
     const res = super.then((...args) => {
       const ret = resolver(...args);
 
-      ret.progress((val) => {
-        notify(promise, val);
-      });
+      if (ret instanceof _Promise) {
+        ret.progress((val) => {
+          notify(promise, val);
+        });
+      }
 
       return ret;
     });
