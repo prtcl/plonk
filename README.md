@@ -23,22 +23,14 @@ Here's an ASR envelope with an exponential curve:
 
 ```javascript
 plonk.env(0, 1, 650)
-  .progress((val) => {
-    doSomething(val);
-  })
+  .progress(doSomething)
   .then((val) => {
     doSomething(val);
-    return plonk.wait(50);
+    return plonk.wait(125);
   })
-  .then(() => {
-    return plonk.env(1, 0, 1200);
-  })
-  .progress((val) => {
-    doSomething(val);
-  })
-  .then((val) => {
-    doSomething(val);
-  });
+  .then(() => plonk.env(1, 0, 1200))
+  .progress(doSomething)
+  .then(doSomething);
 
 function doSomething (val) {
   var n = plonk.exp(val);
