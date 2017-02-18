@@ -1,7 +1,7 @@
 
-import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
+import { _Promise } from '../../src/util/defer';
 import frames, { Frames, frameHandler } from '../../src/time/frames';
 import now from '../../src/util/now';
 
@@ -93,7 +93,7 @@ test('time/frames', (t) => {
       }
     });
 
-    t.ok(p instanceof Promise, 'frames() returns a Promise');
+    t.ok(p instanceof _Promise, 'frames() returns a promise');
 
     p
       .progress((val) => {

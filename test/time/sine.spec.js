@@ -1,7 +1,7 @@
 
-import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
+import { _Promise } from '../../src/util/defer';
 import sine from '../../src/time/sine';
 
 test('time/sine', (t) => {
@@ -23,7 +23,7 @@ test('time/sine', (t) => {
     }
   });
 
-  t.ok(p instanceof Promise, 'sine() returns a Promise');
+  t.ok(p instanceof _Promise, 'sine() returns a promise');
 
   p
     .progress((val) => {

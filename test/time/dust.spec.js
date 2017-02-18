@@ -1,7 +1,7 @@
 
-import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
+import { _Promise } from '../../src/util/defer';
 import dust from '../../src/time/dust';
 import now from '../../src/util/now';
 
@@ -31,7 +31,7 @@ test('time/dust', (t) => {
     }
   });
 
-  t.ok(p instanceof Promise, 'dust() returns a Promise');
+  t.ok(p instanceof _Promise, 'dust() returns a promise');
 
   p
     .progress((interval) => {

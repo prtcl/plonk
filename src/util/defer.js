@@ -14,45 +14,77 @@ export default function defer () {
 export class Deferred {
 
   constructor () {
-    this.isResolved = false;
-    this.isRejected = false;
-    this.resolveHandler = noop;
-    this.rejectHandler = noop;
+    this._isResolved = false;
+    this._isRejected = false;
+    this._resolveHandler = noop;
+    this._rejectHandler = noop;
     this.progressHandlers = [];
 
-    this.promise = new Promise((resolve, reject) => {
-      this.resolveHandler = resolve;
-      this.rejectHandler = reject;
+    this.promise = new _Promise((resolve, reject) => {
+      this._resolveHandler = resolve;
+      this._rejectHandler = reject;
     });
-
-    this.promise.progress = (callback) => {
-      if (this.isResolved) return this.promise;
-      if (typeof callback === 'function') {
-        this.progressHandlers.push(callback);
-      }
-      return this.promise;
-    };
   }
 
   resolve (val) {
-    if (this.isResolved) return;
-    this.isResolved = true;
-    this.resolveHandler(val);
+    if (this._isResolved) return;
+    this._isResolved = true;
+    this._resolveHandler(val);
   }
 
   reject (val) {
-    if (this.isRejected) return;
-    this.isRejected = true;
-    this.rejectHandler(val);
+    if (this._isRejected) return;
+    this._isRejected = true;
+    this._rejectHandler(val);
   }
 
   notify (val) {
-    if (this.isResolved || this.isRejected) return;
-    this.progressHandlers.forEach((fn) => {
-      asap(() => {
-        fn(val);
-      });
-    });
+    if (this._isResolved || this._isRejected) return;
+    notify(this.promise, val);
   }
 
+}
+
+export class _Promise extends Promise {
+
+  constructor (...args) {
+    super(...args);
+    this._progressHandlers = [];
+  }
+
+  progress (callback) {
+    this._progressHandlers || (this._progressHandlers = []);
+    if (typeof callback === 'function') {
+      this._progressHandlers.push(callback);
+    }
+    return this;
+  }
+
+  then (resolver) {
+    const res = super.then((...args) => {
+      const ret = resolver(...args);
+
+      ret.progress((val) => {
+        notify(promise, val);
+      });
+
+      return ret;
+    });
+
+    const promise = new _Promise((resolve, reject) => {
+      res.then(resolve, reject);
+    });
+
+    return promise;
+  }
+
+}
+
+function notify (promise, val) {
+  if (!promise._progressHandlers) return;
+  asap(() => {
+    promise._progressHandlers.forEach((fn) => {
+      fn(val);
+    });
+  });
 }

@@ -1,7 +1,7 @@
 
-import Promise from 'promise/lib/es6-extensions';
 import test from 'tape';
 
+import { _Promise } from '../../src/util/defer';
 import env from '../../src/time/env';
 import now from '../../src/util/now';
 
@@ -13,7 +13,7 @@ test('time/env', (t) => {
 
   const p = env(-1, 1, 100);
 
-  t.ok(p instanceof Promise, 'env() returns a promise');
+  t.ok(p instanceof _Promise, 'env() returns a promise');
 
   p
     .progress((val) => {

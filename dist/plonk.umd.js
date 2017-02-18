@@ -713,7 +713,30 @@ var createClass = function () {
 
 
 
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
 
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
 
 var inherits = function (subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
@@ -762,53 +785,100 @@ var Deferred = function () {
 
     classCallCheck(this, Deferred);
 
-    this.isResolved = false;
-    this.isRejected = false;
-    this.resolveHandler = noop$1;
-    this.rejectHandler = noop$1;
+    this._isResolved = false;
+    this._isRejected = false;
+    this._resolveHandler = noop$1;
+    this._rejectHandler = noop$1;
     this.progressHandlers = [];
 
-    this.promise = new es6Extensions(function (resolve, reject) {
-      _this.resolveHandler = resolve;
-      _this.rejectHandler = reject;
+    this.promise = new _Promise(function (resolve, reject) {
+      _this._resolveHandler = resolve;
+      _this._rejectHandler = reject;
     });
-
-    this.promise.progress = function (callback) {
-      if (_this.isResolved) return _this.promise;
-      if (typeof callback === 'function') {
-        _this.progressHandlers.push(callback);
-      }
-      return _this.promise;
-    };
   }
 
   createClass(Deferred, [{
     key: 'resolve',
     value: function resolve(val) {
-      if (this.isResolved) return;
-      this.isResolved = true;
-      this.resolveHandler(val);
+      if (this._isResolved) return;
+      this._isResolved = true;
+      this._resolveHandler(val);
     }
   }, {
     key: 'reject',
     value: function reject(val) {
-      if (this.isRejected) return;
-      this.isRejected = true;
-      this.rejectHandler(val);
+      if (this._isRejected) return;
+      this._isRejected = true;
+      this._rejectHandler(val);
     }
   }, {
     key: 'notify',
     value: function notify(val) {
-      if (this.isResolved || this.isRejected) return;
-      this.progressHandlers.forEach(function (fn) {
-        browserAsap(function () {
-          fn(val);
-        });
-      });
+      if (this._isResolved || this._isRejected) return;
+      _notify(this.promise, val);
     }
   }]);
   return Deferred;
 }();
+
+var _Promise = function (_Promise2) {
+  inherits(_Promise, _Promise2);
+
+  function _Promise() {
+    var _ref;
+
+    classCallCheck(this, _Promise);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var _this2 = possibleConstructorReturn(this, (_ref = _Promise.__proto__ || Object.getPrototypeOf(_Promise)).call.apply(_ref, [this].concat(args)));
+
+    _this2._progressHandlers = [];
+    return _this2;
+  }
+
+  createClass(_Promise, [{
+    key: 'progress',
+    value: function progress(callback) {
+      this._progressHandlers || (this._progressHandlers = []);
+      if (typeof callback === 'function') {
+        this._progressHandlers.push(callback);
+      }
+      return this;
+    }
+  }, {
+    key: 'then',
+    value: function then(resolver) {
+      var res = get(_Promise.prototype.__proto__ || Object.getPrototypeOf(_Promise.prototype), 'then', this).call(this, function () {
+        var ret = resolver.apply(undefined, arguments);
+
+        ret.progress(function (val) {
+          _notify(promise, val);
+        });
+
+        return ret;
+      });
+
+      var promise = new _Promise(function (resolve, reject) {
+        res.then(resolve, reject);
+      });
+
+      return promise;
+    }
+  }]);
+  return _Promise;
+}(es6Extensions);
+
+function _notify(promise, val) {
+  if (!promise._progressHandlers) return;
+  browserAsap(function () {
+    promise._progressHandlers.forEach(function (fn) {
+      fn(val);
+    });
+  });
+}
 
 /**
  * High resolution timestamp that uses `performance.now()` in the browser, or `process.hrtime()` in Node. Provides a Date-based fallback otherwise.
