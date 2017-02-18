@@ -14,32 +14,39 @@ const external = [
   'promise/lib/es6-extensions'
 ];
 
-const banner = `/*
+const nodeBanner = `/*
  * ${pkg.name} - v${pkg.version}
  * (c) ${pkg.author}
  * License ${pkg.license}
  */
- `;
+`;
+
+const browserBanner = `${nodeBanner}
+/*
+ * Includes:
+ *  asap https://github.com/kriskowal/asap
+ *  promise https://github.com/then/promise
+ */
+`;
 
 rollup({
   entry: 'src/index.js',
   external,
   plugins: [
-    babel({ exclude: 'node_modules/**' })
+    babel({
+      babelrc: false,
+      exclude: 'node_modules/**',
+      presets: ['es2015-rollup']
+    })
   ]
 })
   .then((bundle) => {
     bundle.write({
-      banner,
-      format: 'cjs',
+      banner: nodeBanner,
       dest: 'dist/plonk.js',
+      format: 'cjs',
       moduleId: 'plonk',
       moduleName: 'plonk'
-    });
-    bundle.write({
-      banner,
-      format: 'es',
-      dest: 'dist/plonk.es.js'
     });
   })
   .catch((err) => {
@@ -48,9 +55,12 @@ rollup({
 
 rollup({
   entry: 'src/index.js',
-  banner,
   plugins: [
-    babel({ exclude: 'node_modules/**' }),
+    babel({
+      babelrc: false,
+      exclude: 'node_modules/**',
+      presets: ['es2015-rollup']
+    }),
     nodeResolve({
       module: true,
       main: true,
@@ -63,11 +73,16 @@ rollup({
 })
   .then((bundle) => {
     bundle.write({
-      banner,
-      format: 'umd',
+      banner: browserBanner,
       dest: 'dist/plonk.umd.js',
+      format: 'umd',
       moduleId: 'plonk',
       moduleName: 'plonk'
+    });
+    bundle.write({
+      banner: browserBanner,
+      dest: 'dist/plonk.es.js',
+      format: 'es'
     });
   })
   .catch((err) => {

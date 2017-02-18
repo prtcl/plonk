@@ -3,30 +3,22 @@
  * (c) Cory O'Brien <cory@prtcl.cc>
  * License MIT
  */
- 
+
+/*
+ * Includes:
+ *  asap https://github.com/kriskowal/asap
+ *  promise https://github.com/then/promise
+ */
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define('plonk', ['exports'], factory) :
 	(factory((global.plonk = global.plonk || {})));
 }(this, (function (exports) { 'use strict';
 
-/**
- * Passes `value` unaltered if it is a Number, converts to Number if it's a coercible String, or returns `default` if null, undefined, or NaN.
- * @static
- * @memberof plonk
- * @name toNumber
- * @param {number} value
- * @param {number} [default=0]
- * @returns {number} `value`
- * @example
- * plonk.toNumber(1);
- * // => 1
- * plonk.toNumber('2');
- * // => 2
- * var n;
- * plonk.toNumber(n, 10);
- * // => 10
- */
+// Basic number formatter
+// Passes value unaltered if it is a Number, converts to Number if it's a coercible String, or returns default if null, undefined, or NaN.
+
 function toNumber(n) {
   var def = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
@@ -757,8 +749,8 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-// a simple Deferred class that is used for all promises internally
-// it's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
+// A simple Deferred class that is used for all promises internally
+// It's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
 
 function defer() {
   return new Deferred();
@@ -1093,7 +1085,7 @@ function dust(min, max) {
 }
 
 /**
- * setInterval wrapper where `time` is the tick interval in milliseconds.
+ * A repeating timer loop (equivalent to setInterval) where time is the tick interval in milliseconds.
  *
  * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function. The `callback` return value is passed to the `.progress()` handler, making it trivial to use `metro` to compose time-based interpolations and modulators.
  *
@@ -1193,10 +1185,10 @@ function scale(n, a1, a2, b1, b2) {
  *   .progress(function (val) {
  *     console.log(val);
  *     // => -1
- *     //    -0.86759346
- *     //    -0.4624115000000001
- *     //    -0.34194526000000014
- *     //    -0.23357504000000007
+ *     //    -0.6666658999999999
+ *     //    -0.33333203999999994
+ *     //    0.0000022800000001321763
+ *     //    0.33333864
  *     //    ...
  *   })
  *   .then(function (val) {
@@ -1347,6 +1339,63 @@ var frameHandler = function () {
   return frame;
 }();
 
+var FORMAT_IDENTIFIERS = ['hz', 'ms', 's', 'm'];
+
+/**
+ * Number format converter that takes a variety of input time values and returns the equivalent millisecond values. Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz). `default` is returned if `value` is null, undefined, or NaN.
+ * @static
+ * @memberof plonk
+ * @name ms
+ * @param {number} value
+ * @param {String} [format=ms]
+ * @param {number} [default=0]
+ * @returns {number} `value` formatted to milliseconds.
+ * @example
+ * plonk.ms('2s');
+ * // => 2000
+ * plonk.ms('30hz');
+ * // => 33.333333333333336
+ * plonk.ms(Math.random(), 'm');
+ * // => 41737.010115757585
+ */
+function toMilliseconds(val) {
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ms';
+  var def = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+  var ms = toNumber(def, 0);
+  if (typeof val === 'string') {
+    val = val.toLowerCase();
+    for (var i = 0; i < FORMAT_IDENTIFIERS.length; i++) {
+      if (val.indexOf(FORMAT_IDENTIFIERS[i]) !== -1) {
+        format = FORMAT_IDENTIFIERS[i];
+        val = val.replace(' ', '').replace(format, '');
+        break;
+      }
+    }
+    val = +val;
+  }
+  if (val === null || typeof val === 'undefined') {
+    return ms;
+  }
+  if (isNaN(val)) return ms;
+  switch (format) {
+    case 'hz':
+      ms = 1 / val * 1000;
+      break;
+    case 'ms':
+      ms = val;
+      break;
+    case 's':
+      ms = val * 1000;
+      break;
+    case 'm':
+      ms = val * 60 * 1000;
+      break;
+    default:
+  }
+  return ms;
+}
+
 var SINE_PERIOD = Math.PI * 2 - 0.0001;
 
 /**
@@ -1403,65 +1452,6 @@ function sine(time) {
 
     return sin;
   });
-}
-
-var FORMAT_IDENTIFIERS = ['hz', 'ms', 's', 'm'];
-
-/**
- * Also aliased to `plonk.ms`.
- *
- * Number format converter that takes a variety of input time values and returns the equivalent millisecond values. Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz). `default` is returned if `value` is null, undefined, or NaN.
- * @static
- * @memberof plonk
- * @name toMilliseconds
- * @param {number} value
- * @param {String} [format=ms]
- * @param {number} [default=0]
- * @returns {number} `value` formatted to milliseconds.
- * @example
- * plonk.ms('2s');
- * // => 2000
- * plonk.ms('30hz');
- * // => 33.333333333333336
- * plonk.ms(Math.random(), 'm');
- * // => 41737.010115757585
- */
-function toMilliseconds(val) {
-  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ms';
-  var def = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-  var ms = toNumber(def, 0);
-  if (typeof val === 'string') {
-    val = val.toLowerCase();
-    for (var i = 0; i < FORMAT_IDENTIFIERS.length; i++) {
-      if (val.indexOf(FORMAT_IDENTIFIERS[i]) !== -1) {
-        format = FORMAT_IDENTIFIERS[i];
-        val = val.replace(' ', '').replace(format, '');
-        break;
-      }
-    }
-    val = +val;
-  }
-  if (val === null || typeof val === 'undefined') {
-    return ms;
-  }
-  if (isNaN(val)) return ms;
-  switch (format) {
-    case 'hz':
-      ms = 1 / val * 1000;
-      break;
-    case 'ms':
-      ms = val;
-      break;
-    case 's':
-      ms = val * 1000;
-      break;
-    case 'm':
-      ms = val * 60 * 1000;
-      break;
-    default:
-  }
-  return ms;
 }
 
 /**
@@ -1550,11 +1540,11 @@ exports.env = env;
 exports.exp = exp;
 exports.frames = frames;
 exports.metro = metro;
+exports.ms = toMilliseconds;
 exports.now = now;
 exports.rand = rand;
 exports.scale = scale;
 exports.sine = sine;
-exports.ms = toMilliseconds;
 exports.wait = wait;
 exports.walk = walk;
 
