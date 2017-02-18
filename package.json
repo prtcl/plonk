@@ -13,7 +13,7 @@
   "browser": "dist/plonk.umd.js",
   "scripts": {
     "build": "rm -r ./dist ; mkdir -p ./dist ; npm run rollup && npm run uglifyjs && npm run docs",
-    "docs": "$(npm bin)/documentation build src/index.js -f md > DOCS.md",
+    "docs": "rm -r ./docs ; mkdir -p ./docs ; documentation build ./src/index.js -f md > ./docs/README.md",
     "lint": "$(npm bin)/eslint ./src ./test || true ; $(npm bin)/documentation lint ./src/index.js",
     "rollup": "/usr/bin/env node ./bin/rollup.js",
     "test": "npm run test:node && npm run test:electron",

@@ -4,9 +4,11 @@ import noop from '../util/noop';
 import Timer from './timer';
 
 /**
- * setInterval wrapper where `time` is the tick interval in milliseconds.
+ * A repeating timer loop (like setInterval) where `time` is the tick interval in milliseconds.
  *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function. The `callback` return value is passed to the `.progress()` handler, making it trivial to use `metro` to compose time-based interpolations and modulators.
+ * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
+ *
+ * Also, the `callback` return value is passed to the `.progress()` handler, making it trivial to use `metro` to compose time-based interpolations and modulators.
  *
  * When `stop(value)` is called, the returned promise is resolved with `value`.
  * @static
@@ -16,26 +18,27 @@ import Timer from './timer';
  * @param {function} [callback=noop]
  * @returns {promise}
  * @example
- * var n = 0;
- * plonk.metro(4, function (interval, i, stop) {
+ * plonk.metro(100, function (interval, i, elapsed, stop) {
  *   console.log(interval);
- *   // => 4.246183000000002
- *   n += Math.random();
- *   if (i === 10) return stop(n);
+ *   // => 100.00048099999992
+ *   var n = Math.random();
+ *   if (i === 10) {
+ *     return stop(n);
+ *   }
  *   return n;
  * })
  * .progress(function (n) {
  *   console.log(n);
- *   // => 0.8043495751917362
- *   //    1.0118556288070977
- *   //    1.535184230422601
- *   //    1.9694649016018957
- *   //    2.188968440517783
- *   //    ...
+ *   // => 0.6465891992386279
+ *   //    0.4153539338224437
+ *   //    0.17397237631722784
+ *   //    0.6499483881555588
+ *   //    0.664554645336491
+ *   // ...
  * })
  * .then(function (n) {
  *   console.log(n);
- *   // => 5.08520966116339
+ *   // => 0.7674513910120222
  * });
  */
 export default function metro (time, callback = noop) {

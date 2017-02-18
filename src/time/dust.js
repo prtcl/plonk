@@ -7,7 +7,7 @@ import toNumber from '../util/toNumber';
 /**
  * Timer function where the tick interval jitters between `min...max` milliseconds.
  *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function.
+ * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
  * @static
  * @memberof plonk
  * @name dust
@@ -16,8 +16,10 @@ import toNumber from '../util/toNumber';
  * @param {function} [callback=noop]
  * @returns {promise}
  * @example
- * plonk.dust(30, 100, function (interval, i, stop) {
- *   if (i === 10) stop();
+ * plonk.dust(30, 100, function (interval, i, elapsed, stop) {
+ *   if (i === 10) {
+ *     stop();
+ *   }
  * })
  * .progress(function (interval) {
  *   console.log(interval);

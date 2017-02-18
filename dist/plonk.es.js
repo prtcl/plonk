@@ -924,7 +924,7 @@ var Timer = function () {
 /**
  * A variable timer loop where the tick interval is decided by the return value of `callback`. If none is provided, the previous/intial value is used. `time` sets the intial interval value.
  *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function.
+ * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
  * @static
  * @memberof plonk
  * @name delay
@@ -933,22 +933,24 @@ var Timer = function () {
  * @returns {promise}
  * @example
  * var t = 100;
- * plonk.delay(t, function (interval, i, stop) {
- *   if (i == 10) return stop();
- *   return t = t * 1.15;
+ * plonk.delay(t, function (interval, i, elapsed, stop) {
+ *   if (i == 10) {
+ *     return stop();
+ *   }
+ *   return (t = t * 1.15);
  * })
  * .progress(function (interval) {
  *   console.log(interval);
- *   // => 101.240485
- *   //    116.455409
- *   //    133.112382
- *   //    153.69553200000001
- *   //    174.27022699999998
+ *   // => 10
+ *   //  115.000208
+ *   //  132.25017300000002
+ *   //  152.087796
+ *   //  174.90065899999996
  *   //    ...
  * })
- * .then(function (elapsed) {
+ * .then(function (elapased) {
  *   console.log(elapased);
- *   // => 351.988523
+ *   // => 2334.929456
  * });
  */
 function delay(time) {
@@ -1035,7 +1037,7 @@ function drunk(min, max, step) {
 /**
  * Timer function where the tick interval jitters between `min...max` milliseconds.
  *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function.
+ * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
  * @static
  * @memberof plonk
  * @name dust
@@ -1044,8 +1046,10 @@ function drunk(min, max, step) {
  * @param {function} [callback=noop]
  * @returns {promise}
  * @example
- * plonk.dust(30, 100, function (interval, i, stop) {
- *   if (i === 10) stop();
+ * plonk.dust(30, 100, function (interval, i, elapsed, stop) {
+ *   if (i === 10) {
+ *     stop();
+ *   }
  * })
  * .progress(function (interval) {
  *   console.log(interval);
@@ -1079,9 +1083,11 @@ function dust(min, max) {
 }
 
 /**
- * A repeating timer loop (equivalent to setInterval) where time is the tick interval in milliseconds.
+ * A repeating timer loop (like setInterval) where `time` is the tick interval in milliseconds.
  *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), and a `stop()` function. The `callback` return value is passed to the `.progress()` handler, making it trivial to use `metro` to compose time-based interpolations and modulators.
+ * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
+ *
+ * Also, the `callback` return value is passed to the `.progress()` handler, making it trivial to use `metro` to compose time-based interpolations and modulators.
  *
  * When `stop(value)` is called, the returned promise is resolved with `value`.
  * @static
@@ -1091,26 +1097,27 @@ function dust(min, max) {
  * @param {function} [callback=noop]
  * @returns {promise}
  * @example
- * var n = 0;
- * plonk.metro(4, function (interval, i, stop) {
+ * plonk.metro(100, function (interval, i, elapsed, stop) {
  *   console.log(interval);
- *   // => 4.246183000000002
- *   n += Math.random();
- *   if (i === 10) return stop(n);
+ *   // => 100.00048099999992
+ *   var n = Math.random();
+ *   if (i === 10) {
+ *     return stop(n);
+ *   }
  *   return n;
  * })
  * .progress(function (n) {
  *   console.log(n);
- *   // => 0.8043495751917362
- *   //    1.0118556288070977
- *   //    1.535184230422601
- *   //    1.9694649016018957
- *   //    2.188968440517783
- *   //    ...
+ *   // => 0.6465891992386279
+ *   //    0.4153539338224437
+ *   //    0.17397237631722784
+ *   //    0.6499483881555588
+ *   //    0.664554645336491
+ *   // ...
  * })
  * .then(function (n) {
  *   console.log(n);
- *   // => 5.08520966116339
+ *   // => 0.7674513910120222
  * });
  */
 function metro(time) {
@@ -1234,7 +1241,9 @@ function exp(n) {
 /**
  * Animation loop and [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) polyfill with a little extra sugar.
  *
- * If `frameRate` is passed, the loop iteration time is throttled to `1000 / frameRate`. Also differs from the native API in that the `callback` function receives `interval` (time since the previous frame), `elapsed` (total running time), `i` (number of frames), and a `stop()` function. When `stop()` is called, the returned promise is resolved with the `elapsed` value.
+ * If `frameRate` is passed, the loop iteration time is throttled to `1000ms / frameRate`. Also differs from the native API in that the `callback` function receives `interval` (time since the previous frame), `i` (number of frames), `elapsed` (total running time), and a `stop()` function.
+ *
+ * When `stop()` is called, the returned promise is resolved with the `elapsed` value.
  * @static
  * @memberof plonk
  * @name frames
@@ -1242,7 +1251,7 @@ function exp(n) {
  * @param {function} callback
  * @returns {promise}
  * @example
- * plonk.frames(60, function (interval, elapsed, i, stop) {
+ * plonk.frames(60, function (interval, i, elapsed, stop) {
  *   console.log(interval);
  *   // => 16.723718000000005
  *   if (someCondition) {
@@ -1336,7 +1345,11 @@ var frameHandler = function () {
 var FORMAT_IDENTIFIERS = ['hz', 'ms', 's', 'm'];
 
 /**
- * Number format converter that takes a variety of input time values and returns the equivalent millisecond values. Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz). `default` is returned if `value` is null, undefined, or NaN.
+ * Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
+ *
+ * Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz).
+ *
+ * `default` is returned if `value` is null, undefined, or NaN.
  * @static
  * @memberof plonk
  * @name ms
@@ -1393,7 +1406,7 @@ function toMilliseconds(val) {
 var SINE_PERIOD = Math.PI * 2 - 0.0001;
 
 /**
- * A sine LFO where `period` is the time in milliseconds of one full cycle. The current `value` of the sine is passed to both `callback` and `.progress()`, and is in the `-1...1` range.
+ * A sine LFO where `period` is the time, in milliseconds, of one full cycle. The current `value` of the sine is passed to both `callback` and `.progress()`, and is in the `-1...1` range.
  *
  * In addition to the sine `value`, the `callback` function is passed `cycle` (time elapsed in the current cycle), `elapsed` (total running time), and a `stop()` function. The return value of `callback` will set a new cycle duration.
  * @static
@@ -1404,7 +1417,9 @@ var SINE_PERIOD = Math.PI * 2 - 0.0001;
  * @returns {promise}
  * @example
  * plonk.sine(300, function (value, cycle, elapsed, stop) {
- *   if (elapsed >= 10000) return stop('some return value');
+ *   if (elapsed >= 10000) {
+ *     return stop('some return value');
+ *   }
  *   if (cycle === 0) {
  *     // set a new duration at the begining of every cycle
  *     return plonk.rand(250, 350);
@@ -1413,10 +1428,10 @@ var SINE_PERIOD = Math.PI * 2 - 0.0001;
  * .progress(function (value) {
  *   console.log(value);
  *   // => 0
- *   //    0.12071966755713318
- *   //    0.48600214034421146
- *   //    0.5692098047602766
- *   //    0.635380313957961
+ *   //    0.3020916077942207
+ *   //    0.5759553818777647
+ *   //    0.795998629819451
+ *   //    0.9416644701608587
  *   //    ...
  * })
  * .then(function (val) {
@@ -1482,7 +1497,7 @@ function wait(time) {
 }
 
 /**
- * Timer function where the tick interval performs a [drunk walk](https://en.wikipedia.org/wiki/Random_walk) between `min...max` milliseconds. Very similar to `dust`, except that the interval time is decided by an internal `drunk`.
+ * Timer function where the tick interval performs a [drunk walk](https://en.wikipedia.org/wiki/Random_walk) between `min...max` milliseconds. Very similar to `dust`, except that the interval time is decided by an internal drunk walk.
  * @static
  * @memberof plonk
  * @name walk
@@ -1492,7 +1507,9 @@ function wait(time) {
  * @returns {promise}
  * @example
  * plonk.walk(30, 100, function (interval, i, stop) {
- *   if (i === 10) stop();
+ *   if (i === 10) {
+ *     stop();
+ *   }
  * })
  * .progress(function (interval) {
  *   console.log(interval);

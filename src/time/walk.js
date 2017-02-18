@@ -4,7 +4,7 @@ import drunk from '../math/drunk';
 import toNumber from '../util/toNumber';
 
 /**
- * Timer function where the tick interval performs a [drunk walk](https://en.wikipedia.org/wiki/Random_walk) between `min...max` milliseconds. Very similar to `dust`, except that the interval time is decided by an internal `drunk`.
+ * Timer function where the tick interval performs a [drunk walk](https://en.wikipedia.org/wiki/Random_walk) between `min...max` milliseconds. Very similar to `dust`, except that the interval time is decided by an internal drunk walk.
  * @static
  * @memberof plonk
  * @name walk
@@ -14,7 +14,9 @@ import toNumber from '../util/toNumber';
  * @returns {promise}
  * @example
  * plonk.walk(30, 100, function (interval, i, stop) {
- *   if (i === 10) stop();
+ *   if (i === 10) {
+ *     stop();
+ *   }
  * })
  * .progress(function (interval) {
  *   console.log(interval);

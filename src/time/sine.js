@@ -8,7 +8,7 @@ import toNumber from '../util/toNumber';
 const SINE_PERIOD = (Math.PI * 2) - 0.0001;
 
 /**
- * A sine LFO where `period` is the time in milliseconds of one full cycle. The current `value` of the sine is passed to both `callback` and `.progress()`, and is in the `-1...1` range.
+ * A sine LFO where `period` is the time, in milliseconds, of one full cycle. The current `value` of the sine is passed to both `callback` and `.progress()`, and is in the `-1...1` range.
  *
  * In addition to the sine `value`, the `callback` function is passed `cycle` (time elapsed in the current cycle), `elapsed` (total running time), and a `stop()` function. The return value of `callback` will set a new cycle duration.
  * @static
@@ -19,7 +19,9 @@ const SINE_PERIOD = (Math.PI * 2) - 0.0001;
  * @returns {promise}
  * @example
  * plonk.sine(300, function (value, cycle, elapsed, stop) {
- *   if (elapsed >= 10000) return stop('some return value');
+ *   if (elapsed >= 10000) {
+ *     return stop('some return value');
+ *   }
  *   if (cycle === 0) {
  *     // set a new duration at the begining of every cycle
  *     return plonk.rand(250, 350);
@@ -28,10 +30,10 @@ const SINE_PERIOD = (Math.PI * 2) - 0.0001;
  * .progress(function (value) {
  *   console.log(value);
  *   // => 0
- *   //    0.12071966755713318
- *   //    0.48600214034421146
- *   //    0.5692098047602766
- *   //    0.635380313957961
+ *   //    0.3020916077942207
+ *   //    0.5759553818777647
+ *   //    0.795998629819451
+ *   //    0.9416644701608587
  *   //    ...
  * })
  * .then(function (val) {

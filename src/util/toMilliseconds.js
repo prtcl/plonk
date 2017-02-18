@@ -4,12 +4,14 @@ import toNumber from './toNumber';
 export const FORMAT_IDENTIFIERS = ['hz', 'ms', 's', 'm'];
 
 /**
- * Also aliased to `plonk.ms`.
+ * Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
  *
- * Number format converter that takes a variety of input time values and returns the equivalent millisecond values. Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz). `default` is returned if `value` is null, undefined, or NaN.
+ * Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz).
+ *
+ * `default` is returned if `value` is null, undefined, or NaN.
  * @static
  * @memberof plonk
- * @name toMilliseconds
+ * @name ms
  * @param {number} value
  * @param {String} [format=ms]
  * @param {number} [default=0]

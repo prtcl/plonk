@@ -4,8 +4,8 @@ import Promise from 'promise/lib/es6-extensions';
 
 import noop from './noop';
 
-// a simple Deferred class that is used for all promises internally
-// it's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
+// A simple Deferred class that is used for all promises internally
+// It's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
 
 export default function defer () {
   return new Deferred();
