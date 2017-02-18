@@ -13,10 +13,10 @@
   "browser": "dist/plonk.umd.js",
   "scripts": {
     "build": "rm -r ./dist ; mkdir -p ./dist ; npm run rollup && npm run uglifyjs && npm run docs",
-    "docs": "$(npm bin)/documentation lint src/index.js && $(npm bin)/documentation build src/index.js -f md > DOCS.md",
-    "lint": "$(npm bin)/eslint ./src ./test || true",
+    "docs": "$(npm bin)/documentation build src/index.js -f md > DOCS.md",
+    "lint": "$(npm bin)/eslint ./src ./test || true ; $(npm bin)/documentation lint ./src/index.js",
     "rollup": "/usr/bin/env node ./bin/rollup.js",
-    "test": "npm run lint && npm run test:node && npm run test:electron",
+    "test": "npm run test:node && npm run test:electron",
     "test:electron": "$(npm bin)/zuul --electron -- ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
     "test:local": "$(npm bin)/zuul --local -- ./test/**/*.spec.js ./test/index.spec.js ",
     "test:node": "$(npm bin)/tape -r babel-register ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
