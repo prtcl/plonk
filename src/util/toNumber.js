@@ -10,5 +10,8 @@ export default function toNumber (n, def = 0) {
     n = +n;
   }
   if (isNaN(n)) return def;
+  if (typeof n !== 'number') {
+    return def;
+  }
   return n;
 }
