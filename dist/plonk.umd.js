@@ -29,6 +29,9 @@ function toNumber(n) {
     n = +n;
   }
   if (isNaN(n)) return def;
+  if (typeof n !== 'number') {
+    return def;
+  }
   return n;
 }
 
@@ -936,7 +939,7 @@ var Timer = function () {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop$1;
     classCallCheck(this, Timer);
 
-    this._tickHandler = browserAsap;
+    this._tickHandler = tickHandler;
     this._timeOffset = 0;
     this.isRunning = false;
     this.time = toNumber(time, 1000 / 60);
@@ -1001,6 +1004,12 @@ var Timer = function () {
   }]);
   return Timer;
 }();
+
+function tickHandler() {
+  var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop$1;
+
+  setTimeout(callback, 0);
+}
 
 /**
  * A variable timer loop where the tick interval is decided by the return value of `callback`. If none is provided, the previous/intial value is used. `time` sets the intial interval value.
@@ -1408,16 +1417,20 @@ var frameHandler = function () {
   if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
     var availableFrames = [window.requestAnimationFrame, window.webkitRequestAnimationFrame, window.mozRequestAnimationFrame];
 
-    for (var i = 0; i < availableFrames.length; i++) {
-      if (typeof availableFrames[i] === 'function') {
-        frame = availableFrames[i].bind(window);
-        break;
+    availableFrames.forEach(function (fn) {
+      if (frame) return;
+      if (typeof fn === 'function') {
+        frame = fn.bind(window);
       }
-    }
+    });
   }
 
   if (!frame) {
-    frame = browserAsap;
+    return function () {
+      var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop$1;
+
+      setTimeout(callback, 0);
+    };
   }
 
   return frame;

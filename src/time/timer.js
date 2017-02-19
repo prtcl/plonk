@@ -1,6 +1,4 @@
 
-import asap from 'asap';
-
 import noop from '../util/noop';
 import now from '../util/now';
 import toNumber from '../util/toNumber';
@@ -10,7 +8,7 @@ import toNumber from '../util/toNumber';
 export default class Timer {
 
   constructor (time, callback = noop) {
-    this._tickHandler = asap;
+    this._tickHandler = tickHandler;
     this._timeOffset = 0;
     this.isRunning = false;
     this.time = toNumber(time, 1000 / 60);
@@ -66,4 +64,8 @@ export default class Timer {
     return this;
   }
 
+}
+
+function tickHandler (callback = noop) {
+  setTimeout(callback, 0);
 }

@@ -1,6 +1,5 @@
 
 import test from 'tape';
-import asap from 'asap';
 
 import now from '../../src/util/now';
 import Timer from '../../src/time/timer';
@@ -43,7 +42,6 @@ test('time/timer', (t) => {
   });
 
   t.equal(typeof timer._tickHandler, 'function', 'init: _tickHandler is a function');
-  t.equal(timer._tickHandler, asap, '_tickHandler is asap');
   t.equal(timer.isRunning, false, 'init: isRunning equals false');
   t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
   t.equal(timer.iterations, 0, 'init: iterations equals 0');
