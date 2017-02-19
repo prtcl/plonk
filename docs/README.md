@@ -385,7 +385,7 @@ Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ## wait
 
-A simple wait delay (like setTimeout) that returns a promise.
+A simple wrapper for setTimeout that returns a promise.
 
 **Parameters**
 

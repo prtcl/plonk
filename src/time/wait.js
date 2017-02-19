@@ -1,11 +1,11 @@
 
 import { Deferred } from '../util/defer';
 import noop from '../util/noop';
+import now from '../util/now';
 import toNumber from '../util/toNumber';
-import Timer from './timer';
 
 /**
- * A simple wait delay (like setTimeout) that returns a promise.
+ * A simple wrapper for setTimeout that returns a promise.
  * @static
  * @memberof plonk
  * @name wait
@@ -20,17 +20,17 @@ import Timer from './timer';
  *   });
  */
 export default function wait (time, callback = noop) {
-  const def = new Deferred();
+  time = toNumber(time, 0);
 
-  const timer = new Timer(toNumber(time, 0), (interval, i, elapsed) => {
-    if (elapsed < time) return;
+  const def = new Deferred(),
+        start = now();
 
-    callback(interval);
-    def.resolve(interval);
+  setTimeout(() => {
+    const elapsed = now() - start;
 
-    timer.stop();
-  });
-  timer.run();
+    callback(elapsed);
+    def.resolve(elapsed);
+  }, time);
 
   return def.promise;
 }

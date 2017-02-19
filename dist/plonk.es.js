@@ -1552,7 +1552,7 @@ function sine(time) {
 }
 
 /**
- * A simple wait delay (like setTimeout) that returns a promise.
+ * A simple wrapper for setTimeout that returns a promise.
  * @static
  * @memberof plonk
  * @name wait
@@ -1569,17 +1569,17 @@ function sine(time) {
 function wait(time) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop$1;
 
-  var def = new Deferred();
+  time = toNumber(time, 0);
 
-  var timer = new Timer(toNumber(time, 0), function (interval, i, elapsed) {
-    if (elapsed < time) return;
+  var def = new Deferred(),
+      start = now();
 
-    callback(interval);
-    def.resolve(interval);
+  setTimeout(function () {
+    var elapsed = now() - start;
 
-    timer.stop();
-  });
-  timer.run();
+    callback(elapsed);
+    def.resolve(elapsed);
+  }, time);
 
   return def.promise;
 }
