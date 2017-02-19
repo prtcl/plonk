@@ -6,7 +6,7 @@ import toMilliseconds, { FORMAT_IDENTIFIERS } from '../../src/util/toMillisecond
 test('util/toMilliseconds', (t) => {
   t.equal(typeof toMilliseconds, 'function', 'toMilliseconds is a function');
 
-  t.deepEqual(FORMAT_IDENTIFIERS, ['hz', 'ms', 's', 'm'], `${FORMAT_IDENTIFIERS} equals ${['hz', 'ms', 's', 'm'].join(',')}`);
+  t.deepEqual(FORMAT_IDENTIFIERS, ['fps', 'hz', 'ms', 's', 'm'], `${FORMAT_IDENTIFIERS} equals ${['hz', 'ms', 's', 'm'].join(',')}`);
 
   t.equal(toMilliseconds(null), 0, 'toMilliseconds(null) equals 0');
   var n;
@@ -20,6 +20,7 @@ test('util/toMilliseconds', (t) => {
   t.equal(toMilliseconds('0.5hz'), 2000, 'toMilliseconds(\'0.5hz\') equals 2000');
   t.equal(toMilliseconds(2, 'hz'), 500, 'toMilliseconds(2, \'hz\') equals 500');
   t.equal(toMilliseconds('1m'), 60000, 'toMilliseconds(\'1m\') equals 60000');
+  t.equal(toMilliseconds('60fps').toFixed(5), (1000 / 60).toFixed(5), `toMilliseconds('60fps') equals ${(1000 / 60).toFixed(5)}`);
 
   t.end();
 });

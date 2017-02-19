@@ -1436,12 +1436,12 @@ var frameHandler = function () {
   return frame;
 }();
 
-var FORMAT_IDENTIFIERS = ['hz', 'ms', 's', 'm'];
+var FORMAT_IDENTIFIERS = ['fps', 'hz', 'ms', 's', 'm'];
 
 /**
  * Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
  *
- * Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz).
+ * Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz), and `fps` (convert to frames per second).
  *
  * `default` is returned if `value` is null, undefined, or NaN.
  * @static
@@ -1480,6 +1480,9 @@ function toMilliseconds(val) {
   }
   if (isNaN(val)) return ms;
   switch (format) {
+    case 'fps':
+      ms = 1000 / val;
+      break;
     case 'hz':
       ms = 1 / val * 1000;
       break;

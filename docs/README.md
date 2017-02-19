@@ -262,7 +262,7 @@ Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
 
-Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz).
+Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz), and `fps` (convert to frames per second).
 
 `default` is returned if `value` is null, undefined, or NaN.
 
