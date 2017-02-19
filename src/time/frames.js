@@ -1,6 +1,4 @@
 
-import asap from 'asap';
-
 import { Deferred } from '../util/defer';
 import clamp from '../math/clamp';
 import noop from '../util/noop';
@@ -85,23 +83,24 @@ export const frameHandler = (function () {
   var frame;
 
   if (typeof window === 'object') {
-    let availableFrames = [
+    const availableFrames = [
       window.requestAnimationFrame,
       window.webkitRequestAnimationFrame,
       window.mozRequestAnimationFrame
     ];
 
-    for (var i = 0; i < availableFrames.length; i++) {
-      if (typeof availableFrames[i] === 'function') {
-        frame = availableFrames[i].bind(window);
-        break;
+    availableFrames.forEach((fn) => {
+      if (frame) return;
+      if (typeof fn === 'function') {
+        frame = fn.bind(window);
       }
-    }
-
+    });
   }
 
   if (!frame) {
-    frame = asap;
+    return function (callback = noop) {
+      setTimeout(callback, 0);
+    };
   }
 
   return frame;
