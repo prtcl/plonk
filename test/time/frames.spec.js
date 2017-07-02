@@ -43,25 +43,24 @@ test('time/frames', (t) => {
           t.equal(timer.elapsed, 0, 'reset: elapsed equals 0');
           t.equal(timer.iterations, 0, 'reset: iterations equals 0');
           t.equal(timer.interval, 0, 'reset: interval equals 0');
-          t.equal(timer.prev, 0, 'reset: prev equals 0');
-          t.equal(timer.time, timer.initialTime, `reset: time equals ${timer.initialTime}`);
+          t.equal(timer._prev, 0, 'reset: _prev equals 0');
+          t.equal(timer.time, timer._initialTime, `reset: time equals ${timer._initialTime}`);
 
           timerFunctionTest();
         }, 0);
       }
     });
 
-    t.equal(typeof timer._tickHandler, 'function', 'init: _tickHandler is a function');
     t.equal(timer._tickHandler, frameHandler, '_tickHandler is frameHandler');
     t.equal(timer._timeOffset, -5, '_timeOffset equals -5');
     t.equal(timer.isRunning, false, 'init: isRunning equals false');
     t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
     t.equal(timer.iterations, 0, 'init: iterations equals 0');
     t.equal(timer.interval, 0, 'init: interval equals 0');
-    t.equal(timer.prev, 0, 'init: prev equals 0');
+    t.equal(timer._prev, 0, 'init: _prev equals 0');
     t.equal(timer.time, SIXTY_FPS, `init: time equals ${SIXTY_FPS}`);
 
-    ['callback', 'run', 'tick', 'stop', 'reset'].forEach((name) => {
+    ['_callback', '_callTickHandler', '_tickHandler', 'run', 'stop', 'reset'].forEach((name) => {
       t.equal(typeof timer[name], 'function', `init: ${name} is a function`);
     });
 

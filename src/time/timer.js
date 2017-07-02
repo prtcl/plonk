@@ -7,60 +7,89 @@ import toNumber from '../util/toNumber';
 
 export default class Timer {
 
-  constructor (time, callback = noop) {
+  constructor (time, callback) {
+    if (typeof callback !== 'function') {
+      throw new TypeError('Timer callback needs to be a function');
+    }
+
     this._tickHandler = tickHandler;
     this._timeOffset = 0;
+    this._callback = callback;
+    this._prev = 0;
+
     this.isRunning = false;
-    this.time = toNumber(time, 1000 / 60);
-    this.initialTime = this.time;
-    this.callback = callback;
+    this.time = this._initialTime = toNumber(time, 1000 / 60);
+    this.interval = 0;
+
     this.reset();
   }
 
-  run () {
-    if (this.isRunning) return;
-    this.isRunning = true;
-    this.prev = now();
-    this.tick();
-    return this;
-  }
+  _callTickHandler () {
+    if (!this.isRunning) {
+      return;
+    }
 
-  tick () {
-    if (!this.isRunning) return;
     this._tickHandler(() => {
+
+      // first tick
       if (this.iterations === 0) {
-        this.callback(0, 0, 0);
-        this.prev = now();
+        this._callback && this._callback(0, 0, 0);
+        this._prev = now();
+
         this.iterations = 1;
-        return this.tick();
+
+        return this._callTickHandler();
       }
-      this.interval = now() - this.prev;
+
+      this.interval = now() - this._prev;
+
+      // interval is below target interval
       if (this.interval <= this.time + this._timeOffset) {
-        return this.tick();
+        return this._callTickHandler();
       }
+
       this.elapsed += this.interval;
-      this.callback(this.interval, this.iterations, this.elapsed);
+      this._callback && this._callback(this.interval, this.iterations, this.elapsed);
+
       if (this.isRunning) {
-        this.prev = now();
+        this._prev = now();
         this.iterations += 1;
-        this.tick();
+        this._callTickHandler();
       }
+
     });
   }
 
+  run () {
+    if (this.isRunning) {
+      return this;
+    }
+
+    this._prev = now();
+    this.isRunning = true;
+    this._callTickHandler();
+
+    return this;
+  }
+
   stop () {
-    var elapsed = this.elapsed;
+    const elapsed = this.elapsed;
+
     this.isRunning = false;
     this.reset();
+
     return elapsed;
   }
 
   reset () {
+
+    this._prev = 0;
     this.elapsed = 0;
     this.iterations = 0;
     this.interval = 0;
-    this.prev = 0;
-    this.time = this.initialTime;
+
+    this.time = this._initialTime;
+
     return this;
   }
 
