@@ -78,7 +78,8 @@ module.exports = {
     "func-names": "off",
     "func-style": [
       "error",
-      "declaration"
+      "declaration",
+      { "allowArrowFunctions": true }
     ],
     "generator-star-spacing": "error",
     "global-require": "off",
