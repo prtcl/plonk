@@ -9,12 +9,9 @@
  * plonk.now();
  * // => 2034.65879
  */
-export default function now () {
-  return performanceNowHandler();
-}
 
 // try to choose the best method for producing a performance.now() timestamp
-export const performanceNowHandler = (function () {
+export const now = (function () {
 
   if (typeof performance !== 'undefined' && ('now' in performance)) {
 
@@ -45,3 +42,5 @@ export const performanceNowHandler = (function () {
   })();
 
 })();
+
+export default now;
