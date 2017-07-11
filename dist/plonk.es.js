@@ -892,12 +892,9 @@ function _notify(promise, val) {
  * plonk.now();
  * // => 2034.65879
  */
-function now() {
-  return performanceNowHandler();
-}
 
 // try to choose the best method for producing a performance.now() timestamp
-var performanceNowHandler = function () {
+var now = function () {
 
   if (typeof performance !== 'undefined' && 'now' in performance) {
 
@@ -929,70 +926,97 @@ var performanceNowHandler = function () {
 // Generic high-resolution timer class that forms that basis for all other timers
 
 var Timer = function () {
-  function Timer(time) {
-    var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop$1;
+  function Timer(time, callback) {
     classCallCheck(this, Timer);
+
+    if (typeof callback !== 'function') {
+      throw new TypeError('Timer callback needs to be a function');
+    }
 
     this._tickHandler = tickHandler;
     this._timeOffset = 0;
+    this._callback = callback;
+    this._prev = 0;
+
     this.isRunning = false;
-    this.time = toNumber(time, 1000 / 60);
-    this.initialTime = this.time;
-    this.callback = callback;
+    this.time = this._initialTime = toNumber(time, 1000 / 60);
+    this.interval = 0;
+
     this.reset();
   }
 
   createClass(Timer, [{
-    key: 'run',
-    value: function run() {
-      if (this.isRunning) return;
-      this.isRunning = true;
-      this.prev = now();
-      this.tick();
-      return this;
-    }
-  }, {
-    key: 'tick',
-    value: function tick() {
+    key: '_callTickHandler',
+    value: function _callTickHandler() {
       var _this = this;
 
-      if (!this.isRunning) return;
+      if (!this.isRunning) {
+        return;
+      }
+
       this._tickHandler(function () {
+
+        // first tick
         if (_this.iterations === 0) {
-          _this.callback(0, 0, 0);
-          _this.prev = now();
+          _this._callback && _this._callback(0, 0, 0);
+          _this._prev = now();
+
           _this.iterations = 1;
-          return _this.tick();
+
+          return _this._callTickHandler();
         }
-        _this.interval = now() - _this.prev;
+
+        _this.interval = now() - _this._prev;
+
+        // interval is below target interval
         if (_this.interval <= _this.time + _this._timeOffset) {
-          return _this.tick();
+          return _this._callTickHandler();
         }
+
         _this.elapsed += _this.interval;
-        _this.callback(_this.interval, _this.iterations, _this.elapsed);
+        _this._callback && _this._callback(_this.interval, _this.iterations, _this.elapsed);
+
         if (_this.isRunning) {
-          _this.prev = now();
+          _this._prev = now();
           _this.iterations += 1;
-          _this.tick();
+          _this._callTickHandler();
         }
       });
+    }
+  }, {
+    key: 'run',
+    value: function run() {
+      if (this.isRunning) {
+        return this;
+      }
+
+      this._prev = now();
+      this.isRunning = true;
+      this._callTickHandler();
+
+      return this;
     }
   }, {
     key: 'stop',
     value: function stop() {
       var elapsed = this.elapsed;
+
       this.isRunning = false;
       this.reset();
+
       return elapsed;
     }
   }, {
     key: 'reset',
     value: function reset() {
+
+      this._prev = 0;
       this.elapsed = 0;
       this.iterations = 0;
       this.interval = 0;
-      this.prev = 0;
-      this.time = this.initialTime;
+
+      this.time = this._initialTime;
+
       return this;
     }
   }]);
