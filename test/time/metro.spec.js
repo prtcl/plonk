@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import { _Promise } from '../../src/util/defer';
+import Promise from '../../src/util/promise';
 import metro from '../../src/time/metro';
 import now from '../../src/util/now';
 
@@ -30,7 +30,7 @@ test('time/metro', (t) => {
     stop(20);
   });
 
-  t.ok(p instanceof _Promise, 'metro() returns a promise');
+  t.ok(p instanceof Promise, 'metro() returns a promise');
 
   p
     .progress((val) => {

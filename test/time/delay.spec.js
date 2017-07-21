@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import { _Promise } from '../../src/util/defer';
+import Promise from '../../src/util/promise';
 import delay from '../../src/time/delay';
 import now from '../../src/util/now';
 import rand from '../../src/math/rand';
@@ -33,7 +33,7 @@ test('time/delay', (t) => {
     stop();
   });
 
-  t.ok(p instanceof _Promise, 'delay() returns a promise');
+  t.ok(p instanceof Promise, 'delay() returns a promise');
 
   p
     .progress((interval) => {

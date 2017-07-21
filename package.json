@@ -16,11 +16,12 @@
     "docs": "rm -r ./docs ; mkdir -p ./docs ; documentation build ./src/index.js -f md > ./docs/README.md",
     "lint": "$(npm bin)/eslint ./src ./test || true ; $(npm bin)/documentation lint ./src/index.js",
     "rollup": "/usr/bin/env node ./bin/rollup.js",
-    "test": "npm run test:node && npm run test:electron",
+    "test": "npm run test:node && npm run test:electron && npm run test:aplus",
     "test:electron": "$(npm bin)/zuul --electron -- ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
     "test:local": "$(npm bin)/zuul --local -- ./test/**/*.spec.js ./test/index.spec.js ",
     "test:node": "$(npm bin)/tape -r babel-register ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
     "test:sauce": "$(npm bin)/zuul -- ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
+    "test:aplus": "$(npm bin)/rollup test/aplus.js --format cjs | /usr/bin/env node",
     "uglifyjs": "$(npm bin)/uglifyjs -mc warnings=false --screw-ie8 ./dist/plonk.umd.js > ./dist/plonk.umd.min.js"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "documentation": "^4.0.0-beta4",
     "electron": "^1.4.13",
     "eslint": "^3.12.2",
+    "promises-aplus-tests": "^2.1.2",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^7.0.0",

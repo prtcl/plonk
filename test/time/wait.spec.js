@@ -1,12 +1,12 @@
 
 import test from 'tape';
 
-import { _Promise } from '../../src/util/defer';
+import Promise from '../../src/util/promise';
 import wait from '../../src/time/wait';
 
 test('time/wait', (t) => {
   t.equal(typeof wait, 'function', 'wait is a function');
-  t.ok(wait() instanceof _Promise, 'wait() returns a promise');
+  t.ok(wait() instanceof Promise, 'wait() returns a promise');
 
   wait()
     .then((elapsed) => {

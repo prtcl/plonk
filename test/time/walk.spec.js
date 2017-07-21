@@ -1,7 +1,7 @@
 
 import test from 'tape';
 
-import { _Promise } from '../../src/util/defer';
+import Promise from '../../src/util/promise';
 import now from '../../src/util/now';
 import walk from '../../src/time/walk';
 
@@ -31,7 +31,7 @@ test('time/walk', (t) => {
     }
   });
 
-  t.ok(p instanceof _Promise, 'walk() returns a promise');
+  t.ok(p instanceof Promise, 'walk() returns a promise');
 
   p
     .progress((interval) => {
