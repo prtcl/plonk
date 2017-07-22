@@ -16,7 +16,6 @@ export const PENDING = Symbol('PENDING');
 export const FULFILLED = Symbol('FULFILLED');
 export const REJECTED = Symbol('REJECTED');
 
-
 export default class Promise {
 
   constructor (resolver) {
@@ -73,7 +72,7 @@ export default class Promise {
 export function resolve (promise, val) {
 
   if (promise === val) {
-    let err = TypeError('Cannot resolve a promise with itself');
+    let err = new TypeError('Cannot resolve a promise with itself');
     return reject(promise, err);
   }
 
@@ -95,7 +94,7 @@ export function resolve (promise, val) {
 }
 
 export function fulfill (promise, val) {
-  if (promise._done || promise._state !== PENDING) {
+  if (promise._state !== PENDING) {
     return;
   }
 
@@ -105,7 +104,7 @@ export function fulfill (promise, val) {
 }
 
 export function reject (promise, val) {
-  if (promise._done || promise._state !== PENDING) {
+  if (promise._state !== PENDING) {
     return;
   }
 
@@ -115,7 +114,7 @@ export function reject (promise, val) {
 }
 
 export function progress (promise, val) {
-  if (promise._done || promise._state !== PENDING) {
+  if (promise._state !== PENDING) {
     return;
   }
 
@@ -137,13 +136,11 @@ export function initializeResolver (promise, resolver) {
 
 export function createResolve (promise, onResolved) {
   return function (...args) {
-    if (promise._done) {
-      return;
-    }
+    if (promise._done) return;
 
     if (typeof onResolved === 'function') {
       try {
-        let res = onResolved(...args);
+        const res = onResolved(...args);
         resolve(promise, res);
       } catch (err) {
         reject(promise, err);
@@ -158,13 +155,11 @@ export function createResolve (promise, onResolved) {
 
 export function createReject (promise, onRejected) {
   return function (...args) {
-    if (promise._done) {
-      return;
-    }
+    if (promise._done) return;
 
     if (typeof onRejected === 'function') {
       try {
-        let res = onRejected(...args);
+        const res = onRejected(...args);
         resolve(promise, res);
       } catch (err) {
         reject(promise, err);
@@ -179,9 +174,7 @@ export function createReject (promise, onRejected) {
 
 export function createNotify (promise) {
   return function (...args) {
-    if (promise._done) {
-      return;
-    }
+    if (promise._done) return;
 
     progress(promise, ...args);
     publish(promise);
@@ -199,7 +192,6 @@ export class Handler {
 }
 
 export function subscribe (promise, ...args) {
-  promise._handlers || (promise._handlers = []);
   promise._handlers.push(new Handler(...args));
 }
 
@@ -223,9 +215,9 @@ export function publish (promise) {
   const val = promise._value;
 
   setTimeout(() => {
-    promise._handlers.forEach((h) => {
+    for (const h of promise._handlers) {
       const fn = h[method];
       fn && fn(val);
-    });
+    }
   }, 0);
 }
