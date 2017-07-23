@@ -213,3 +213,50 @@ test('util/promise (pubsub)', (t) => {
   publish(p);
 
 });
+
+test('util/promise (chaining)', (t) => {
+
+  let n = 0;
+
+  function createTimerPromise () {
+    return new Promise((a, b, c) => {
+      let i = 0;
+      const id = setInterval(() => {
+        n++;
+        i++;
+        if (i === 10) {
+          clearTimeout(id);
+          a(n);
+        } else {
+          c(n);
+        }
+      }, 1000 / 16);
+    });
+  }
+
+  let p1 = 0,
+      p2 = 10;
+
+  createTimerPromise()
+    .progress((val) => {
+      p1++;
+      t.equal(p1, n, `p1 progress: ${val}`);
+    })
+    .then((val) => {
+      p1++;
+      t.equal(p1, n, `p1 then: ${val}`);
+
+      return createTimerPromise();
+    })
+    .progress((val) => {
+      p2++;
+      t.equal(p2, n, `p2 progress: ${val}`);
+    })
+    .then((val) => {
+      p2++;
+      t.equal(p2, n, `p2 then: ${val}`);
+
+      t.end();
+    });
+
+});

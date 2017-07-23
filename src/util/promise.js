@@ -49,7 +49,7 @@ export default class Promise {
     this.done(
       createResolve(p, onResolved),
       createReject(p, onRejected),
-      createNotify(p, onNotify)
+      onNotify
       );
 
     return p;
@@ -148,7 +148,9 @@ export function createResolve (promise, onResolved) {
       resolve(promise, ...args);
     }
 
-    publish(promise);
+    if (promise._state !== PENDING) {
+      publish(promise);
+    }
   };
 }
 
@@ -167,7 +169,9 @@ export function createReject (promise, onRejected) {
       reject(promise, ...args);
     }
 
-    publish(promise);
+    if (promise._state !== PENDING) {
+      publish(promise);
+    }
   };
 }
 

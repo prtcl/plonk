@@ -1119,18 +1119,44 @@ module.exports = { "default": index, __esModule: true };
 var _Symbol = unwrapExports(symbol);
 
 // Wraps the passed function so that it can only be called only once
+// If multiple functions are passed, an array of wrapped functions is returned
+// Only one function may be called once, then all subsuquent calls to any of them are ignored
 
-function once(fn) {
-  var called = false,
-      res = void 0;
+function once() {
+  var ret = [];
+  var called = false;
 
-  return function () {
-    if (!called) {
-      res = fn.apply(undefined, arguments);
-      called = true;
+  for (var _len = arguments.length, fns = Array(_len), _key = 0; _key < _len; _key++) {
+    fns[_key] = arguments[_key];
+  }
+
+  var _arr = [].concat(fns);
+
+  var _loop = function _loop() {
+    var fn = _arr[_i];
+    var res = void 0,
+        wrapped = void 0;
+    if (typeof fn === 'function') {
+      wrapped = function wrapped() {
+        if (!called) {
+          res = fn.apply(undefined, arguments);
+          called = true;
+        }
+        return res;
+      };
+    } else {
+      wrapped = function wrapped() {
+        called = true;
+      };
     }
-    return res;
+    ret.push(wrapped);
   };
+
+  for (var _i = 0; _i < _arr.length; _i++) {
+    _loop();
+  }
+
+  return ret.length > 1 ? ret : ret[0];
 }
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -1215,6 +1241,34 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
 //
 // Super minimal Promise class that also impliments progress/notify
 //
@@ -1268,7 +1322,7 @@ var Promise$1 = function () {
     value: function then(onResolved, onRejected, onNotify) {
       var p = new Promise();
 
-      this.done(createResolve(p, onResolved), createReject(p, onRejected), createNotify(p, onNotify));
+      this.done(createResolve(p, onResolved), createReject(p, onRejected), onNotify);
 
       return p;
     }
@@ -1344,7 +1398,7 @@ function progress(promise, val) {
 
 function initializeResolver(promise, resolver) {
   try {
-    resolver(once(createResolve(promise)), once(createReject(promise)), createNotify(promise));
+    resolver.apply(undefined, toConsumableArray(once(createResolve(promise), createReject(promise))).concat([createNotify(promise)]));
   } catch (err) {
     reject(promise, err);
     publish(promise);
@@ -1370,7 +1424,9 @@ function createResolve(promise, onResolved) {
       resolve.apply(undefined, [promise].concat(args));
     }
 
-    publish(promise);
+    if (promise._state !== PENDING) {
+      publish(promise);
+    }
   };
 }
 
@@ -1393,7 +1449,9 @@ function createReject(promise, onRejected) {
       reject.apply(undefined, [promise].concat(args));
     }
 
-    publish(promise);
+    if (promise._state !== PENDING) {
+      publish(promise);
+    }
   };
 }
 
@@ -1542,7 +1600,7 @@ var now = function () {
   }();
 }();
 
-// Generic high-resolution timer class that forms that basis for all other timers
+// Generic high-resolution timer class that forms the basis for all other timers
 
 var Timer = function () {
   function Timer(time, callback) {
