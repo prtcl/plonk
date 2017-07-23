@@ -12,17 +12,9 @@ export class Deferred {
 
   constructor () {
     this.promise = new Promise((resolve, reject, notify) => {
-      this.resolve = (...args) => {
-        resolve(...args);
-      };
-
-      this.reject = (...args) => {
-        reject(...args);
-      };
-
-      this.notify = (...args) => {
-        notify(...args);
-      };
+      this.resolve = (...args) => resolve(...args);
+      this.reject = (...args) => reject(...args);
+      this.notify = (...args) => notify(...args);
     });
   }
 
