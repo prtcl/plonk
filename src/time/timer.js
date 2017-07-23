@@ -3,7 +3,7 @@ import noop from '../util/noop';
 import now from '../util/now';
 import toNumber from '../util/toNumber';
 
-// Generic high-resolution timer class that forms that basis for all other timers
+// Generic high-resolution timer class that forms the basis for all other timers
 
 export default class Timer {
 
