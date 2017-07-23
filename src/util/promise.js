@@ -124,8 +124,7 @@ export function progress (promise, val) {
 export function initializeResolver (promise, resolver) {
   try {
     resolver(
-      once(createResolve(promise)),
-      once(createReject(promise)),
+      ...once(createResolve(promise), createReject(promise)),
       createNotify(promise)
       );
   } catch (err) {

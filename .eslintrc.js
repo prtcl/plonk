@@ -199,7 +199,7 @@ module.exports = {
     "no-useless-constructor": "error",
     "no-useless-escape": "error",
     "no-var": "off",
-    "no-void": "error",
+    "no-void": "off",
     "no-warning-comments": "warn",
     "no-whitespace-before-property": "error",
     "no-with": "error",
