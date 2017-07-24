@@ -12,9 +12,9 @@ import once from './once';
 //   * for the sake of speed, and since it's not outlined in the A+ spec, there is _no_ error handling in progress/notify methods!
 //
 
-export const PENDING = Symbol('PENDING');
-export const FULFILLED = Symbol('FULFILLED');
-export const REJECTED = Symbol('REJECTED');
+export const PENDING = {};
+export const FULFILLED = {};
+export const REJECTED = {};
 
 export default class Promise {
 
@@ -218,9 +218,9 @@ export function publish (promise) {
   const val = promise._value;
 
   setTimeout(() => {
-    for (const h of promise._handlers) {
+    promise._handlers.forEach((h) => {
       const fn = h[method];
       fn && fn(val);
-    }
+    });
   }, 0);
 }

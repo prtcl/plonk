@@ -25,9 +25,9 @@ const values = new Map([
 
 test('util/promise', (t) => {
 
-  t.equal(typeof PENDING, 'symbol', 'PENDING is a symbol');
-  t.equal(typeof FULFILLED, 'symbol', 'FULFILLED is a symbol');
-  t.equal(typeof REJECTED, 'symbol', 'REJECTED is a symbol');
+  t.equal(typeof PENDING, 'object', 'PENDING is a object');
+  t.equal(typeof FULFILLED, 'object', 'FULFILLED is a object');
+  t.equal(typeof REJECTED, 'object', 'REJECTED is a object');
   t.equal(typeof Promise, 'function', 'Promise is a function');
 
   let n = 0;
