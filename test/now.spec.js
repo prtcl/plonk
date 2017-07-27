@@ -11,9 +11,10 @@ test('now', (t) => {
 
   (function next (i) {
     setTimeout(() => {
-      const n = now();
+      const n = now(),
+            diff = n - prev;
 
-      t.ok(n > prev && (n - prev) > 16, `${n} is greater than ${n - prev} + 16`);
+      t.ok(n > prev && diff >= 16 && diff <= 32, `${n} is greater than ${n - prev} + 16`);
 
       prev = now();
 

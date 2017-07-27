@@ -11,36 +11,32 @@
  */
 
 // try to choose the best method for producing a performance.now() timestamp
-export const now = (function () {
 
-  if (typeof performance !== 'undefined' && ('now' in performance)) {
+let now;
 
-    return function () {
-      return performance.now();
-    };
-
-  } else if (typeof process === 'object' && process.toString() === '[object process]') {
-
-    return (function () {
-      function n () {
-        var hr = process.hrtime();
-        return hr[0] * 1e9 + hr[1];
-      }
-      const offset = n();
-      return function () {
-        return (n() - offset) / 1e6;
-      };
-    })();
-
-  }
-
-  return (function () {
-    const offset = Date.now();
-    return function () {
-      return Date.now() - offset;
-    };
-  })();
-
-})();
+if (typeof performance !== 'undefined' && ('now' in performance)) {
+  now = performanceNow;
+} else if (typeof process === 'object' && process.toString() === '[object process]') {
+  now = hrtimeNow.bind(null, hrtimeToTimestamp());
+} else {
+  now = dateNow.bind(null, Date.now());
+}
 
 export default now;
+
+function performanceNow () {
+  return performance.now();
+}
+
+function hrtimeToTimestamp () {
+  const hr = process.hrtime();
+  return hr[0] * 1e9 + hr[1];
+}
+
+function hrtimeNow (offset) {
+  return (hrtimeToTimestamp() - offset) / 1e6;
+}
+
+function dateNow (offset) {
+  return Date.now() - offset;
+}
