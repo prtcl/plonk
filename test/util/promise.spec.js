@@ -9,6 +9,10 @@ import Promise, {
   fulfill,
   reject,
   progress,
+  initializeResolver,
+  createResolve,
+  createReject,
+  createNotify,
   Handler,
   subscribe,
   publish
@@ -117,7 +121,7 @@ test('util/promise (resolve)', (t) => {
       throw new Error('bonk');
     }
   });
-  t.ok(p._state === REJECTED && p._value.message === 'bonk', 'resolve(promise, badThenable) correctly rejects promise when a thenable is passed as value but thenable.then retrieval throws an error');
+  t.ok(p._state === REJECTED && p._value.message === 'bonk', 'resolve(promise, badThenable) correctly rejects promise when a thenable is passed but thenable.then retrieval throws an error');
 
   let isThenable = false;
   const thenable = {
@@ -134,6 +138,177 @@ test('util/promise (resolve)', (t) => {
   t.ok(isThenable, 'resolve(promise, thenable) correctly treats thenable.then as a resolver function');
 
   t.end();
+});
+
+test('util/promise (factories)', (t) => {
+  t.plan(48);
+
+  t.equal(typeof createNotify, 'function', 'createNotify is a function');
+  t.equal(typeof createResolve, 'function', 'createResolve is a function');
+  t.equal(typeof createReject, 'function', 'createReject is a function');
+
+  let p, fn;
+
+  p = new Promise();
+  fn = createNotify(p);
+  t.equal(typeof fn, 'function', 'createNotify(promise) returns a function');
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createNotify(p)(val);
+    p.progress((v) => {
+      t.equal(v, val, `createNotify(promise)(${key}) correctly notifies promise`);
+    });
+  }
+
+  p = new Promise();
+  fn = createResolve(p);
+  t.equal(typeof fn, 'function', 'createResolve(promise) returns a function');
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createResolve(p)(val);
+    p.then((v) => {
+      t.equal(v, val, `createResolve(promise)(${key}) correctly resolves promise`);
+    });
+  }
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createResolve(p, (v) => v)(val);
+    p.then((v) => {
+      t.equal(v, val, `createResolve(promise, (val) => val)(${key}) correctly resolves promise`);
+    });
+  }
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createResolve(p, (v) => {
+      throw v;
+    })(val);
+    p.catch((v) => {
+      t.equal(v, val, `createResolve(promise, (val) => throw val)(${key}) correctly rejects promise`);
+    });
+  }
+
+  p = new Promise();
+  fn = createReject(p);
+  t.equal(typeof fn, 'function', 'createReject(promise) returns a function');
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    fn = createReject(p)(val);
+    p.catch((v) => {
+      t.equal(v, val, `createReject(promise)(${key}) correctly rejects promise`);
+    });
+  }
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createReject(p, (v) => v)(val);
+    p.then((v) => {
+      t.equal(v, val, `createReject(promise, (val) => val)(${key}) correctly resolves promise`);
+    });
+  }
+
+  for (let [key, val] of values) {
+    p = new Promise();
+    createReject(p, (v) => {
+      throw v;
+    })(val);
+    p.catch((v) => {
+      t.equal(v, val, `createReject(promise, (val) => throw val)(${key}) correctly rejects promise`);
+    });
+  }
+
+});
+
+test('util/promise (initialize)', (t) => {
+  t.plan(12);
+
+  t.equal(typeof initializeResolver, 'function', 'initializeResolver is a function');
+
+  let p;
+
+  p = new Promise();
+  p.then(null, (val) => {
+    t.ok(val instanceof Error, 'error thrown in resolver rejects promise');
+  });
+  initializeResolver(p, (a, b, c) => {
+    t.equal(typeof a, 'function', 'initializeResolver(promise, resolver) receives a resolve function');
+    t.equal(typeof b, 'function', 'initializeResolver(promise, resolver) receives a resolve function');
+    t.equal(typeof c, 'function', 'initializeResolver(promise, resolver) receives a resolve function');
+
+    throw new Error();
+  });
+
+  p = new Promise();
+  p.then((val) => {
+    t.equal(val, 1, 'resolver(resolve) correctly resolves promise');
+  });
+  initializeResolver(p, (a) => {
+    a(1);
+  });
+
+  p = new Promise();
+  p.then(null, (val) => {
+    t.equal(val, 1, 'resolver(reject) correctly rejects promise');
+  });
+  initializeResolver(p, (a, b) => {
+    b(1);
+  });
+
+  p = new Promise();
+  p.then(null, null, (val) => {
+    t.equal(val, 1, 'resolver(notify) correctly notifies promise');
+  });
+  initializeResolver(p, (a, b, c) => {
+    c(1);
+  });
+
+  p = new Promise();
+  p.then(
+    (val) => {
+      t.equal(val, 1, 'resolver(resolve) and resolver(reject) can only be called once');
+    },
+    (val) => {
+      t.equal(val, 1);
+    }
+    );
+  initializeResolver(p, (a, b) => {
+    a(1);
+    a(2);
+    b(0);
+  });
+
+  p = new Promise();
+  p.then(
+    (val) => {
+      t.equal(val, 1);
+    },
+    (val) => {
+      t.equal(val, 1, 'resolver(reject) and resolver(resolve) can only be called once');
+    }
+    );
+  initializeResolver(p, (a, b) => {
+    b(1);
+    b(2);
+    a(0);
+  });
+
+  let n = 0;
+  p = new Promise();
+  p.then(null, null, (val) => {
+    t.equal(val, n, 'resolver(notify) can be called multiple times');
+    n++;
+  });
+  initializeResolver(p, (a, b, c) => {
+    c(n);
+    setTimeout(() => {
+      c(n);
+    }, 50);
+  });
+
 });
 
 test('util/promise (handler)', (t) => {
@@ -214,7 +389,103 @@ test('util/promise (pubsub)', (t) => {
 
 });
 
+test('util/promise (methods)', (t) => {
+  t.plan(28);
+
+  let p, res, h;
+
+  p = new Promise();
+  res = p.done(() => 1, () => 1, () => 1);
+  t.equal(p, res, 'promise.done() returns this');
+
+  t.equal(p._handlers.length, 1, 'promise.done() adds a Handler to promise._handlers');
+  h = p._handlers[0];
+  ['onResolved', 'onRejected', 'onNotify'].forEach((m) => {
+    t.equal(typeof h[m], 'function', `handler.${m} is a function`);
+  });
+
+  p = new Promise();
+  p.done((val) => {
+    t.equal(val, 1, 'promise.done(onResolved) is called when promise is resolved');
+  });
+  createResolve(p)(1);
+
+  p = new Promise();
+  p.done(null, (val) => {
+    t.equal(val, 1, 'promise.done(onRejected) is called when promise is rejected');
+  });
+  createReject(p)(1);
+
+  p = new Promise();
+  p.done(null, null, (val) => {
+    t.equal(val, 1, 'promise.done(onNotify) is called when promise is notified');
+  });
+  createNotify(p)(1);
+
+  p = new Promise();
+  res = p.then(() => 1, () => 1, () => 1);
+  t.ok(res instanceof Promise, 'promise.then() returns a Promise');
+
+  t.equal(p._handlers.length, 1, 'promise.then() adds a Handler to promise._handlers');
+  h = p._handlers[0];
+  ['onResolved', 'onRejected', 'onNotify'].forEach((m) => {
+    t.equal(typeof h[m], 'function', `handler.${m} is a function`);
+  });
+
+  p = new Promise();
+  p.then((val) => {
+    t.equal(val, 1, 'promise.then(onResolved) is called when promise is resolved');
+  });
+  createResolve(p)(1);
+
+  p = new Promise();
+  p.then(null, (val) => {
+    t.equal(val, 1, 'promise.then(onRejected) is called when promise is rejected');
+  });
+  createReject(p)(1);
+
+  p = new Promise();
+  p.then(null, null, (val) => {
+    t.equal(val, 1, 'promise.then(onNotify) is called when promise is notified');
+  });
+  createNotify(p)(1);
+
+  p = new Promise();
+  res = p.catch(() => 1);
+  t.ok(res instanceof Promise, 'promise.catch() returns a Promise');
+
+  t.equal(p._handlers.length, 1, 'promise.catch() adds a Handler to promise._handlers');
+  h = p._handlers[0];
+  t.equal(typeof h.onResolved, 'function', 'handler.onResolved is a function');
+  t.equal(typeof h.onRejected, 'function', 'handler.onRejected is a function');
+  t.equal(h.onNotify, null, 'handler.onNotify is null');
+
+  p = new Promise();
+  p.catch((val) => {
+    t.equal(val, 1, 'promise.catch(onRejected) is called when promise is rejected');
+  });
+  createReject(p)(1);
+
+  p = new Promise();
+  res = p.progress(() => 1);
+  t.equal(p, res, 'promise.progress() returns this');
+
+  t.equal(p._handlers.length, 1, 'promise.progress() adds a Handler to promise._handlers');
+  h = p._handlers[0];
+  t.equal(h.onResolved, null, 'handler.onResolved is a null');
+  t.equal(h.onRejected, null, 'handler.onRejected is a null');
+  t.equal(typeof h.onNotify, 'function', 'handler.onNotify is a function');
+
+  p = new Promise();
+  p.progress((val) => {
+    t.equal(val, 1, 'promise.progress(onNotify) is called when promise is notified');
+  });
+  createNotify(p)(1);
+
+});
+
 test('util/promise (chaining)', (t) => {
+  t.plan(20);
 
   let n = 0;
 
@@ -255,8 +526,6 @@ test('util/promise (chaining)', (t) => {
     .then((val) => {
       p2++;
       t.equal(p2, n, `p2 then: ${val}`);
-
-      t.end();
     });
 
 });
