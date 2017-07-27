@@ -16,11 +16,11 @@
     "lint": "$(npm bin)/eslint ./src ./test || true ; $(npm bin)/documentation lint ./src/index.js",
     "rollup": "$(npm bin)/rollup --config .rolluprc.js",
     "test": "npm run test:node && npm run test:electron && npm run test:aplus",
-    "test:aplus": "$(npm bin)/rollup test/aplus.js --format cjs | /usr/bin/env node",
-    "test:electron": "$(npm bin)/zuul --electron -- ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
-    "test:local": "$(npm bin)/zuul --local -- ./test/**/*.spec.js ./test/index.spec.js ",
-    "test:node": "$(npm bin)/tape -r babel-register ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
-    "test:sauce": "$(npm bin)/zuul -- ./test/**/*.spec.js ./test/index.spec.js | $(npm bin)/tap-spec || true",
+    "test:aplus": "$(npm bin)/rollup test/__aplus-adapter.js --format cjs | /usr/bin/env node",
+    "test:electron": "$(npm bin)/zuul --electron -- ./test/*.spec.js | $(npm bin)/tap-spec || true",
+    "test:local": "$(npm bin)/zuul --local -- ./test/*.spec.js",
+    "test:node": "$(npm bin)/tape -r babel-register ./test/*.spec.js | $(npm bin)/tap-spec || true",
+    "test:sauce": "$(npm bin)/zuul -- ./test/*.spec.js | $(npm bin)/tap-spec || true",
     "uglifyjs": "$(npm bin)/uglifyjs -mc warnings=false --screw-ie8 ./dist/plonk.js > ./dist/plonk.min.js"
   },
   "devDependencies": {
