@@ -1,7 +1,7 @@
 
 import promisesAplusTests from 'promises-aplus-tests';
 
-import Deferred from '../src/_Deferred';
+import Deferred from '../src/Deferred';
 
 const adapter = {
   deferred () {

@@ -1,5 +1,5 @@
 
-import Deferred from './_Deferred';
+import Deferred from './Deferred';
 import noop from './_noop';
 import Timer from './_Timer';
 

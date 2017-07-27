@@ -448,11 +448,6 @@ function publish(promise) {
 }
 
 // A basic Deferred class that is used for all promises internally
-// It's exposed as plonk.defer, but not documented, since plonk is not trying to be a promise library
-
-function defer() {
-  return new Deferred();
-}
 
 var Deferred = function Deferred() {
   var _this = this;
@@ -1523,7 +1518,7 @@ function walk(min, max, callback) {
 }
 
 exports.clamp = clamp;
-exports.defer = defer;
+exports.Deferred = Deferred;
 exports.delay = delay;
 exports.drunk = drunk;
 exports.dust = dust;

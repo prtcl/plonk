@@ -2,7 +2,7 @@
 /** @namespace plonk */
 
 export { default as clamp } from './clamp';
-export { default as defer } from './defer';
+export { default as Deferred } from './Deferred';
 export { default as delay } from './delay';
 export { default as drunk } from './drunk';
 export { default as dust } from './dust';

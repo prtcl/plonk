@@ -7,7 +7,7 @@ test('plonk', (t) => {
 
   const METHODS = [
     'clamp',
-    'defer',
+    'Deferred',
     'delay',
     'drunk',
     'dust',
