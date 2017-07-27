@@ -1,9 +1,8 @@
 
-import animationFrame from './_animationFrame';
 import clamp from './clamp';
 import Deferred from './Deferred';
+import Frames from './_Frames';
 import noop from './_noop';
-import Timer from './_Timer';
 import toNumber from './_toNumber';
 
 /**
@@ -67,14 +66,4 @@ export default function frames (frameRate, callback = noop) {
   }
 
   return def.promise;
-}
-
-export class Frames extends Timer {
-
-  constructor (time, callback = noop) {
-    super(time, callback);
-    this._tickHandler = animationFrame;
-    this._timeOffset = -5;
-  }
-
 }
