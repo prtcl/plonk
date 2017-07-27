@@ -1,7 +1,8 @@
 
 import test from 'tape';
 
-import frames, { Frames, frameHandler } from '../src/frames';
+import animationFrame from '../src/_animationFrame';
+import frames, { Frames } from '../src/frames';
 import now from '../src/now';
 import Promise from '../src/_Promise';
 
@@ -10,7 +11,6 @@ const SIXTY_FPS = 1000 / 60;
 
 test('frames', (t) => {
   t.equal(typeof Frames, 'function', 'Timer is a function');
-  t.equal(typeof frameHandler, 'function', 'frameHandler is a function');
   t.equal(typeof frames, 'function', 'frames is a function');
 
   (function timerClassTest () {
@@ -51,7 +51,7 @@ test('frames', (t) => {
       }
     });
 
-    t.equal(timer._tickHandler, frameHandler, '_tickHandler is frameHandler');
+    t.equal(timer._tickHandler, animationFrame, '_tickHandler is animationFrame');
     t.equal(timer._timeOffset, -5, '_timeOffset equals -5');
     t.equal(timer.isRunning, false, 'init: isRunning equals false');
     t.equal(timer.elapsed, 0, 'init: elapsed equals 0');

@@ -1,4 +1,5 @@
 
+import animationFrame from './_animationFrame';
 import clamp from './clamp';
 import Deferred from './Deferred';
 import noop from './_noop';
@@ -72,37 +73,8 @@ export class Frames extends Timer {
 
   constructor (time, callback = noop) {
     super(time, callback);
-    this._tickHandler = frameHandler;
+    this._tickHandler = animationFrame;
     this._timeOffset = -5;
   }
 
 }
-
-export const frameHandler = (function () {
-
-  var frame;
-
-  if (typeof window === 'object') {
-    const availableFrames = [
-      window.requestAnimationFrame,
-      window.webkitRequestAnimationFrame,
-      window.mozRequestAnimationFrame
-    ];
-
-    availableFrames.forEach((fn) => {
-      if (frame) return;
-      if (typeof fn === 'function') {
-        frame = fn.bind(window);
-      }
-    });
-  }
-
-  if (!frame) {
-    return function (callback = noop) {
-      setTimeout(callback, 0);
-    };
-  }
-
-  return frame;
-
-})();
