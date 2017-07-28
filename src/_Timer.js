@@ -1,7 +1,7 @@
 
 import noop from './_noop';
 import now from './now';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 // Generic high-resolution timer class that forms the basis for all other timers
 

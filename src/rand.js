@@ -1,5 +1,5 @@
 
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Random number in `min...max` range.

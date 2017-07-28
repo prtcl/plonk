@@ -3,7 +3,7 @@ import clamp from './clamp';
 import Deferred from './Deferred';
 import Frames from './_Frames';
 import noop from './_noop';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Animation loop and [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) polyfill with a little extra sugar.

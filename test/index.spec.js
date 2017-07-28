@@ -20,6 +20,7 @@ test('plonk', (t) => {
     'rand',
     'scale',
     'sine',
+    'toNumber',
     'wait',
     'walk'
   ];

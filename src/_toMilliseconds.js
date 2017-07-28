@@ -1,5 +1,5 @@
 
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 export const FORMAT_IDENTIFIERS = ['fps', 'hz', 'ms', 's', 'm'];
 

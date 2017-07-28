@@ -2,7 +2,7 @@
 import Deferred from './Deferred';
 import noop from './_noop';
 import now from './now';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * A simple wrapper for setTimeout that returns a promise.

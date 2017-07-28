@@ -1,5 +1,5 @@
 
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Constrains an input `value` to `min...max` range.

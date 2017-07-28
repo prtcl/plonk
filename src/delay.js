@@ -2,7 +2,7 @@
 import Deferred from './Deferred';
 import noop from './_noop';
 import Timer from './_Timer';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * A variable timer loop where the tick interval is decided by the return value of `callback`. If none is provided, the previous/intial value is used. `time` sets the intial interval value.

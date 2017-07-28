@@ -2,7 +2,7 @@
 import metro from './metro';
 import noop from './_noop';
 import scale from './scale';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * An envelope that provides linear interpolation of `value` to `target` over `time`. The `callback` function is entirely optional, as it receives the same value as `.progress()`.

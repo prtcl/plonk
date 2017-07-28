@@ -1,6 +1,6 @@
 
 import clamp from './clamp';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * An exponential map of `value` in `0...1` range by [Euler's number](https://en.wikipedia.org/wiki/E_(mathematical_constant)). This makes a nice natural curve, suitable for making smooth transitions for things like audio gain, distance, and decay values.

@@ -2,7 +2,7 @@
 import delay from './delay';
 import noop from './_noop';
 import rand from './rand';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Timer function where the tick interval jitters between `min...max` milliseconds.

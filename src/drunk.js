@@ -1,7 +1,7 @@
 
 import clamp from './clamp';
 import rand from './rand';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Factory that returns a [drunk walk](https://en.wikipedia.org/wiki/Random_walk) random function that walks between `min...max`.

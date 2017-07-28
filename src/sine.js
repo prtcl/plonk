@@ -3,7 +3,7 @@ import clamp from './clamp';
 import metro from './metro';
 import noop from './_noop';
 import scale from './scale';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 const SINE_PERIOD = (Math.PI * 2) - 0.0001;
 

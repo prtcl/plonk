@@ -1,6 +1,6 @@
 
 import clamp from './clamp';
-import toNumber from './_toNumber';
+import toNumber from './toNumber';
 
 /**
  * Linear map of `value` in `minIn...maxIn` range to `minOut...maxOut` range.
