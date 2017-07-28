@@ -11,11 +11,11 @@
     -   [exp](#exp)
     -   [frames](#frames)
     -   [metro](#metro)
-    -   [ms](#ms)
     -   [now](#now)
     -   [rand](#rand)
     -   [scale](#scale)
     -   [sine](#sine)
+    -   [ms](#ms)
     -   [wait](#wait)
     -   [walk](#walk)
 
@@ -281,35 +281,6 @@ plonk.metro(100, function (interval, i, elapsed, stop) {
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
 
-### ms
-
-Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
-
-Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz), and `fps` (convert to frames per second).
-
-`default` is returned if `value` is null, undefined, or NaN.
-
-**Parameters**
-
--   `val`  
--   `format` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**  (optional, default `ms`)
--   `def`   (optional, default `0`)
--   `value` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
--   `default` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `0`)
-
-**Examples**
-
-```javascript
-plonk.ms('2s');
-// => 2000
-plonk.ms('30hz');
-// => 33.333333333333336
-plonk.ms(Math.random(), 'm');
-// => 41737.010115757585
-```
-
-Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** `value` formatted to milliseconds.
-
 ### now
 
 High resolution timestamp that uses `performance.now()` in the browser, or `process.hrtime()` in Node. Provides a Date-based fallback otherwise.
@@ -413,6 +384,35 @@ plonk.sine(300, function (value, cycle, elapsed, stop) {
 ```
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+
+### ms
+
+Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
+
+Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz), and `fps` (convert to frames per second).
+
+`default` is returned if `value` is null, undefined, or NaN.
+
+**Parameters**
+
+-   `val`  
+-   `format` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**  (optional, default `ms`)
+-   `def`   (optional, default `0`)
+-   `value` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `default` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `0`)
+
+**Examples**
+
+```javascript
+plonk.ms('2s');
+// => 2000
+plonk.ms('30hz');
+// => 33.333333333333336
+plonk.ms(Math.random(), 'm');
+// => 41737.010115757585
+```
+
+Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** `value` formatted to milliseconds.
 
 ### wait
 
