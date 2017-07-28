@@ -1,6 +1,4 @@
 
-import noop from './_noop';
-
 let animationFrame;
 
 if (typeof window === 'object') {
@@ -8,23 +6,27 @@ if (typeof window === 'object') {
     window.requestAnimationFrame,
     window.webkitRequestAnimationFrame,
     window.mozRequestAnimationFrame,
-    window.msRequestAnimationFrame,
-    window.oRequestAnimationFrame
+    window.msRequestAnimationFrame
   ];
 
   for (var i = 0; i < availableFrames.length; i++) {
-    if (animationFrame) {
+    let frame = availableFrames[i];
+    if (typeof frame === 'function') {
+      animationFrame = frame.bind(window);
       break;
-    } else if (typeof availableFrames[i] === 'function') {
-      animationFrame = availableFrames[i].bind(window);
     }
   }
 }
 
 if (!animationFrame) {
-  animationFrame = function (callback = noop) {
-    setTimeout(callback, 0);
-  };
+  animationFrame = timeoutAnimationFrame;
 }
 
 export default animationFrame;
+
+function timeoutAnimationFrame (callback) {
+  if (typeof callback !== 'function') {
+    throw new TypeError('Not enough arguments');
+  }
+  setTimeout(callback, 0);
+}
