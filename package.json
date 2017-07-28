@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "plonk",
   "version": "1.1.0",
   "description": "Timer and utility micro-library",
