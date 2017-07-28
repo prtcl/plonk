@@ -1,2 +1,2 @@
 
-export { default as default } from './_toMilliseconds';
+export { default as default } from './toMilliseconds';
