@@ -14,7 +14,7 @@ test('now', (t) => {
       const n = now(),
             diff = n - prev;
 
-      t.ok(n > prev && diff >= 16 && diff <= 32, `${n} is greater than ${n - prev} + 16`);
+      t.ok(n > prev && diff >= 16 && diff <= 36, `${diff} is in 16...36`);
 
       prev = now();
 
