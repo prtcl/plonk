@@ -14,7 +14,7 @@
     "build": "npm run build:index && npm run uglifyjs && npm run build:modules",
     "build:index": "$(npm bin)/rollup --config .rolluprc.js",
     "build:modules": "$(npm bin)/babel ./src --out-dir ./dist --ignore index.js",
-    "docs": "documentation build ./src/index.js -f md > ./documentation.md",
+    "docs": "documentation build ./src/index.js -f md > ./docs.md",
     "lint": "npm run lint:js && npm run lint:docs",
     "lint:docs": "$(npm bin)/documentation lint ./src/index.js || true",
     "lint:js": "$(npm bin)/eslint ./src ./test || true",

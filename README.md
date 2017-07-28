@@ -9,7 +9,7 @@ Cool things about plonk:
 * Time reporting (e.g. intervals and elapsed time) via performance.now().
 * Identical API and behavior in the browser, web workers, and Node.
 
-Check out the [docs](DOCUMENTATION.md) for more.
+Check out the [docs](docs.md) for more.
 
 ## Usage
 
