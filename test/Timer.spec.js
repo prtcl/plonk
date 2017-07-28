@@ -2,7 +2,7 @@
 import test from 'tape';
 
 import now from '../src/now';
-import Timer from '../src/_Timer';
+import Timer from '../src/Timer';
 
 test('Timer', (t) => {
   t.equal(typeof Timer, 'function', 'Timer is a function');
@@ -27,6 +27,13 @@ test('Timer', (t) => {
     t.ok(elapsed >= (i * 50) && elapsed <= (i * 60), `tick: ${elapsed} is in ${(i * 50)}...${(i * 60)}`);
 
     prev = now();
+
+    if (i === 0) {
+      timer.setTime(66);
+      t.equal(timer.time, 66, 'timer.time equals 66');
+      t.equal(timer._initialTime, 66, 'timer._initialTime equals 66');
+      timer.setTime(50);
+    }
 
     if (i === 19) {
       let finished = timer.stop();
@@ -56,7 +63,7 @@ test('Timer', (t) => {
   t.equal(timer.time, 50, 'init: time equals 50');
   t.equal(timer._initialTime, 50, 'init: _initialTime equals 50');
 
-  ['_callback', '_callTickHandler', '_tickHandler', 'run', 'stop', 'reset'].forEach((name) => {
+  ['_callback', '_callTickHandler', '_tickHandler', 'run', 'stop', 'reset', 'setTime'].forEach((name) => {
     t.equal(typeof timer[name], 'function', `init: ${name} is a function`);
   });
 

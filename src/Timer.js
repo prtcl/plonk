@@ -93,6 +93,12 @@ export default class Timer {
     return this;
   }
 
+  setTime (time = this.time) {
+    this.time = this._initialTime = toNumber(time, this.time);
+
+    return this;
+  }
+
 }
 
 function tickHandler (callback = noop) {

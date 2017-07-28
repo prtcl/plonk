@@ -1,7 +1,7 @@
 
 import Deferred from './Deferred';
 import noop from './_noop';
-import Timer from './_Timer';
+import Timer from './Timer';
 
 /**
  * A repeating timer loop (like setInterval) where `time` is the tick interval in milliseconds.
