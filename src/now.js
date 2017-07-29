@@ -1,16 +1,6 @@
 
-/**
- * High resolution timestamp that uses `performance.now()` in the browser, or `process.hrtime()` in Node. Provides a Date-based fallback otherwise.
- * @static
- * @memberof plonk
- * @name now
- * @returns {number} elapsed time in milliseconds
- * @example
- * plonk.now();
- * // => 2034.65879
- */
-
-// try to choose the best method for producing a performance.now() timestamp
+// High resolution timestamp that uses `performance.now()` in the browser, or `process.hrtime()` in Node.
+// Provides a Date-based fallback otherwise.
 
 let now;
 

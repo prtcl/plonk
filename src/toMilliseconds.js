@@ -3,27 +3,8 @@ import toNumber from './toNumber';
 
 export const FORMAT_IDENTIFIERS = ['fps', 'hz', 'ms', 's', 'm'];
 
-/**
- * Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
- *
- * Format options are `ms` (pass input to output), `s` (convert from seconds), `m` (convert from minutes), `hz` (convert from 1 period of hertz), and `fps` (convert to frames per second).
- *
- * `default` is returned if `value` is null, undefined, or NaN.
- * @static
- * @memberof plonk
- * @name ms
- * @param {number} value
- * @param {String} [format=ms]
- * @param {number} [default=0]
- * @returns {number} `value` formatted to milliseconds.
- * @example
- * plonk.ms('2s');
- * // => 2000
- * plonk.ms('30hz');
- * // => 33.333333333333336
- * plonk.ms(Math.random(), 'm');
- * // => 41737.010115757585
- */
+// Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
+
 export default function toMilliseconds (val, format = 'ms', def = 0) {
   var ms = toNumber(def, 0);
   if (typeof val === 'string') {

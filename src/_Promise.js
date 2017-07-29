@@ -6,9 +6,9 @@ import once from './_once';
 //
 // Notes about this implimentation:
 //
-//   * setTimeout is used instead of a microtask queue so that animation rendering is not interrupted by a higher priority task.
+//   * setTimeout is used instead of a microtask like MutationObserver so that animation rendering is not interrupted by a higher priority task.
 //       the behavior of setTimeout is also fairly uniform across environments (node, web workers, etc),
-//       whereas asap-style implimentations are not.
+//       whereas microtask-based implimentations are not.
 //   * for the sake of speed, and since it's not outlined in the A+ spec, there is _no_ error handling in progress/notify methods!
 //
 

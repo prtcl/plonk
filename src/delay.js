@@ -4,38 +4,8 @@ import noop from './_noop';
 import Timer from './Timer';
 import toNumber from './toNumber';
 
-/**
- * A variable timer loop where the tick interval is decided by the return value of `callback`. If none is provided, the previous/intial value is used. `time` sets the intial interval value.
- *
- * The `callback` function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
- * @static
- * @memberof plonk
- * @name delay
- * @param {number} time
- * @param {function} callback
- * @returns {promise}
- * @example
- * var t = 100;
- * plonk.delay(t, function (interval, i, elapsed, stop) {
- *   if (i == 10) {
- *     return stop();
- *   }
- *   return (t = t * 1.15);
- * })
- * .progress(function (interval) {
- *   console.log(interval);
- *   // => 10
- *   //  115.000208
- *   //  132.25017300000002
- *   //  152.087796
- *   //  174.90065899999996
- *   //    ...
- * })
- * .then(function (elapased) {
- *   console.log(elapased);
- *   // => 2334.929456
- * });
- */
+// A timer loop, similar to setInterval, except that the time can be reset by the return value of `callback`
+
 export default function delay (time, callback = noop) {
   const def = new Deferred();
 

@@ -5,34 +5,8 @@ import Frames from './_Frames';
 import noop from './_noop';
 import toNumber from './toNumber';
 
-/**
- * Animation loop and [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) polyfill with a little extra sugar.
- *
- * If `frameRate` is passed, the loop iteration time is throttled to `1000ms / frameRate`. Also differs from the native API in that the `callback` function receives `interval` (time since the previous frame), `i` (number of frames), `elapsed` (total running time), and a `stop()` function.
- *
- * When `stop()` is called, the returned promise is resolved with the `elapsed` value.
- * @static
- * @memberof plonk
- * @name frames
- * @param {number} [frameRate=60]
- * @param {function} callback
- * @returns {promise}
- * @example
- * plonk.frames(60, function (interval, i, elapsed, stop) {
- *   console.log(interval);
- *   // => 16.723718000000005
- *   if (someCondition) {
- *     // we can change the target framerate by return value;
- *     return 30;
- *   } else if (i === 10) {
- *     stop();
- *   }
- * })
- * .then(function (elapsed) {
- *   console.log(elapsed);
- *   // => 233.34382600000004
- * });
- */
+// Animation loop and requestAnimationFrame polyfill with a little extra sugar
+
 export default function frames (frameRate, callback = noop) {
 
   if (arguments.length === 2) {
