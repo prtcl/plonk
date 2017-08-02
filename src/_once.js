@@ -4,29 +4,25 @@
 // Only one function may be called once, then all subsuquent calls to any of them are ignored
 
 export default function once (...fns) {
-  const ret = [];
   let called = false;
 
-  for (let fn of fns) {
-    let res = void 0,
-        wrapped;
+  const ret = fns.map((fn) => {
+    let res = void 0;
 
     if (typeof fn === 'function') {
-      wrapped = (...args) => {
+      return (...args) => {
         if (!called) {
           res = fn(...args);
           called = true;
         }
         return res;
       };
-    } else {
-      wrapped = () => {
-        called = true;
-      };
     }
 
-    ret.push(wrapped);
-  }
+    return () => {
+      called = true;
+    };
+  });
 
   return ret.length > 1 ? ret : ret[0];
 }
