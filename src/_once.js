@@ -7,9 +7,10 @@ export default function once (...fns) {
   const ret = [];
   let called = false;
 
-  for (let fn of [...fns]) {
+  for (let fn of fns) {
     let res = void 0,
         wrapped;
+
     if (typeof fn === 'function') {
       wrapped = (...args) => {
         if (!called) {
@@ -23,6 +24,7 @@ export default function once (...fns) {
         called = true;
       };
     }
+
     ret.push(wrapped);
   }
 

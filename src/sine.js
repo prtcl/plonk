@@ -12,7 +12,7 @@ const SINE_PERIOD = (Math.PI * 2) - 0.0001;
 export default function sine (time, callback = noop) {
   time = toNumber(time, 0);
 
-  var cycle = 0;
+  let cycle = 0;
 
   return metro(1000 / 60, (interval, i, elapsed, stop) => {
     if (cycle >= time) {

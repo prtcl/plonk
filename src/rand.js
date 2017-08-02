@@ -11,5 +11,6 @@ export default function rand (min, max) {
     min = toNumber(min, 0);
     max = toNumber(max, 1);
   }
+
   return Math.random() * (max - min) + min;
 }
