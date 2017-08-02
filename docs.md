@@ -276,10 +276,9 @@ plonk.frames(frameRate, (interval, i, elapsed, stop) => {
 
 A repeating timer loop, similar to setInterval, where `time` is the tick interval in milliseconds.
 
-Differs from plonk.delay in that the callback return value is passed to the `Promise#progress()` handler, making it trivial to compose time-based interpolations and modulators.
+metro is special in that the callback return value is passed to the `Promise#progress()` handler, making it trivial to compose time-based interpolations and modulators.
 
-
-The callback function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
+Like `plonk.delay`, the callback function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
 
 When `stop(value)` is called, the returned `promise` is resolved with `value`.
 
@@ -295,26 +294,81 @@ plonk.metro(time, (interval, i, elapsed, stop) => {
   //    17.516894000000008
   //    ...
 
-  let n = Math.random();
-
   if (i === 10) {
-    return stop(n);
+    stop('done');
   }
-  return n;
 })
-.progress((n) => {
-  console.log(n);
-  // => 0.7134633297430799
-  //    0.5992324365156649
-  //    0.2015633510128465
-  //    0.5901837507206531
-  //    0.5949520231708969
-  //    ...
-})
-.then((n) => {
-  console.log(n);
-  // => 0.7674513910120222
+.then((val) => {
+  console.log(val);
+  // => 'done'
 });
+```
+
+Since metro passes the return value of it's callback to the returned promise, you can do cool things like process an array over time.
+
+```javascript
+arrayOverTime([1, 2, 3, 4, 5])
+  .progress((n) => {
+    console.log(n);
+    // => 1
+    //    2
+    //    3
+    //    4
+    //    5
+  })
+  .then((arr) => {
+    console.log(arr);
+    // => [ 1, 2, 3, 4, 5 ]
+  });
+
+function arrayOverTime (arr = []) {
+  return plonk.metro(1000 / 60, (int, idx, elpsd, stop) => {
+    if (idx > arr.length - 1) {
+      return stop(arr);
+    }
+
+    return arr[idx];
+  });
+}
+```
+
+Or, compose functions over time :)
+
+```javascript
+const roundFps = composeOverTime(Math.floor, plonk.ms);
+
+roundFps('60fps')
+  .progress((val) => {
+    console.log(val);
+    // => 16.666666666666668
+    //    16
+  })
+  .then((val) => {
+    console.log(val);
+    // => 16
+  });
+
+function composeOverTime (...fns) {
+  fns.reverse();
+
+  return function (...args) {
+    let ret;
+
+    return plonk.metro(1000 / 60, (int, idx, elpsd, stop) => {
+      if (idx > fns.length - 1) {
+        return stop(ret);
+      }
+
+      const fn = fns[idx];
+
+      if (typeof fn === 'function') {
+        ret = idx === 0 ? fn(...args) : fn(ret);
+      }
+
+      return ret;
+    });
+  };
+}
 ```
 
 ### ms / toMilliseconds
