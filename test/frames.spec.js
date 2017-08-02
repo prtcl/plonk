@@ -10,7 +10,13 @@ const SIXTY_FPS = 1000 / 60;
 test('frames', (t) => {
   t.equal(typeof frames, 'function', 'frames is a function');
 
-  var prev = now();
+  try {
+    frames();
+  } catch (err) {
+    t.ok(err instanceof TypeError, err.message);
+  }
+
+  let prev = now();
 
   const targetInterval = SIXTY_FPS - 5;
 

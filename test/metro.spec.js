@@ -8,7 +8,13 @@ import Promise from '../src/_Promise';
 test('metro', (t) => {
   t.equal(typeof metro, 'function', 'metro is a function');
 
-  var prev = now();
+  try {
+    metro();
+  } catch (err) {
+    t.ok(err instanceof TypeError, err.message);
+  }
+
+  let prev = now();
 
   const p = metro(50, (interval, i, elapsed, stop) => {
     if (i === 0) {

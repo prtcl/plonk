@@ -1,12 +1,15 @@
 
 import delay from './delay';
-import noop from './_noop';
 import rand from './rand';
 import toNumber from './toNumber';
 
 // Timer function where the tick interval jitters between `min...max` milliseconds.
 
-export default function dust (min, max, callback = noop) {
+export default function dust (min, max, callback) {
+  if (typeof callback !== 'function') {
+    throw new TypeError('delay callback needs to be a function');
+  }
+
   min = toNumber(min, 10);
   max = toNumber(max, 100);
 
@@ -15,8 +18,9 @@ export default function dust (min, max, callback = noop) {
     min = 0;
   }
 
-  return delay(rand(min, max), (interval, i, elapsed, stop) => {
-    callback(interval, i, elapsed, stop);
+  return delay(rand(min, max), (...args) => {
+    callback(...args);
+
     return rand(min, max);
   });
 }

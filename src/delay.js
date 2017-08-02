@@ -1,12 +1,15 @@
 
 import Deferred from './Deferred';
-import noop from './_noop';
 import Timer from './Timer';
 import toNumber from './toNumber';
 
 // A timer loop, similar to setInterval, except that the time can be reset by the return value of `callback`
 
-export default function delay (time, callback = noop) {
+export default function delay (time, callback) {
+  if (typeof callback !== 'function') {
+    throw new TypeError('delay callback needs to be a function');
+  }
+
   const def = new Deferred();
 
   const timer = new Timer(time, () => {

@@ -9,7 +9,13 @@ import rand from '../src/rand';
 test('delay', (t) => {
   t.equal(typeof delay, 'function', 'delay is a function');
 
-  var prev = now();
+  try {
+    delay();
+  } catch (err) {
+    t.ok(err instanceof TypeError, err.message);
+  }
+
+  let prev = now();
 
   const p = delay(50, (interval, i, elapsed, stop) => {
     if (i === 0) {

@@ -1,7 +1,6 @@
 
 import clamp from './clamp';
 import metro from './metro';
-import noop from './_noop';
 import scale from './scale';
 import toNumber from './toNumber';
 
@@ -9,7 +8,11 @@ const SINE_PERIOD = (Math.PI * 2) - 0.0001;
 
 // A sine LFO where `period` is the time, in milliseconds, of one full cycle.
 
-export default function sine (time, callback = noop) {
+export default function sine (time, callback) {
+  if (typeof callback !== 'function') {
+    throw new TypeError('sine callback needs to be a function');
+  }
+
   time = toNumber(time, 0);
 
   let cycle = 0;

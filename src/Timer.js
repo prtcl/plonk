@@ -1,5 +1,4 @@
 
-import noop from './_noop';
 import now from './now';
 import toNumber from './toNumber';
 
@@ -101,6 +100,6 @@ export default class Timer {
 
 }
 
-function tickHandler (callback = noop) {
+function tickHandler (callback) {
   setTimeout(callback, 0);
 }

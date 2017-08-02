@@ -1,12 +1,11 @@
 
 import metro from './metro';
-import noop from './_noop';
 import scale from './scale';
 import toNumber from './toNumber';
 
 // An envelope that provides linear interpolation of `value` to `target` over `time`
 
-export default function env (value, target, time, callback = noop) {
+export default function env (value, target, time, callback) {
   value = toNumber(value, 0);
   target = toNumber(target, 1);
   time = toNumber(time, 100);
@@ -17,7 +16,10 @@ export default function env (value, target, time, callback = noop) {
     }
 
     const interpolated = scale(elapsed, 0, time, value, target);
-    callback(interpolated);
+
+    if (typeof callback === 'function') {
+      callback(interpolated);
+    }
 
     return interpolated;
   });

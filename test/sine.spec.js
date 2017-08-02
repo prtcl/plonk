@@ -7,6 +7,12 @@ import sine from '../src/sine';
 test('sine', (t) => {
   t.equal(typeof sine, 'function', 'sine is a function');
 
+  try {
+    sine();
+  } catch (err) {
+    t.ok(err instanceof TypeError, err.message);
+  }
+
   const p = sine(250, (val, cycle, elapsed, stop) => {
     t.ok(val >= -1 && val <= 1, `tick: ${val.toString()} is in -1...1`);
 

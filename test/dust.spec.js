@@ -8,7 +8,13 @@ import Promise from '../src/_Promise';
 test('dust', (t) => {
   t.equal(typeof dust, 'function', 'dust is a function');
 
-  var prev = now();
+  try {
+    dust();
+  } catch (err) {
+    t.ok(err instanceof TypeError, err.message);
+  }
+
+  let prev = now();
 
   const p = dust(10, 100, (interval, i, elapsed, stop) => {
     if (i === 0) {

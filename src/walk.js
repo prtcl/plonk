@@ -16,8 +16,13 @@ export default function walk (min, max, callback) {
 
   const d = drunk(min, max);
 
-  return delay(d(), (interval, i, elapsed, stop) => {
-    const progress = callback(interval, i, elapsed, stop);
+  return delay(d(), (...args) => {
+    let progress;
+
+    if (typeof callback === 'function') {
+      progress = callback(...args);
+    }
+
     return d(progress);
   });
 }
