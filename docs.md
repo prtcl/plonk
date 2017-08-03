@@ -205,7 +205,7 @@ plonk.dust(min, max, (interval, i, elapsed, stop) => {
 
 An envelope that provides linear interpolation of `value` to `target` over `time`.
 
-The callback function is entirely optional, as it receives the same value as `Promise#progress()`.
+The optional callback function is passed `value`, `elapsed` (total run time), and a `stop()` function.
 
 ```javascript
 let value = -1,

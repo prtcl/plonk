@@ -11,14 +11,14 @@ export default function env (value, target, time, callback) {
   time = toNumber(time, 100);
 
   return metro(1000 / 60, (interval, i, elapsed, stop) => {
-    if (elapsed >= time) {
-      stop(target);
-    }
-
     const interpolated = scale(elapsed, 0, time, value, target);
 
     if (typeof callback === 'function') {
-      callback(interpolated);
+      callback(interpolated, elapsed, stop);
+    }
+
+    if (elapsed >= time) {
+      stop(interpolated);
     }
 
     return interpolated;

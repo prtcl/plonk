@@ -11,7 +11,13 @@ test('env', (t) => {
   var prev = now(),
       iterations = 0;
 
-  const p = env(-1, 1, 100);
+  const p = env(-1, 1, 100, (val, elapsed, stop) => {
+    if (iterations === 0) {
+      t.equal(typeof val, 'number', 'value is a number');
+      t.equal(typeof elapsed, 'number', 'elapsed is a number');
+      t.equal(typeof stop, 'function', 'stop is a function');
+    }
+  });
 
   t.ok(p instanceof Promise, 'env() returns a promise');
 
@@ -19,8 +25,9 @@ test('env', (t) => {
     .progress((val) => {
       var interval = (iterations === 0 ? 16 : now() - prev);
       prev = now();
+      iterations++;
 
-      t.ok(interval >= 16 && interval <= 26, `progress: ${interval} is in 16...26`);
+      t.ok(interval >= 15 && interval <= 30, `progress: ${interval} is in 16...26`);
       t.ok(val >= -1 && val <= 1, `progress: ${val} is in -1...1`);
 
     })
