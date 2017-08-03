@@ -354,7 +354,7 @@ function composeOverTime (...fns) {
   return function (...args) {
     let ret;
 
-    return plonk.metro(1000 / 60, (int, idx, elpsd, stop) => {
+    return plonk.metro(1, (int, idx, elpsd, stop) => {
       if (idx > fns.length - 1) {
         return stop(ret);
       }
