@@ -1,26 +1,38 @@
 
 import test from 'tape';
 
-import toMilliseconds, { FORMAT_IDENTIFIERS } from '../src/toMilliseconds';
+import toMilliseconds from '../src/toMilliseconds';
 
 test('toMilliseconds', (t) => {
   t.equal(typeof toMilliseconds, 'function', 'toMilliseconds is a function');
 
-  t.deepEqual(FORMAT_IDENTIFIERS, ['fps', 'hz', 'ms', 's', 'm'], `${FORMAT_IDENTIFIERS} equals ${['hz', 'ms', 's', 'm'].join(',')}`);
+  const cases = [
+    [[null], 0],
+    [[void 0, 's', 10], 10],
+    [['abc'], 0],
+    [[100], 100],
+    [['66ms'], 66],
+    [[1, 's'], 1000],
+    [['0.875s'], 875],
+    [['1hz'], 1000],
+    [['0.5hz'], 2000],
+    [[2, 'hz'], 500],
+    [['1m'], 60000],
+    [['60fps'], 1000 / 60]
+  ];
 
-  t.equal(toMilliseconds(null), 0, 'toMilliseconds(null) equals 0');
-  var n;
-  t.equal(toMilliseconds(n, 's', 10), 10, 'toMilliseconds(n, \'s\', 10) equals 10');
-  t.equal(toMilliseconds('abc'), 0, 'toMilliseconds(\'abc\') equals 0');
-  t.equal(toMilliseconds(100), 100, 'toMilliseconds(100) equals 100');
-  t.equal(toMilliseconds('66ms'), 66, 'toMilliseconds(\'66ms\') equals 66');
-  t.equal(toMilliseconds(1, 's'), 1000, 'toMilliseconds(1, \'s\') equals 1000');
-  t.equal(toMilliseconds('0.875s'), 875, 'toMilliseconds(\'0.875s\') equals 875');
-  t.equal(toMilliseconds('1hz'), 1000, 'toMilliseconds(\'1hz\') equals 1000');
-  t.equal(toMilliseconds('0.5hz'), 2000, 'toMilliseconds(\'0.5hz\') equals 2000');
-  t.equal(toMilliseconds(2, 'hz'), 500, 'toMilliseconds(2, \'hz\') equals 500');
-  t.equal(toMilliseconds('1m'), 60000, 'toMilliseconds(\'1m\') equals 60000');
-  t.equal(toMilliseconds('60fps').toFixed(5), (1000 / 60).toFixed(5), `toMilliseconds('60fps') equals ${(1000 / 60).toFixed(5)}`);
+  for (let [args, res] of cases) {
+    let sArgs = args
+      .map((d) => {
+        if (typeof d !== 'number') {
+          return `'${d}'`;
+        }
+        return d;
+      })
+      .join(', ');
+
+    t.equal(toMilliseconds(...args), res, `toMilliseconds(${sArgs}) equals ${res}`);
+  }
 
   t.end();
 });

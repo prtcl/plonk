@@ -6,19 +6,29 @@ import drunk from '../src/drunk';
 test('drunk', (t) => {
   t.equal(typeof drunk, 'function', 'drunk is a function');
 
-  const d = drunk(-10, 10, 0.1);
+  const d = drunk(-1, 1, 0.1);
+
   t.equal(typeof d, 'function', 'drunk() is a function factory');
 
-  const arr = new Array(10).fill()
+  const cases = new Array(20)
+    .fill()
     .map(() => d());
 
-  var prev;
-  arr.forEach((n, i) => {
-    t.ok(n >= -10 && n <= 10, `${n} is in -10...10`);
+  let min = -1,
+      max = 1,
+      step = 0.1,
+      prev;
 
-    prev = arr[i - 1] || n;
-    t.ok(n >= prev - 1 && n <= prev + 1, `${n} is in ${prev - 1}...${prev + 1}`);
-  });
+  for (let [i, n] of cases.entries()) {
+    t.ok(n >= min && n <= max, `${n} is in ${min}...${max}`);
+
+    prev = cases[i - 1] || n;
+
+    let pMin = Math.max(prev - step, min),
+        pMax = Math.min(prev + step, max);
+
+    t.ok(n >= pMin && n <= pMax, `${n} is in ${pMin}...${pMax}`);
+  }
 
   t.end();
 });

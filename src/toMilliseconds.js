@@ -1,7 +1,7 @@
 
 import toNumber from './toNumber';
 
-export const FORMAT_IDENTIFIERS = ['fps', 'hz', 'ms', 's', 'm'];
+const FORMAT_IDENTIFIERS = ['fps', 'hz', 'ms', 's', 'm'];
 
 // Number format converter that takes a variety of input time values and returns the equivalent millisecond values.
 

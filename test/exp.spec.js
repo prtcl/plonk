@@ -6,20 +6,21 @@ import exp from '../src/exp';
 test('exp', (t) => {
   t.equal(typeof exp, 'function', 'exp is a function');
 
-  const arr = [
-    { i: -1, o: 0 },
-    { i: 0, o: 0 },
-    { i: 0.25, o: 0.023090389875362178 },
-    { i: 0.5, o: 0.15195522325791297 },
-    { i: 0.75, o: 0.45748968090533415 },
-    { i: 1, o: 1 },
-    { i: 2, o: 1 }
+  const cases = [
+    [-1, 0],
+    [0, 0],
+    [0.25, 0.023090389875362178],
+    [0.5, 0.15195522325791297],
+    [0.75, 0.45748968090533415],
+    [1, 1],
+    [2, 1]
   ];
 
-  arr.forEach((d) => {
-    var n = exp(d.i);
-    t.ok(n === d.o, `exp(${d.i}) equals ${d.o}`);
-  });
+  for (let [i, o] of cases) {
+    let n = exp(i);
+
+    t.equal(n, o, `exp(${i}) equals ${o}`);
+  }
 
   t.end();
 });
