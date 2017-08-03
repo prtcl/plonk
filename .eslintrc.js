@@ -115,7 +115,7 @@ module.exports = {
     "newline-before-return": "off",
     "newline-per-chained-call": "error",
     "no-alert": "error",
-    "no-console": "warn",
+    "no-console": "off",
     "no-array-constructor": "error",
     "no-bitwise": "off",
     "no-caller": "error",
