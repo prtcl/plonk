@@ -1,7 +1,7 @@
 
 import Deferred from './Deferred';
 import Timer from './Timer';
-import toNumber from './toNumber';
+import tryFn from './_tryFn';
 
 // A timer loop, similar to setInterval, except that the time can be reset by the return value of `callback`
 
@@ -13,11 +13,23 @@ export default function delay (time, callback) {
   const def = new Deferred();
 
   const timer = new Timer(time, () => {
-    const progress = callback(timer.interval, timer.iterations, timer.elapsed, stop);
-    timer.time = time = toNumber(progress, time);
+    const [err, res] = tryFn(
+      callback,
+      timer.interval,
+      timer.iterations,
+      timer.elapsed,
+      stop
+      );
 
+    if (err) {
+      timer.stop();
+      return def.reject(err);
+    }
+
+    timer.setTime(res);
     def.notify(timer.interval);
   });
+
   timer.run();
 
   function stop () {

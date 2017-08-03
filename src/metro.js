@@ -1,6 +1,7 @@
 
 import Deferred from './Deferred';
 import Timer from './Timer';
+import tryFn from './_tryFn';
 
 // A repeating timer loop (like setInterval) where `time` is the tick interval in milliseconds.
 
@@ -12,9 +13,22 @@ export default function metro (time, callback) {
   const def = new Deferred();
 
   const timer = new Timer(time, () => {
-    const progress = callback(timer.interval, timer.iterations, timer.elapsed, stop);
-    def.notify(progress);
+    const [err, res] = tryFn(
+      callback,
+      timer.interval,
+      timer.iterations,
+      timer.elapsed,
+      stop
+      );
+
+    if (err) {
+      timer.stop();
+      return def.reject(err);
+    }
+
+    def.notify(res);
   });
+
   timer.run();
 
   function stop (val) {
