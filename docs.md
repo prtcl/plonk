@@ -9,7 +9,7 @@ Core concepts:
 * Every time-based function receives a callback function, which itself receives info like elapsed time, number of iterations, etc.
 * Many functions accept return values from callbacks that are either passed to the returned promise, or used to control behavior (e.g. interval timing).
 * All reported time values (intervals, elapsed time, etc) use a performance.now() style timestamp.
-* Unless otherwise noted, functions like `env` run at 60fps (e.g. 1000ms / 60fps = 16.666ms).
+* Unless otherwise noted, functions like `plonk.env` run at 60fps (e.g. 1000ms / 60fps = 16.666ms).
 
 Why promises instead of events? Promises are chainable, so you can do cool things like create ASR envelopes with just a few functions:
 
@@ -128,12 +128,6 @@ The callback function is passed `interval` (time since the previous tick), `i` (
 let time = 100;
 
 plonk.delay(time, (interval, i, elapsed, stop) => {
-  if (i == 10) {
-    return stop();
-  }
-  return (time *= 1.15);
-})
-.progress((interval) => {
   console.log(interval);
   // => 0
   //    115.000208
@@ -141,6 +135,13 @@ plonk.delay(time, (interval, i, elapsed, stop) => {
   //    152.087796
   //    174.90065899999996
   //    ...
+
+  if (i == 10) {
+    return stop();
+  }
+
+  // a return value here resets the time interval
+  return (time *= 1.15);
 })
 .then((elapsed) => {
   console.log(elapsed);
@@ -280,7 +281,7 @@ metro is special in that the callback return value is passed to the `Promise#pro
 
 Like `plonk.delay`, the callback function is passed `interval` (time since the previous tick), `i` (number of ticks), `elapsed` (total run time), and a `stop()` function.
 
-When `stop(value)` is called, the returned `promise` is resolved with `value`.
+When `stop(value)` is called, the returned promise is resolved with `value`.
 
 ```javascript
 let time = 1000 / 60;
