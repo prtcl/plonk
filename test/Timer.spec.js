@@ -4,69 +4,145 @@ import test from 'tape';
 import now from '../src/now';
 import Timer from '../src/Timer';
 
+const SIXTY_FPS = 1000 / 60;
+
 test('Timer', (t) => {
   t.equal(typeof Timer, 'function', 'Timer is a function');
 
+  let ti;
+
   try {
-    let ti = new Timer();
+    ti = Timer();
+  } catch (err) {
+    t.ok(err instanceof Error, err.message);
+  }
+
+  try {
+    ti = new Timer();
   } catch (err) {
     t.ok(err instanceof TypeError, err.message);
   }
 
+  ti = new Timer(-1, () => 0);
+
+  t.equal(ti.time, 0, 'Timer#time equals 0');
+  t.equal(ti._initialTime, 0, 'Timer#_initialTime equals 0');
+
+  ti = new Timer(100, () => 0);
+
+  t.equal(ti.time, 100, 'Timer#time equals 100');
+  t.equal(ti._initialTime, 100, 'Timer#_initialTime equals 100');
+
+  let k;
+  ti = new Timer(k, () => 0, null);
+
+  t.equal(ti.time, SIXTY_FPS, `Timer#time equals ${SIXTY_FPS}`);
+  t.equal(ti._initialTime, SIXTY_FPS, `Timer#_initialTime equals ${SIXTY_FPS}`);
+
+  ti = new Timer(() => 0);
+
+  t.equal(ti._timeOffset, 0, 'Timer#_timeOffset equals 0');
+  t.equal(ti._prev, 0, 'Timer#_prev equals 0');
+  t.equal(ti.isRunning, false, 'Timer#isRunning equals false');
+  t.equal(ti.elapsed, 0, 'Timer#elapsed equals 0');
+  t.equal(ti.iterations, 0, 'Timer#iterations equals 0');
+  t.equal(ti.interval, 0, 'Timer#interval equals 0');
+  t.equal(ti.time, SIXTY_FPS, `Timer#time equals ${SIXTY_FPS}`);
+  t.equal(ti._initialTime, SIXTY_FPS, `Timer#_initialTime equals ${SIXTY_FPS}`);
+
+  const METHODS = [
+    '_callback',
+    '_callTickHandler',
+    '_tickHandler',
+    'run',
+    'stop',
+    'reset',
+    'setTime'
+    ];
+
+  METHODS.forEach((name) => {
+    t.equal(typeof ti[name], 'function', `Timer#${name} is a function`);
+  });
+
+  t.end();
+
+});
+
+test('Timer (methods)', (t) => {
+
+  let ti, ret;
+
+  ti = new Timer(() => 0);
+
+  ret = ti.run();
+
+  t.deepEqual(ti, ret, 'Timer#run returns this');
+  t.equal(ti.isRunning, true, 'Timer#run sets isRunning to true');
+  t.ok(ti._prev > 0, 'Timer#_prev is greater than 0');
+
+  let time = ti.time;
+
+  ret = ti.setTime(time);
+  t.deepEqual(ti, ret, 'Timer#setTime returns this');
+
+  ti.setTime(null);
+  t.ok(ti.time === time && ti._initialTime === time, 'Timer#setTime(null) sets time to _initialTime');
+
+  time = 100;
+  ti.setTime(time);
+  t.ok(ti.time === time && ti._initialTime === time, `Timer#setTime(${time}) sets time to ${time}`);
+
+  ti.setTime(-1);
+  t.ok(ti.time === 0 && ti._initialTime === 0, 'Timer#setTime(-1) sets time to 0');
+
+  let elpsd = ti.stop();
+
+  t.ok(typeof elpsd === 'number' && elpsd === ti.elapsed, 'Timer#stop returns elapsed');
+  t.equal(ti.isRunning, false, 'Timer#stop sets isRunning to false');
+
+  ti = new Timer(() => 0);
+  ti.run();
+
+  setTimeout(() => {
+    ti.reset();
+
+    t.equal(ti._prev, 0, 'Timer#reset sets _prev to 0');
+    t.equal(ti.elapsed, 0, 'Timer#reset sets elapsed to 0');
+    t.equal(ti.iterations, 0, 'Timer#reset sets iterations to 0');
+    t.equal(ti.interval, 0, 'Timer#reset sets interval to 0');
+    t.equal(ti.time, SIXTY_FPS, `Timer#reset sets time to ${SIXTY_FPS}`);
+    t.equal(ti._initialTime, SIXTY_FPS, `Timer#reset sets _initialTime to ${SIXTY_FPS}`);
+
+    ti.stop();
+
+    t.end();
+  }, 100);
+
+});
+
+test('Timer (callback)', (t) => {
+
   let prev = now();
 
-  const timer = new Timer(50, (interval, i, elapsed) => {
+  let ti = new Timer((interval, i, elapsed) => {
     if (i === 0) {
       t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
       t.ok(interval === 0, `tick: ${interval} equals 0`);
     } else {
-      t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
-      t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+      t.ok(now() >= prev + 16, `tick: ${now()} is greater than ${prev + 16}`);
+      t.ok(interval >= 16 && interval <= 32, `tick: ${interval} is in 16...32`);
     }
     t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);
-    t.ok(elapsed >= (i * 50) && elapsed <= (i * 60), `tick: ${elapsed} is in ${(i * 50)}...${(i * 60)}`);
+    t.ok(elapsed >= (i * 16) && elapsed <= (i * 32), `tick: ${elapsed} is in ${(i * 16)}...${(i * 32)}`);
 
     prev = now();
 
-    if (i === 0) {
-      timer.setTime(66);
-      t.equal(timer.time, 66, 'timer.time equals 66');
-      t.equal(timer._initialTime, 66, 'timer._initialTime equals 66');
-      timer.setTime(50);
-    }
-
     if (i === 19) {
-      let finished = timer.stop();
-
-      t.equal(finished, elapsed, 'stop: stop() returns final elapsed time');
-      t.ok(elapsed >= 950 && elapsed <= 1150, `stop: ${elapsed} is in 1000...1200`);
-
-      setTimeout(() => {
-        t.equal(timer._prev, 0, 'reset: _prev equals 0');
-        t.equal(timer.isRunning, false, 'reset: isRunning equals false');
-        t.equal(timer.elapsed, 0, 'reset: elapsed equals 0');
-        t.equal(timer.iterations, 0, 'reset: iterations equals 0');
-        t.equal(timer.interval, 0, 'reset: interval equals 0');
-        t.equal(timer.time, 50, 'reset: time equals 50');
-        t.equal(timer._initialTime, 50, 'reset: _initialTime equals 50');
-
-        t.end();
-      }, 0);
+      ti.stop();
+      t.end();
     }
   });
 
-  t.equal(timer._prev, 0, 'init: _prev equals 0');
-  t.equal(timer.isRunning, false, 'init: isRunning equals false');
-  t.equal(timer.elapsed, 0, 'init: elapsed equals 0');
-  t.equal(timer.iterations, 0, 'init: iterations equals 0');
-  t.equal(timer.interval, 0, 'init: interval equals 0');
-  t.equal(timer.time, 50, 'init: time equals 50');
-  t.equal(timer._initialTime, 50, 'init: _initialTime equals 50');
-
-  ['_callback', '_callTickHandler', '_tickHandler', 'run', 'stop', 'reset', 'setTime'].forEach((name) => {
-    t.equal(typeof timer[name], 'function', `init: ${name} is a function`);
-  });
-
-  timer.run();
+  ti.run();
 
 });

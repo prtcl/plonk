@@ -4,7 +4,7 @@ import test from 'tape';
 import animationFrame from '../src/_animationFrame';
 
 test('animationFrame', (t) => {
-  t.equal(typeof animationFrame, 'function', 'animationFrame is a function');
+  t.equal(typeof animationFrame, 'function', `animationFrame is the function ${animationFrame.name}`);
 
   let n = 0;
 

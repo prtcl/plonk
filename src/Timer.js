@@ -2,11 +2,20 @@
 import now from './now';
 import toNumber from './toNumber';
 
+const SIXTY_FPS = 1000 / 60;
+
 // Generic high-resolution timer class that forms the basis for all other timers
 
 export default class Timer {
 
   constructor (time, callback) {
+    if (arguments.length >= 2) {
+      time = Math.max(toNumber(time, SIXTY_FPS), 0);
+    } else if (arguments.length === 1) {
+      callback = time || callback;
+      time = SIXTY_FPS;
+    }
+
     if (typeof callback !== 'function') {
       throw new TypeError('Timer callback needs to be a function');
     }
@@ -17,7 +26,7 @@ export default class Timer {
     this._prev = 0;
 
     this.isRunning = false;
-    this.time = this._initialTime = toNumber(time, 1000 / 60);
+    this.time = this._initialTime = time;
     this.interval = 0;
 
     this.reset();
@@ -93,7 +102,7 @@ export default class Timer {
   }
 
   setTime (time = this.time) {
-    this.time = this._initialTime = toNumber(time, this.time);
+    this.time = this._initialTime = Math.max(toNumber(time, this.time), 0);
 
     return this;
   }

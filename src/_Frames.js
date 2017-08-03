@@ -6,8 +6,8 @@ import Timer from './Timer';
 
 export default class Frames extends Timer {
 
-  constructor (time, callback) {
-    super(time, callback);
+  constructor (...args) {
+    super(...args);
 
     this._tickHandler = animationFrame;
     this._timeOffset = -5;
