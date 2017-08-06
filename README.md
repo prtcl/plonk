@@ -21,11 +21,10 @@ $ npm install plonk
 // ES6
 import plonk from 'plonk';
 import { metro } from 'plonk';
-import metro from 'plonk/metro';
 
 // CommonJS
 const plonk = require('plonk');
-const metro = require('plonk/metro');
+const { metro } = require('plonk');
 ```
 
 ## License

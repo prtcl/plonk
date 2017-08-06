@@ -2,11 +2,12 @@
 
 const fs = require('fs'),
       rollup = require('rollup').rollup,
-      babelPlugin = require('rollup-plugin-babel'),
-      babelNode = require('rollup-plugin-node-resolve'),
-      commonjsPlugin = require('rollup-plugin-commonjs'),
-      babel = require('babel-core'),
+      babel = require('rollup-plugin-babel'),
       UglifyJS = require('uglify-js');
+
+const readFile = denodeify(fs.readFile),
+      writeFile = denodeify(fs.writeFile),
+      copyFile = (src, dest) => readFile(src).then((res) => writeFile(dest, res));
 
 const pkg = require('../package.json');
 
@@ -29,9 +30,9 @@ const bundles = [
 
 Promise.all(bundles.map(compileBundle))
   .then(() => uglifyModule(bundles[0].filename))
-  .then(() => getModuleFilenames())
-  .then((files) => Promise.all(files.map(compileModule)))
   .then(() => writePackageJson())
+  .then(() => copyFile('README.md', 'dist/README.md'))
+  .then(() => copyFile('docs.md', 'dist/docs.md'))
   .then(() => console.log('Done'))
   .catch((err) => console.error(err));
 
@@ -43,33 +44,25 @@ function compileBundle (config) {
     banner,
     entry: 'src/index.js',
     plugins: [
-      babelPlugin({
+      babel({
         babelrc: false,
         exclude: 'node_modules/**',
-        presets: ['es2015-rollup'],
-        plugins: [
-          ['transform-runtime', {
-            helpers: false,
-            polyfill: true,
-            regenerator: true,
-            moduleName: 'babel-runtime'
+        presets: [
+          ['es2015', {
+            modules: false
           }]
+        ],
+        plugins: [
+          'external-helpers'
         ]
-      }),
-      babelNode({
-        module: true,
-        main: true
-      }),
-      commonjsPlugin({
-        include: 'node_modules/**'
       })
     ]
   })
   .then((bundle) => bundle.write({
     dest: `dist/${config.filename}`,
     format: config.format,
-    moduleId: pkg.name,
-    moduleName: pkg.name
+    moduleName: pkg.name,
+    amd: { id: pkg.name }
   }));
 }
 
@@ -80,55 +73,14 @@ function uglifyModule (filename) {
   const src = `dist/${filename}`,
         dest = `dist/${filename.replace('.js', '.min.js')}`;
 
-  return readFile(src)
+  return readFile(src, 'utf8')
     .then((data) => {
       const res = UglifyJS.minify(data);
+      if (res.error) {
+        throw res.error;
+      }
       return writeFile(dest, res.code);
     });
-}
-
-function getModuleFilenames () {
-  return new Promise((resolve, reject) => {
-    fs.readdir('src', (err, items) => {
-      if (err) return reject(err);
-
-      const files = items
-        .filter((d) => d.indexOf('js') !== -1)
-        .filter((d) => d.indexOf('index') === -1)
-        .sort((a, b) => a.localeCompare(b));
-
-      resolve(files);
-    });
-  });
-}
-
-function compileModule (filename) {
-
-  console.log(`Compiling ${filename}`);
-
-  const src = `src/${filename}`,
-        dest = `dist/${filename}`;
-
-  return transformFile(src)
-    .then((code) => writeFile(dest, code));
-}
-
-function transformFile (filename) {
-  const options = {
-    babelrc: false,
-    presets: ['es2015'],
-    plugins: [
-      'transform-runtime',
-      'add-module-exports'
-    ]
-  };
-
-  return new Promise((resolve, reject) => {
-    babel.transformFile(filename, options, (err, res) => {
-      if (err) return reject(err);
-      resolve(res.code);
-    });
-  });
 }
 
 function writePackageJson () {
@@ -152,20 +104,19 @@ function writePackageJson () {
   return writeFile('dist/package.json', data);
 }
 
-function readFile (filename) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filename, 'utf8', (err, data) => {
-      if (err) return reject(err);
-      resolve(data);
-    });
-  });
-}
+function denodeify (fn) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('nodeify requires a function');
+  }
 
-function writeFile (dest, data) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(dest, data, (err) => {
-      if (err) return reject(err);
-      resolve();
+  return (...args) => {
+    return new Promise((resolve, reject) => {
+      args.push((err, res) => {
+        if (err) return reject(err);
+        resolve(res);
+      });
+
+      fn(...args);
     });
-  });
+  };
 }
