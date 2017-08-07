@@ -27,6 +27,15 @@ const plonk = require('plonk');
 const { metro } = require('plonk');
 ```
 
+Or, the oldest school:
+
+```
+$ cp node_modules/plonk/plonk[.min].js path/to/scripts/
+```
+```html
+<script src="path/to/scripts/plonk[.min].js"></script>
+```
+
 ## License
 
 MIT
