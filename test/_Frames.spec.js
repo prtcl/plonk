@@ -126,16 +126,19 @@ test('Frames (callback)', (t) => {
 
   let prev = now();
 
+  let min = Math.floor(SIXTY_FPS - 5),
+      max = Math.floor(SIXTY_FPS * 3);
+
   let ti = new Frames((interval, i, elapsed) => {
     if (i === 0) {
-      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
-      t.ok(interval === 0, `tick: ${interval} equals 0`);
+      t.ok(now() >= prev, `difference ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `interval ${interval} equals 0`);
     } else {
-      t.ok(now() >= prev + 11, `tick: ${now()} is greater than ${prev + 11}`);
-      t.ok(interval >= 11 && interval <= 32, `tick: ${interval} is in 11...32`);
+      t.ok(now() >= prev + min, `difference ${now()} is greater than ${prev + min}`);
+      t.ok(interval >= min && interval <= max, `interval ${interval} is in ${min}...${max}`);
     }
-    t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);
-    t.ok(elapsed >= (i * 11) && elapsed <= (i * 32), `tick: ${elapsed} is in ${(i * 11)}...${(i * 32)}`);
+    t.ok(i >= 0 && i < 20, `iterations ${i} is in 0...19`);
+    t.ok(elapsed >= (i * min) && elapsed <= (i * max), `elapsed ${elapsed} is in ${(i * min)}...${(i * max)}`);
 
     prev = now();
 

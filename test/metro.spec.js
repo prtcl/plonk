@@ -29,15 +29,15 @@ test('metro (callback)', (t) => {
     if (i === 0) {
       t.equal(typeof stop, 'function', 'stop is a function');
 
-      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
-      t.ok(interval === 0, `tick: ${interval} equals 0`);
+      t.ok(now() >= prev, `difference ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `interval ${interval} equals 0`);
     } else {
-      t.ok(now() >= prev + 50, `tick: ${now()} is greater than ${prev + 50}`);
-      t.ok(interval >= 50 && interval <= 60, `tick: ${interval} is in 50...60`);
+      t.ok(now() >= prev + 50, `difference ${now()} is greater than ${prev + 50}`);
+      t.ok(interval >= 50 && interval <= 80, `interval ${interval} is in 50...80`);
     }
 
-    t.ok(i >= 0 && i <= 9, `tick: ${i} is in 0...9`);
-    t.ok(elapsed >= (i * 50) && elapsed <= (i * 60), `tick: ${elapsed} is in ${(i * 50)}...${(i * 60)}`);
+    t.ok(i >= 0 && i <= 9, `iterations ${i} is in 0...9`);
+    t.ok(elapsed >= (i * 50) && elapsed <= (i * 80), `elapsed ${elapsed} is in ${(i * 50)}...${(i * 80)}`);
 
     prev = now();
 

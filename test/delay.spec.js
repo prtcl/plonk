@@ -30,15 +30,15 @@ test('delay (callback)', (t) => {
     if (i === 0) {
       t.equal(typeof stop, 'function', 'stop is a function');
 
-      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
-      t.ok(interval === 0, `tick: ${interval} equals 0`);
-      t.ok(i === 0, `tick: ${i} equals 0`);
-      t.ok(elapsed === 0, `tick: ${elapsed} equals 0`);
+      t.ok(now() >= prev, `difference ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `interval ${interval} equals 0`);
+      t.ok(i === 0, `iterations ${i} equals 0`);
+      t.ok(elapsed === 0, `elapsed ${elapsed} equals 0`);
     } else {
-      t.ok(now() >= prev + 10, `tick: ${now()} is greater than ${prev + 10}`);
-      t.ok(interval >= 10 && interval <= 110, `tick: ${interval} is in 10...110`);
-      t.ok(i >= 0 && i <= 9, `tick: ${i} is in 0...9`);
-      t.ok(elapsed >= (i * 10) && elapsed <= (i * 110), `tick: ${elapsed} is in 0...${(i * 110)}`);
+      t.ok(now() >= prev + 10, `difference ${now()} is greater than ${prev + 10}`);
+      t.ok(interval >= 10 && interval <= 130, `interval ${interval} is in 10...130`);
+      t.ok(i >= 0 && i <= 9, `iterations ${i} is in 0...9`);
+      t.ok(elapsed >= (i * 10) && elapsed <= (i * 130), `elapsed ${elapsed} is in 0...${(i * 130)}`);
     }
 
     prev = now();

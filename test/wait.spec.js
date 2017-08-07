@@ -10,17 +10,17 @@ test('wait', (t) => {
 
   wait()
     .then((elapsed) => {
-      t.ok(elapsed >= 0 && elapsed <= 30, `then: ${elapsed} is in 0...10`);
+      t.ok(elapsed >= 0 && elapsed <= 30, `elapsed ${elapsed} is in 0...30`);
 
       return wait(50);
     })
     .then((elapsed) => {
-      t.ok(elapsed >= 49 && elapsed <= 70, `then: ${elapsed} is in 50...60`);
+      t.ok(elapsed >= 49 && elapsed <= 80, `elapsed ${elapsed} is in 49...80`);
 
       return wait(500);
     })
     .then((elapsed) => {
-      t.ok(elapsed >= 499 && elapsed <= 520, `then: ${elapsed} is in 500...510`);
+      t.ok(elapsed >= 499 && elapsed <= 530, `elapsed ${elapsed} is in 499...530`);
 
       t.end();
     });

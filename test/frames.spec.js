@@ -33,14 +33,14 @@ test('frames (callback)', (t) => {
     if (i === 0) {
       t.equal(typeof stop, 'function', 'stop is a function');
 
-      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
-      t.ok(interval === 0, `tick: ${interval} equals 0`);
+      t.ok(now() >= prev, `difference ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `interval ${interval} equals 0`);
     } else {
-      t.ok(now() >= prev + fps, `tick: ${now()} is greater than ${prev + fps}`);
-      t.ok(interval >= fps && interval <= fps + 25, `tick: ${interval} is in ${fps}...${fps + 25}`);
+      t.ok(now() >= prev + fps, `difference ${now()} is greater than ${prev + fps}`);
+      t.ok(interval >= fps && interval <= fps + 30, `interval ${interval} is in ${fps}...${fps + 30}`);
     }
-    t.ok(i >= 0 && i < 10, `tick: ${i} is in 0...10`);
-    t.ok(elapsed >= (i * fps) && elapsed <= (i * (fps + 25)), `tick: ${elapsed} is in ${(i * fps)}...${(i * (fps + 25))}`);
+    t.ok(i >= 0 && i < 10, `iterations ${i} is in 0...10`);
+    t.ok(elapsed >= (i * fps) && elapsed <= (i * (fps + 30)), `elapsed ${elapsed} is in ${(i * fps)}...${(i * (fps + 30))}`);
 
     prev = now();
 
@@ -101,13 +101,13 @@ test('frames (fps)', (t) => {
   function testFps (fps) {
     const ms = 1000 / fps,
           min = ms - 5,
-          max = ms + 20;
+          max = ms + 30;
 
     return frames(fps, (int, i, elpsd, stop) => {
       if (i === 0) {
-        t.equal(int, 0, '${int} equals 0');
+        t.equal(int, 0, `interval ${int} equals 0`);
       } else {
-        t.ok(int >= min && int <= max, `${int} is in ${min}...${max}`);
+        t.ok(int >= min && int <= max, `interval ${int} is in ${min}...${max}`);
       }
 
       if (i === 9) {

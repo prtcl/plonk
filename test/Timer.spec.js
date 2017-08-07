@@ -126,14 +126,14 @@ test('Timer (callback)', (t) => {
 
   let ti = new Timer((interval, i, elapsed) => {
     if (i === 0) {
-      t.ok(now() >= prev, `tick: ${now()} is greater than ${prev}`);
-      t.ok(interval === 0, `tick: ${interval} equals 0`);
+      t.ok(now() >= prev, `difference ${now()} is greater than ${prev}`);
+      t.ok(interval === 0, `interval ${interval} equals 0`);
     } else {
-      t.ok(now() >= prev + 16, `tick: ${now()} is greater than ${prev + 16}`);
-      t.ok(interval >= 16 && interval <= 32, `tick: ${interval} is in 16...32`);
+      t.ok(now() >= prev + 16, `difference ${now()} is greater than ${prev + 16}`);
+      t.ok(interval >= 16 && interval <= 48, `interval ${interval} is in 16...48`);
     }
-    t.ok(i >= 0 && i < 20, `tick: ${i} is in 0...19`);
-    t.ok(elapsed >= (i * 16) && elapsed <= (i * 32), `tick: ${elapsed} is in ${(i * 16)}...${(i * 32)}`);
+    t.ok(i >= 0 && i < 20, `iterations ${i} is in 0...19`);
+    t.ok(elapsed >= (i * 16) && elapsed <= (i * 48), `elapsed ${elapsed} is in ${(i * 16)}...${(i * 48)}`);
 
     prev = now();
 

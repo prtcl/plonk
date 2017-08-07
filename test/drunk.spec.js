@@ -10,16 +10,19 @@ test('drunk', (t) => {
 
   t.equal(typeof d, 'function', 'drunk() is a function factory');
 
-  const cases = new Array(20)
-    .fill()
-    .map(() => d());
+  const cases = [];
+  for (let i = 0; i < 20; i++) {
+    cases.push(d());
+  }
 
   let min = -1,
       max = 1,
       step = 0.1,
       prev;
 
-  for (let [i, n] of cases.entries()) {
+  for (let i = 0; i < cases.length; i++) {
+    let n = cases[i];
+
     t.ok(n >= min && n <= max, `${n} is in ${min}...${max}`);
 
     prev = cases[i - 1] || n;

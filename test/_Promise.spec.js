@@ -511,21 +511,21 @@ test('Promise (chaining)', (t) => {
   createTimerPromise()
     .progress((val) => {
       p1++;
-      t.equal(p1, n, `p1 progress: ${val}`);
+      t.equal(p1, n, `p1 progress ${val}`);
     })
     .then((val) => {
       p1++;
-      t.equal(p1, n, `p1 then: ${val}`);
+      t.equal(p1, n, `p1 then ${val}`);
 
       return createTimerPromise();
     })
     .progress((val) => {
       p2++;
-      t.equal(p2, n, `p2 progress: ${val}`);
+      t.equal(p2, n, `p2 progress ${val}`);
     })
     .then((val) => {
       p2++;
-      t.equal(p2, n, `p2 then: ${val}`);
+      t.equal(p2, n, `p2 then ${val}`);
     });
 
 });

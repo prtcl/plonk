@@ -7,9 +7,10 @@ import rand from '../src/rand';
 test('clamp', (t) => {
   t.equals(typeof clamp, 'function', 'clamp is a function');
 
-  const cases = new Array(10)
-    .fill()
-    .map(() => rand(-1.25, 1.25));
+  const cases = [];
+  for (let i = 0; i < 10; i++) {
+    cases.push(rand(-1.25, 1.25));
+  }
 
   for (let n of cases) {
     let res = clamp(n);
