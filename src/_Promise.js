@@ -26,7 +26,7 @@ export default class Promise {
     this._done = false;
     this._state = PENDING;
     this._value = null;
-    this._handlers = [];
+    this._h = { res: [], rej: [], prog: [] };
 
     if (typeof resolver === 'function') {
       initializeResolver(this, resolver);
@@ -184,43 +184,47 @@ export function createNotify (promise) {
   };
 }
 
-export class Handler {
-
-  constructor (onResolved, onRejected, onNotify) {
-    this.onResolved = typeof onResolved === 'function' ? once(onResolved) : null;
-    this.onRejected = typeof onRejected === 'function' ? once(onRejected) : null;
-    this.onNotify = typeof onNotify === 'function' ? onNotify : null;
+export function subscribe (promise, res, rej, prog) {
+  if (typeof res === 'function') {
+    promise._h.res.push(once(res));
   }
 
+  if (typeof rej === 'function') {
+    promise._h.rej.push(once(rej));
+  }
+
+  if (typeof prog === 'function') {
+    promise._h.prog.push(prog);
+  }
 }
 
-export function subscribe (promise, ...args) {
-  promise._handlers.push(new Handler(...args));
-}
 
 export function publish (promise) {
-  let method;
+  let handlers;
 
   switch (promise._state) {
     case PENDING:
-      method = 'onNotify';
+      handlers = promise._h.prog;
       break;
     case FULFILLED:
-      method = 'onResolved';
+      handlers = promise._h.res;
       break;
     case REJECTED:
-      method = 'onRejected';
+      handlers = promise._h.rej;
       break;
-    default:
-      method = 'onNotify';
   }
 
-  const val = promise._value;
+  if (!handlers.length) {
+    return;
+  }
+
+  const val = promise._value,
+        len = handlers.length;
 
   setTimeout(() => {
-    promise._handlers.forEach((h) => {
-      const fn = h[method];
-      fn && fn(val);
-    });
+    for (let i = 0; i < len; i++) {
+      const h = handlers[i];
+      h && h(val);
+    }
   }, 0);
 }

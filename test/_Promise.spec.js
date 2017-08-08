@@ -13,7 +13,6 @@ import Promise, {
   createResolve,
   createReject,
   createNotify,
-  Handler,
   subscribe,
   publish
 } from '../src/_promise';
@@ -46,47 +45,52 @@ test('Promise', (t) => {
 
   t.ok(n === 1, 'Promise(resolver) is syncronous');
 
-  t.equals(p._done, false, 'promise._done equals false');
-  t.equals(p._state, PENDING, 'promise._state equals PENDING');
-  t.equals(p._value, null, 'promise._value equals null');
-  t.ok(typeof p._handlers === 'object' && p._handlers.length === 0, 'promise._handlers is an array');
+  t.equal(p._done, false, 'promise._done equals false');
+  t.equal(p._state, PENDING, 'promise._state equals PENDING');
+  t.equal(p._value, null, 'promise._value equals null');
+  t.equal(typeof p._h, 'object', 'promise._h is an object');
+
+  ['res', 'rej', 'prog'].forEach((handler) => {
+    const arr = p._h[handler];
+    t.ok(typeof arr === 'object' && ('length' in arr) && arr.length === 0, `promise._h.${handler} is an array`);
+  });
 
   const METHODS = ['done', 'then', 'progress', 'catch'];
 
   METHODS.forEach((method) => {
-    t.equals(typeof p[method], 'function', `promise.${method} is a function`);
+    t.equal(typeof p[method], 'function', `promise.${method} is a function`);
   });
 
   t.end();
 });
 
 test('Promise (mutations)', (t) => {
-  t.equals(typeof progress, 'function', 'progress is a function');
+  t.equal(typeof progress, 'function', 'progress is a function');
 
   for (let [key, val] of values) {
     const p = new Promise();
     progress(p, val);
-    t.equals(p._value, val, `progress(promise, ${key}) correctly sets promise._value while promise._state is PENDING`);
+    t.equal(p._value, val, `progress(promise, ${key}) correctly sets promise._value while promise._state is PENDING`);
 
     p._state = FULFILLED;
     p._done = true;
     p._value = 1;
     progress(p, val);
-    t.equals(p._value, 1, `progress(promise, ${key}) bails out when promise._state is not PENDING`);
+    t.equal(p._value, 1, `progress(promise, ${key}) bails out when promise._state is not PENDING`);
   }
 
-  t.equals(typeof fulfill, 'function', 'fulfill is a function');
+  t.equal(typeof fulfill, 'function', 'fulfill is a function');
 
   for (let [key, val] of values) {
     const p = new Promise();
     fulfill(p, val);
-    t.equals(p._value, val, `fulfill(promise, ${key}) correctly fulfills the promise while promise._state is PENDING`);
+    t.equal(p._value, val, `fulfill(promise, ${key}) correctly fulfills the promise while promise._state is PENDING`);
 
     fulfill(p, 2);
     t.ok(p._value === val && p._state === FULFILLED, `fulfill(promise, ${key}) bails out when promise._state is not PENDING`);
   }
 
-  t.equals(typeof reject, 'function', 'reject is a function');
+  t.equal(typeof reject, 'function', 'reject is a function');
 
   for (let [key, val] of values) {
     const p = new Promise();
@@ -102,7 +106,7 @@ test('Promise (mutations)', (t) => {
 
 test('Promise (resolve)', (t) => {
 
-  t.equals(typeof resolve, 'function', 'resolve is a function');
+  t.equal(typeof resolve, 'function', 'resolve is a function');
 
   for (let [key, val] of values) {
     const p = new Promise();
@@ -126,9 +130,9 @@ test('Promise (resolve)', (t) => {
   let isThenable = false;
   const thenable = {
     then (a, b, c) {
-      t.equals(typeof a, 'function', 'thenable.then receives a resolve function');
-      t.equals(typeof b, 'function', 'thenable.then receives a reject function');
-      t.equals(typeof c, 'function', 'thenable.then receives a notify function');
+      t.equal(typeof a, 'function', 'thenable.then receives a resolve function');
+      t.equal(typeof b, 'function', 'thenable.then receives a reject function');
+      t.equal(typeof c, 'function', 'thenable.then receives a notify function');
       isThenable = true;
     }
   };
@@ -155,10 +159,10 @@ test('Promise (factories)', (t) => {
 
   for (let [key, val] of values) {
     p = new Promise();
-    createNotify(p)(val);
     p.progress((v) => {
       t.equal(v, val, `createNotify(promise)(${key}) correctly notifies promise`);
     });
+    createNotify(p)(val);
   }
 
   p = new Promise();
@@ -311,56 +315,73 @@ test('Promise (initialize)', (t) => {
 
 });
 
-test('Promise (handler)', (t) => {
-  const METHODS = ['onResolved', 'onRejected', 'onNotify'];
-  let h;
-
-  t.equals(typeof Handler, 'function', 'Handler is a function');
-
-  h = new Handler();
-  METHODS.forEach((method) => {
-    t.equals(h[method], null, `handler.${method} is null when no arguments are passed in to constructor`);
-  });
-
-  h = new Handler(1, true, 'abc');
-  METHODS.forEach((method) => {
-    t.equals(h[method], null, `handler.${method} is null when non-function arguments are passed in to constructor`);
-  });
-
-  let n = 0;
-  h = new Handler((v) => (n = v), (v) => (n = v), (v) => (n = v));
-  METHODS.forEach((method) => {
-    t.equals(typeof h[method], 'function', `handler.${method} is a function when function arguments are passed in to constructor`);
-  });
-
-  h.onResolved(1);
-  t.equals(n, 1, 'handler.onResolved calls correctly');
-
-  h.onResolved(0);
-  t.equals(n, 1, 'handler.onResolved can only be called once');
-
-  h.onRejected(2);
-  t.equals(n, 2, 'handler.onRejected calls correctly');
-
-  h.onRejected(0);
-  t.equals(n, 2, 'handler.onRejected can only be called once');
-
-  h.onNotify(1);
-  t.equals(n, 1, 'handler.onNotify calls correctly');
-
-  h.onNotify(2);
-  t.equals(n, 2, 'handler.onNotify can be called multiple times');
-
-  t.end();
-});
-
 test('Promise (pubsub)', (t) => {
-  t.plan(6);
+  t.plan(24);
 
   let p;
 
   t.equal(typeof subscribe, 'function', 'subscribe is a function');
   t.equal(typeof publish, 'function', 'publish is a function');
+
+  p = new Promise();
+
+  subscribe(p);
+
+  t.equal(p._h.res.length, 0, 'subscribe(promise) does not add a resolved handler');
+  t.equal(p._h.rej.length, 0, 'subscribe(promise) does not add a rejected handler');
+  t.equal(p._h.prog.length, 0, 'subscribe(promise) does not add a progress handler');
+
+  let res = 0;
+  p = new Promise();
+
+  subscribe(p, () => {
+    res++;
+    t.equal(res, 1, 'resolved handler can only be called once');
+  });
+
+  t.equal(p._h.res.length, 1, 'subscribe(promise, fn, null, null) adds a resolved handler');
+  t.equal(typeof p._h.res[0], 'function', 'resolved handler is a function');
+  t.equal(p._h.rej.length, 0, 'subscribe(promise, fn, null, null) does not add a rejected handler');
+  t.equal(p._h.prog.length, 0, 'subscribe(promise, fn, null, null) does not add a progress handler');
+
+  p._state = FULFILLED;
+  publish(p);
+  publish(p);
+
+  let rej = 0;
+  p = new Promise();
+
+  subscribe(p, null, () => {
+    rej++;
+    t.equal(rej, 1, 'rejected handler can only be called once');
+  });
+
+  t.equal(p._h.rej.length, 1, 'subscribe(promise, null, fn, null) adds a rejected handler');
+  t.equal(typeof p._h.rej[0], 'function', 'rejected handler is a function');
+  t.equal(p._h.res.length, 0, 'subscribe(promise, null, fn, null) does not add a resolved handler');
+  t.equal(p._h.prog.length, 0, 'subscribe(promise, null, fn, null) does not add a progress handler');
+
+  p._state = REJECTED;
+  publish(p);
+  publish(p);
+
+  let prog = 0;
+  p = new Promise();
+
+  subscribe(p, null, null, (val) => {
+    prog++;
+    t.equal(prog, val, 'notified handler can be called more than once');
+  });
+
+  t.equal(p._h.prog.length, 1, 'subscribe(promise, null, null, fn) adds a progress handler');
+  t.equal(typeof p._h.prog[0], 'function', 'progress handler is a function');
+  t.equal(p._h.res.length, 0, 'subscribe(promise, null, null, fn) does not add a resolved handler');
+  t.equal(p._h.rej.length, 0, 'subscribe(promise, null, null, fn) does not add a rejected handler');
+
+  p._value = 1;
+  publish(p);
+  p._value = 2;
+  publish(p);
 
   p = new Promise();
   subscribe(p,
@@ -374,7 +395,6 @@ test('Promise (pubsub)', (t) => {
       t.equal(val, 1, 'publish(promise) correctly notifies progress handlers');
     }
     );
-  t.ok(p._handlers.length === 1 && p._handlers[0] instanceof Handler, 'subscribe(promise, ...handlers) correctly adds a Handler');
 
   p._value = 1;
   publish(p);
@@ -390,19 +410,16 @@ test('Promise (pubsub)', (t) => {
 });
 
 test('Promise (methods)', (t) => {
-  t.plan(28);
+  t.plan(24);
 
-  let p, res, h;
+  let p, res;
 
   p = new Promise();
   res = p.done(() => 1, () => 1, () => 1);
   t.equal(p, res, 'promise.done() returns this');
-
-  t.equal(p._handlers.length, 1, 'promise.done() adds a Handler to promise._handlers');
-  h = p._handlers[0];
-  ['onResolved', 'onRejected', 'onNotify'].forEach((m) => {
-    t.equal(typeof h[m], 'function', `handler.${m} is a function`);
-  });
+  t.equal(p._h.prog.length, 1, 'promise.done() adds a progress handler');
+  t.equal(p._h.res.length, 1, 'promise.done() adds a resolved handler');
+  t.equal(p._h.rej.length, 1, 'promise.done() adds a rejected handler');
 
   p = new Promise();
   p.done((val) => {
@@ -426,11 +443,9 @@ test('Promise (methods)', (t) => {
   res = p.then(() => 1, () => 1, () => 1);
   t.ok(res instanceof Promise, 'promise.then() returns a Promise');
 
-  t.equal(p._handlers.length, 1, 'promise.then() adds a Handler to promise._handlers');
-  h = p._handlers[0];
-  ['onResolved', 'onRejected', 'onNotify'].forEach((m) => {
-    t.equal(typeof h[m], 'function', `handler.${m} is a function`);
-  });
+  t.equal(p._h.prog.length, 1, 'promise.then() adds a progress handler');
+  t.equal(p._h.res.length, 1, 'promise.then() adds a resolved handler');
+  t.equal(p._h.rej.length, 1, 'promise.then() adds a rejected handler');
 
   p = new Promise();
   p.then((val) => {
@@ -453,12 +468,9 @@ test('Promise (methods)', (t) => {
   p = new Promise();
   res = p.catch(() => 1);
   t.ok(res instanceof Promise, 'promise.catch() returns a Promise');
-
-  t.equal(p._handlers.length, 1, 'promise.catch() adds a Handler to promise._handlers');
-  h = p._handlers[0];
-  t.equal(typeof h.onResolved, 'function', 'handler.onResolved is a function');
-  t.equal(typeof h.onRejected, 'function', 'handler.onRejected is a function');
-  t.equal(h.onNotify, null, 'handler.onNotify is null');
+  t.equal(p._h.rej.length, 1, 'promise.catch() adds a rejected handler');
+  t.equal(p._h.res.length, 1, 'promise.catch() adds a resolved handler');
+  t.equal(p._h.prog.length, 0, 'promise.catch() does not add a progress handler');
 
   p = new Promise();
   p.catch((val) => {
@@ -469,12 +481,9 @@ test('Promise (methods)', (t) => {
   p = new Promise();
   res = p.progress(() => 1);
   t.equal(p, res, 'promise.progress() returns this');
-
-  t.equal(p._handlers.length, 1, 'promise.progress() adds a Handler to promise._handlers');
-  h = p._handlers[0];
-  t.equal(h.onResolved, null, 'handler.onResolved is a null');
-  t.equal(h.onRejected, null, 'handler.onRejected is a null');
-  t.equal(typeof h.onNotify, 'function', 'handler.onNotify is a function');
+  t.equal(p._h.prog.length, 1, 'promise.progress() adds a progress handler');
+  t.equal(p._h.res.length, 0, 'promise.progress() does not add a resolved handler');
+  t.equal(p._h.rej.length, 0, 'promise.progress() does not add a rejected handler');
 
   p = new Promise();
   p.progress((val) => {
