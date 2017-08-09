@@ -2,7 +2,7 @@
 
 const fs = require('fs'),
       rollup = require('rollup').rollup,
-      babel = require('rollup-plugin-babel'),
+      buble = require('rollup-plugin-buble'),
       UglifyJS = require('uglify-js');
 
 const readFile = denodeify(fs.readFile),
@@ -43,20 +43,7 @@ function compileBundle (config) {
   return rollup({
     banner,
     entry: 'src/index.js',
-    plugins: [
-      babel({
-        babelrc: false,
-        exclude: 'node_modules/**',
-        presets: [
-          ['es2015', {
-            modules: false
-          }]
-        ],
-        plugins: [
-          'external-helpers'
-        ]
-      })
-    ]
+    plugins: [buble()]
   })
   .then((bundle) => bundle.write({
     dest: `dist/${config.filename}`,
