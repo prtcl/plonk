@@ -6,9 +6,10 @@ plonk is a JavaScript micro-library that provides timers, envelopes, and random 
 Core concepts:
 
 * Every time-based function returns a promise that has a progress method.
-* Every time-based function receives a callback function, which itself receives info like elapsed time, number of iterations, etc.
+* Every time-based function accepts a callback, which itself receives info like elapsed time, number of iterations, etc.
 * Many functions accept return values from callbacks that are either passed to the returned promise, or used to control behavior (e.g. interval timing).
 * All reported time values (intervals, elapsed time, etc) use a performance.now() style timestamp.
+* All timer functions catch errors that are thrown from their callbacks, then stop the timer and pass the error down the promise chain.
 * Unless otherwise noted, functions like `plonk.env` run at 60fps (e.g. 1000ms / 60fps = 16.666ms).
 
 Why promises instead of events? Promises are chainable, so you can do cool things like create ASR envelopes with just a few functions:
@@ -308,27 +309,32 @@ plonk.metro(time, (interval, i, elapsed, stop) => {
 Since metro passes the return value of it's callback to the returned promise, you can do cool things like process an array over time.
 
 ```javascript
-arrayOverTime([1, 2, 3, 4, 5])
+arrayOverTime([1, 2, 3, 4, 5], (n) => n * 2)
   .progress((n) => {
     console.log(n);
-    // => 1
-    //    2
-    //    3
+    // => 2
     //    4
-    //    5
+    //    6
+    //    8
+    //    10
   })
   .then((arr) => {
     console.log(arr);
-    // => [ 1, 2, 3, 4, 5 ]
+    // => [ 2, 4, 6, 8, 10 ]
   });
 
-function arrayOverTime (arr = []) {
+function arrayOverTime (arr, callback) {
+  const ret = [];
+
   return plonk.metro(1000 / 60, (int, idx, elpsd, stop) => {
     if (idx > arr.length - 1) {
-      return stop(arr);
+      return stop(ret);
     }
 
-    return arr[idx];
+    const val = callback(arr[idx]);
+    ret.push(val);
+
+    return val;
   });
 }
 ```
