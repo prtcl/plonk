@@ -17,21 +17,20 @@ test('drunk', (t) => {
 
   let min = -1,
       max = 1,
-      step = 0.1,
-      prev;
+      step = 0.1;
 
-  for (let i = 0; i < cases.length; i++) {
-    let n = cases[i];
+  cases
+    .map((n, i) => [n, cases[i - 1] || n])
+    .forEach((c) => {
+      const [n, prev] = c;
 
-    t.ok(n >= min && n <= max, `${n} is in ${min}...${max}`);
+      t.ok(n >= min && n <= max, `${n} is in ${min}...${max}`);
 
-    prev = cases[i - 1] || n;
+      let pMin = Math.max(prev - step, min),
+          pMax = Math.min(prev + step, max);
 
-    let pMin = Math.max(prev - step, min),
-        pMax = Math.min(prev + step, max);
-
-    t.ok(n >= pMin && n <= pMax, `${n} is in ${pMin}...${pMax}`);
-  }
+      t.ok(n >= pMin && n <= pMax, `${n} is in ${pMin}...${pMax}`);
+    });
 
   t.end();
 });

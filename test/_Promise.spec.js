@@ -17,14 +17,14 @@ import Promise, {
   publish
 } from '../src/_promise';
 
-const values = new Map([
+const values = [
   [null, null],
   [undefined, undefined],
   [false, false],
   [1, 1],
   ['abc', 'abc'],
   ['{}', {}]
-]);
+];
 
 test('Promise', (t) => {
 
@@ -67,39 +67,48 @@ test('Promise', (t) => {
 test('Promise (mutations)', (t) => {
   t.equal(typeof progress, 'function', 'progress is a function');
 
-  for (let [key, val] of values) {
-    const p = new Promise();
-    progress(p, val);
-    t.equal(p._value, val, `progress(promise, ${key}) correctly sets promise._value while promise._state is PENDING`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
 
-    p._state = FULFILLED;
-    p._done = true;
-    p._value = 1;
-    progress(p, val);
-    t.equal(p._value, 1, `progress(promise, ${key}) bails out when promise._state is not PENDING`);
-  }
+      progress(p, val);
+      t.equal(p._value, val, `progress(promise, ${key}) correctly sets promise._value while promise._state is PENDING`);
+
+      p._state = FULFILLED;
+      p._done = true;
+      p._value = 1;
+      progress(p, val);
+      t.equal(p._value, 1, `progress(promise, ${key}) bails out when promise._state is not PENDING`);
+    });
 
   t.equal(typeof fulfill, 'function', 'fulfill is a function');
 
-  for (let [key, val] of values) {
-    const p = new Promise();
-    fulfill(p, val);
-    t.equal(p._value, val, `fulfill(promise, ${key}) correctly fulfills the promise while promise._state is PENDING`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
 
-    fulfill(p, 2);
-    t.ok(p._value === val && p._state === FULFILLED, `fulfill(promise, ${key}) bails out when promise._state is not PENDING`);
-  }
+      fulfill(p, val);
+      t.equal(p._value, val, `fulfill(promise, ${key}) correctly fulfills the promise while promise._state is PENDING`);
+
+      fulfill(p, 2);
+      t.ok(p._value === val && p._state === FULFILLED, `fulfill(promise, ${key}) bails out when promise._state is not PENDING`);
+    });
 
   t.equal(typeof reject, 'function', 'reject is a function');
 
-  for (let [key, val] of values) {
-    const p = new Promise();
-    reject(p, val);
-    t.ok(p._value === val && p._state === REJECTED, `reject(promise, ${key}) correctly rejects the promise while promise._state is PENDING`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
 
-    reject(p, new Error());
-    t.ok(p._value === val && p._state === REJECTED, `reject(promise, ${key}) bails out when promise._state is not PENDING`);
-  }
+      reject(p, val);
+      t.ok(p._value === val && p._state === REJECTED, `reject(promise, ${key}) correctly rejects the promise while promise._state is PENDING`);
+
+      reject(p, new Error());
+      t.ok(p._value === val && p._state === REJECTED, `reject(promise, ${key}) bails out when promise._state is not PENDING`);
+    });
 
   t.end();
 });
@@ -108,11 +117,14 @@ test('Promise (resolve)', (t) => {
 
   t.equal(typeof resolve, 'function', 'resolve is a function');
 
-  for (let [key, val] of values) {
-    const p = new Promise();
-    resolve(p, val);
-    t.ok(p._value === val && p._state === FULFILLED, `resolve(promise, ${key}) correctly fulfills promise with ${typeof val} value`);
-  }
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      resolve(p, val);
+      t.ok(p._value === val && p._state === FULFILLED, `resolve(promise, ${key}) correctly fulfills promise with ${typeof val} value`);
+    });
 
   let p;
   p = new Promise();
@@ -151,79 +163,104 @@ test('Promise (factories)', (t) => {
   t.equal(typeof createResolve, 'function', 'createResolve is a function');
   t.equal(typeof createReject, 'function', 'createReject is a function');
 
-  let p, fn;
+  let res;
 
-  p = new Promise();
-  fn = createNotify(p);
-  t.equal(typeof fn, 'function', 'createNotify(promise) returns a function');
+  res = createNotify(new Promise());
+  t.equal(typeof res, 'function', 'createNotify(promise) returns a function');
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    p.progress((v) => {
-      t.equal(v, val, `createNotify(promise)(${key}) correctly notifies promise`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      p.progress((v) => {
+        t.equal(v, val, `createNotify(promise)(${key}) correctly notifies promise`);
+      });
+
+      createNotify(p)(val);
     });
-    createNotify(p)(val);
-  }
 
-  p = new Promise();
-  fn = createResolve(p);
-  t.equal(typeof fn, 'function', 'createResolve(promise) returns a function');
+  res = createResolve(new Promise());
+  t.equal(typeof res, 'function', 'createResolve(promise) returns a function');
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    createResolve(p)(val);
-    p.then((v) => {
-      t.equal(v, val, `createResolve(promise)(${key}) correctly resolves promise`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      createResolve(p)(val);
+
+      p.then((v) => {
+        t.equal(v, val, `createResolve(promise)(${key}) correctly resolves promise`);
+      });
     });
-  }
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    createResolve(p, (v) => v)(val);
-    p.then((v) => {
-      t.equal(v, val, `createResolve(promise, (val) => val)(${key}) correctly resolves promise`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      createResolve(p, (v) => v)(val);
+
+      p.then((v) => {
+        t.equal(v, val, `createResolve(promise, (val) => val)(${key}) correctly resolves promise`);
+      });
     });
-  }
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    createResolve(p, (v) => {
-      throw v;
-    })(val);
-    p.catch((v) => {
-      t.equal(v, val, `createResolve(promise, (val) => throw val)(${key}) correctly rejects promise`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      createResolve(p, (v) => {
+        throw v;
+      })(val);
+
+      p.catch((v) => {
+        t.equal(v, val, `createResolve(promise, (val) => throw val)(${key}) correctly rejects promise`);
+      });
     });
-  }
 
-  p = new Promise();
-  fn = createReject(p);
-  t.equal(typeof fn, 'function', 'createReject(promise) returns a function');
+  res = createReject(new Promise());
+  t.equal(typeof res, 'function', 'createReject(promise) returns a function');
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    fn = createReject(p)(val);
-    p.catch((v) => {
-      t.equal(v, val, `createReject(promise)(${key}) correctly rejects promise`);
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      createReject(p)(val);
+
+      p.catch((v) => {
+        t.equal(v, val, `createReject(promise)(${key}) correctly rejects promise`);
+      });
     });
-  }
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    createReject(p, (v) => v)(val);
-    p.then((v) => {
-      t.equal(v, val, `createReject(promise, (val) => val)(${key}) correctly resolves promise`);
-    });
-  }
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
 
-  for (let [key, val] of values) {
-    p = new Promise();
-    createReject(p, (v) => {
-      throw v;
-    })(val);
-    p.catch((v) => {
-      t.equal(v, val, `createReject(promise, (val) => throw val)(${key}) correctly rejects promise`);
+      createReject(p, (v) => v)(val);
+
+      p.then((v) => {
+        t.equal(v, val, `createReject(promise, (val) => val)(${key}) correctly resolves promise`);
+      });
     });
-  }
+
+  values
+    .map((d) => [...d, new Promise()])
+    .forEach((d) => {
+      const [key, val, p] = d;
+
+      createReject(p, (v) => {
+        throw v;
+      })(val);
+
+      p.catch((v) => {
+        t.equal(v, val, `createReject(promise, (val) => throw val)(${key}) correctly rejects promise`);
+      });
+    });
 
 });
 

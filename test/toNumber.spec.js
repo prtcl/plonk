@@ -15,18 +15,24 @@ test('toNumber', (t) => {
     [[{}, 0], 0]
   ];
 
-  for (let [args, res] of cases) {
-    let sArgs = args
-      .map((d) => {
-        if (typeof d !== 'number') {
-          return `'${d}'`;
-        }
-        return d;
-      })
-      .join(', ');
+  cases
+    .map((d) => [...d, toNumber(...d[0])])
+    .forEach((d) => {
+      const [args, res, n] = d;
 
-    t.equal(toNumber(...args), res, `toNumber(${sArgs}) equals ${res}`);
-  }
+      t.equal(n, res, `toNumber(${stringifyArgs(args)}) equals ${res}`);
+    });
 
   t.end();
 });
+
+function stringifyArgs (args) {
+  return args
+    .map((d) => {
+      if (typeof d !== 'number') {
+        return `'${d}'`;
+      }
+      return d;
+    })
+    .join(', ');
+}

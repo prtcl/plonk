@@ -13,9 +13,13 @@ test('scale', (t) => {
     [[3.5, -1, 1, 0, 1], 1]
   ];
 
-  for (let [args, res] of cases) {
-    t.equal(scale(...args), res, `scale(${args.join(', ')}) equals ${res}`);
-  }
+  cases
+    .map((d) => [...d, scale(...d[0])])
+    .forEach((d) => {
+      const [args, res, n] = d;
+
+      t.equal(n, res, `scale(${args.join(', ')}) equals ${res}`);
+    });
 
   t.end();
 });

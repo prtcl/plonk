@@ -16,11 +16,13 @@ test('exp', (t) => {
     [2, 1]
   ];
 
-  for (let [i, o] of cases) {
-    let n = exp(i);
+  cases
+    .map((d) => [...d, exp(d[0])])
+    .forEach((d) => {
+      const [i, o, n] = d;
 
-    t.equal(n, o, `exp(${i}) equals ${o}`);
-  }
+      t.equal(n, o, `exp(${i}) equals ${o}`);
+    });
 
   t.end();
 });

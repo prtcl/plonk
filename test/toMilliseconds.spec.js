@@ -21,18 +21,24 @@ test('toMilliseconds', (t) => {
     [['60fps'], 1000 / 60]
   ];
 
-  for (let [args, res] of cases) {
-    let sArgs = args
-      .map((d) => {
-        if (typeof d !== 'number') {
-          return `'${d}'`;
-        }
-        return d;
-      })
-      .join(', ');
+  cases
+    .map((d) => [...d, toMilliseconds(...d[0])])
+    .forEach((d) => {
+      const [args, res, n] = d;
 
-    t.equal(toMilliseconds(...args), res, `toMilliseconds(${sArgs}) equals ${res}`);
-  }
+      t.equal(n, res, `toMilliseconds(${stringifyArgs(args)}) equals ${res}`);
+    });
 
   t.end();
 });
+
+function stringifyArgs (args) {
+  return args
+    .map((d) => {
+      if (typeof d !== 'number') {
+        return `'${d}'`;
+      }
+      return d;
+    })
+    .join(', ');
+}

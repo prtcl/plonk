@@ -17,9 +17,9 @@ test('once', (t) => {
   let fns = once(() => 1, () => 1, () => 1);
   t.ok(typeof fns === 'object' && fns.length === 3, 'once(fn, fn, fn) returns an array');
 
-  for (let fn of fns) {
+  fns.forEach((fn) => {
     t.equal(typeof fn, 'function', 'fn is a function');
-  }
+  });
 
   n = 0;
   let [fn1, fn2, fn3] = once(
