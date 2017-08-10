@@ -16,7 +16,6 @@ test('clamp', (t) => {
     .map((n) => [n, clamp(n)])
     .forEach((d) => {
       const [n, res] = d;
-      console.log(n, res);
       t.ok(res >= 0 && res <= 1, `clamp(${n}) returns ${res} and is in 0...1`);
     });
 
@@ -24,7 +23,6 @@ test('clamp', (t) => {
     .map((n) => [n, clamp(n, -1, 1)])
     .forEach((d) => {
       const [n, res] = d;
-      console.log(n, res);
       t.ok(res >= -1 && res <= 1, `clamp(${n}, -1, 1) returns ${res} and is in -1...1`);
     });
 
