@@ -359,7 +359,7 @@ function composeOverTime (...fns) {
   fns.reverse();
 
   return function (...args) {
-    const ret;
+    let ret;
 
     return plonk.metro(1, (int, idx, elpsd, stop) => {
       if (idx > fns.length - 1) {
