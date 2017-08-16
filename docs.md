@@ -7,10 +7,8 @@ Core concepts:
 
 * Every time-based function returns a promise that has a progress method.
 * Every time-based function accepts a callback, which itself receives info like elapsed time, number of iterations, etc.
-* Many functions accept return values from callbacks that are either passed to the returned promise, or used to control behavior (e.g. interval timing).
 * All reported time values (intervals, elapsed time, etc) use a performance.now() style timestamp.
 * All timer functions catch errors that are thrown from their callbacks, then stop the timer and pass the error down the promise chain.
-* Unless otherwise noted, functions like `plonk.env` run at 60fps (e.g. 1000ms / 60fps = 16.666ms).
 
 Why promises instead of events? Promises are chainable, so you can do cool things like create ASR envelopes with just a few functions:
 
@@ -205,9 +203,9 @@ plonk.dust(min, max, (interval, i, elapsed, stop) => {
 
 ### env
 
-An envelope that provides linear interpolation of `value` to `target` over `time`.
+An envelope that provides linear interpolation of `value` to `target` over `time`. Runs at 60fps (1000ms / 60fps = 16.666ms).
 
-The optional callback function is passed `value`, `elapsed` (total run time), and a `stop()` function.
+An optional callback function is passed `value`, `elapsed` (total run time), and a `stop()` function.
 
 ```javascript
 let value = -1,
