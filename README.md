@@ -24,7 +24,6 @@ import { metro } from 'plonk';
 
 // CommonJS
 const plonk = require('plonk');
-const { metro } = require('plonk');
 ```
 
 Or, the oldest school:
