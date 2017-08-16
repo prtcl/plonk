@@ -2,12 +2,14 @@
 import test from 'tape';
 
 import now from '../src/now';
-import Timer from '../src/Timer';
+import Timer, { asyncHandler, tickHandler } from '../src/Timer';
 
 const SIXTY_FPS = 1000 / 60;
 
 test('Timer', (t) => {
   t.equal(typeof Timer, 'function', 'Timer is a function');
+  t.equal(typeof asyncHandler, 'function', 'asyncHandler is a function');
+  t.equal(typeof tickHandler, 'function', 'tickHandler is a function');
 
   let ti;
 
@@ -41,6 +43,7 @@ test('Timer', (t) => {
 
   ti = new Timer(() => 0);
 
+  t.equal(ti._asyncHandler, asyncHandler, `_asyncHandler is ${asyncHandler.name}`);
   t.equal(ti._timeOffset, 0, 'Timer#_timeOffset equals 0');
   t.equal(ti._prev, 0, 'Timer#_prev equals 0');
   t.equal(ti.isRunning, false, 'Timer#isRunning equals false');
@@ -52,8 +55,7 @@ test('Timer', (t) => {
 
   const METHODS = [
     '_callback',
-    '_callTickHandler',
-    '_tickHandler',
+    '_asyncHandler',
     'run',
     'stop',
     'reset',

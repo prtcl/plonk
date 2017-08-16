@@ -9,7 +9,7 @@ export default class Frames extends Timer {
   constructor (...args) {
     super(...args);
 
-    this._tickHandler = animationFrame;
+    this._asyncHandler = animationFrame;
     this._timeOffset = -5;
   }
 

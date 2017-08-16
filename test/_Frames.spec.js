@@ -42,7 +42,7 @@ test('Frames', (t) => {
 
   ti = new Frames(() => 0);
 
-  t.equal(ti._tickHandler, animationFrame, `_tickHandler is ${animationFrame.name}`);
+  t.equal(ti._asyncHandler, animationFrame, `_asyncHandler is ${animationFrame.name}`);
   t.equal(ti._timeOffset, -5, '_timeOffset equals -5');
   t.equal(ti._prev, 0, 'Frames#_prev equals 0');
   t.equal(ti.isRunning, false, 'Frames#isRunning equals false');
@@ -54,8 +54,7 @@ test('Frames', (t) => {
 
   const METHODS = [
     '_callback',
-    '_callTickHandler',
-    '_tickHandler',
+    '_asyncHandler',
     'run',
     'stop',
     'reset',

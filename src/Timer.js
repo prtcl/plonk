@@ -20,7 +20,7 @@ export default class Timer {
       throw new TypeError('Timer callback needs to be a function');
     }
 
-    this._tickHandler = tickHandler;
+    this._asyncHandler = asyncHandler;
     this._timeOffset = 0;
     this._callback = callback;
     this._prev = 0;
@@ -32,42 +32,6 @@ export default class Timer {
     this.reset();
   }
 
-  _callTickHandler () {
-    if (!this.isRunning) {
-      return;
-    }
-
-    this._tickHandler(() => {
-
-      // first tick
-      if (this.iterations === 0) {
-        this._callback && this._callback(0, 0, 0);
-        this._prev = now();
-
-        this.iterations = 1;
-
-        return this._callTickHandler();
-      }
-
-      this.interval = now() - this._prev;
-
-      // interval is below target interval
-      if (this.interval <= this.time + this._timeOffset) {
-        return this._callTickHandler();
-      }
-
-      this.elapsed += this.interval;
-      this._callback && this._callback(this.interval, this.iterations, this.elapsed);
-
-      if (this.isRunning) {
-        this._prev = now();
-        this.iterations += 1;
-        this._callTickHandler();
-      }
-
-    });
-  }
-
   run () {
     if (this.isRunning) {
       return this;
@@ -75,7 +39,15 @@ export default class Timer {
 
     this._prev = now();
     this.isRunning = true;
-    this._callTickHandler();
+
+    const tick = () => {
+      const isRunning = tickHandler(this);
+      if (isRunning) {
+        this._asyncHandler(tick);
+      }
+    };
+
+    this._asyncHandler(tick);
 
     return this;
   }
@@ -109,6 +81,40 @@ export default class Timer {
 
 }
 
-function tickHandler (callback) {
+export function asyncHandler (callback) {
   setTimeout(callback, 0);
+}
+
+export function tickHandler (timer) {
+  if (!timer.isRunning) {
+    return timer.isRunning;
+  }
+
+  // first tick
+  if (timer.iterations === 0) {
+    timer._callback && timer._callback(0, 0, 0);
+    timer._prev = now();
+
+    timer.iterations = 1;
+
+    return timer.isRunning;
+  }
+
+  timer.interval = now() - timer._prev;
+
+  // interval is below target interval
+  if (timer.interval <= timer.time + timer._timeOffset) {
+    return timer.isRunning;
+  }
+
+  timer.elapsed += timer.interval;
+  timer._callback && timer._callback(timer.interval, timer.iterations, timer.elapsed);
+
+  if (timer.isRunning) {
+    timer._prev = now();
+    timer.iterations += 1;
+  }
+
+  return timer.isRunning;
+
 }
