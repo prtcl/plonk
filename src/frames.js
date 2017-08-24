@@ -21,12 +21,12 @@ export default function frames (frameRate, callback) {
 
   const def = new Deferred();
 
-  const timer = new Frames(1000 / frameRate, () => {
+  const timer = new Frames(1000 / frameRate, (interval, iterations, elapsed) => {
     const [err, res] = tryFn(
       callback,
-      timer.interval,
-      timer.iterations,
-      timer.elapsed,
+      interval,
+      iterations,
+      elapsed,
       stop
       );
 
@@ -45,14 +45,14 @@ export default function frames (frameRate, callback) {
       timer.setTime(1000 / frameRate);
     }
 
-    def.notify(timer.interval);
+    def.notify(interval);
   });
 
   timer.run();
 
   function stop () {
-    def.resolve(timer.elapsed);
-    timer.stop();
+    const elapsed = timer.stop();
+    def.resolve(elapsed);
   }
 
   return def.promise;

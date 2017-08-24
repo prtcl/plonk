@@ -10,7 +10,7 @@ export default class Frames extends Timer {
     super(...args);
 
     this._asyncHandler = animationFrame;
-    this._timeOffset = -5;
+    this._state.offset = -5;
   }
 
 }

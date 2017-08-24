@@ -26,31 +26,31 @@ test('Frames', (t) => {
 
   ti = new Frames(-1, () => 0);
 
-  t.equal(ti.time, 0, 'Frames#time equals 0');
-  t.equal(ti._initialTime, 0, 'Frames#_initialTime equals 0');
+  t.equal(ti._state.time, 0, 'Frames#_state.time equals 0');
+  t.equal(ti._state.initialTime, 0, 'Frames#_state.initialTime equals 0');
 
   ti = new Frames(100, () => 0);
 
-  t.equal(ti.time, 100, 'Frames#time equals 100');
-  t.equal(ti._initialTime, 100, 'Frames#_initialTime equals 100');
+  t.equal(ti._state.time, 100, 'Frames#_state.time equals 100');
+  t.equal(ti._state.initialTime, 100, 'Frames#_state.initialTime equals 100');
 
   let k;
   ti = new Frames(k, () => 0, null);
 
-  t.equal(ti.time, SIXTY_FPS, `Frames#time equals ${SIXTY_FPS}`);
-  t.equal(ti._initialTime, SIXTY_FPS, `Frames#_initialTime equals ${SIXTY_FPS}`);
+  t.equal(ti._state.time, SIXTY_FPS, `Frames#_state.time equals ${SIXTY_FPS}`);
+  t.equal(ti._state.initialTime, SIXTY_FPS, `Frames#_state.initialTime equals ${SIXTY_FPS}`);
 
   ti = new Frames(() => 0);
 
-  t.equal(ti._asyncHandler, animationFrame, `_asyncHandler is ${animationFrame.name}`);
-  t.equal(ti._timeOffset, -5, '_timeOffset equals -5');
-  t.equal(ti._prev, 0, 'Frames#_prev equals 0');
-  t.equal(ti.isRunning, false, 'Frames#isRunning equals false');
-  t.equal(ti.elapsed, 0, 'Frames#elapsed equals 0');
-  t.equal(ti.iterations, 0, 'Frames#iterations equals 0');
-  t.equal(ti.interval, 0, 'Frames#interval equals 0');
-  t.equal(ti.time, SIXTY_FPS, `Frames#time equals ${SIXTY_FPS}`);
-  t.equal(ti._initialTime, SIXTY_FPS, `Frames#_initialTime equals ${SIXTY_FPS}`);
+  t.equal(ti._asyncHandler, animationFrame, `Frames#_asyncHandler is ${animationFrame.name}`);
+  t.equal(ti._state.elapsed, 0, 'Frames#_state.elapsed equals 0');
+  t.equal(ti._state.initialTime, SIXTY_FPS, `Frames#_state.initialTime equals ${SIXTY_FPS}`);
+  t.equal(ti._state.interval, 0, 'Frames#_state.interval equals 0');
+  t.equal(ti._state.isRunning, false, 'Frames#_state.isRunning equals false');
+  t.equal(ti._state.iterations, 0, 'Frames#_state.iterations equals 0');
+  t.equal(ti._state.offset, -5, 'Frames#_state.offset equals -5');
+  t.equal(ti._state.prev, 0, 'Frames#_state.prev equals 0');
+  t.equal(ti._state.time, SIXTY_FPS, `Frames#_state.time equals ${SIXTY_FPS}`);
 
   const METHODS = [
     '_callback',
@@ -71,50 +71,48 @@ test('Frames', (t) => {
 
 test('Frames (methods)', (t) => {
 
-  let ti, ret;
+  let ret;
+  const timer = new Frames(() => 0);
 
-  ti = new Frames(() => 0);
+  ret = timer.run();
 
-  ret = ti.run();
+  t.deepEqual(timer, ret, 'Frames#run returns this');
+  t.equal(timer._state.isRunning, true, 'Frames#run sets isRunning to true');
 
-  t.deepEqual(ti, ret, 'Frames#run returns this');
-  t.equal(ti.isRunning, true, 'Frames#run sets isRunning to true');
-  t.ok(ti._prev > 0, 'Frames#_prev is greater than 0');
+  let time = timer._state.time;
 
-  let time = ti.time;
+  ret = timer.setTime(time);
+  t.deepEqual(timer, ret, 'Frames#setTime returns this');
 
-  ret = ti.setTime(time);
-  t.deepEqual(ti, ret, 'Frames#setTime returns this');
-
-  ti.setTime(null);
-  t.ok(ti.time === time && ti._initialTime === time, 'Frames#setTime(null) sets time to _initialTime');
+  timer.setTime(null);
+  t.ok(timer._state.time === time && timer._state.initialTime === time, 'Frames#setTime(null) sets state.time to state._initialTime');
 
   time = 100;
-  ti.setTime(time);
-  t.ok(ti.time === time && ti._initialTime === time, `Frames#setTime(${time}) sets time to ${time}`);
+  timer.setTime(time);
+  t.ok(timer._state.time === time && timer._state.initialTime === time, `Frames#setTime(${time}) sets state.time to ${time}`);
 
-  ti.setTime(-1);
-  t.ok(ti.time === 0 && ti._initialTime === 0, 'Frames#setTime(-1) sets time to 0');
+  timer.setTime(-1);
+  t.ok(timer._state.time === 0 && timer._state.initialTime === 0, 'Frames#setTime(-1) sets state.time to 0');
 
-  let elpsd = ti.stop();
+  let elpsd = timer.stop();
 
-  t.ok(typeof elpsd === 'number' && elpsd === ti.elapsed, 'Frames#stop returns elapsed');
-  t.equal(ti.isRunning, false, 'Frames#stop sets isRunning to false');
+  t.ok(typeof elpsd === 'number' && elpsd === timer._state.elapsed, 'Frames#stop returns state.elapsed');
+  t.equal(timer._state.isRunning, false, 'Frames#stop sets isRunning to false');
 
-  ti = new Frames(() => 0);
-  ti.run();
+  const timer2 = new Frames(() => 0);
+  timer2.run();
 
   setTimeout(() => {
-    ti.reset();
+    timer2.reset();
 
-    t.equal(ti._prev, 0, 'Frames#reset sets _prev to 0');
-    t.equal(ti.elapsed, 0, 'Frames#reset sets elapsed to 0');
-    t.equal(ti.iterations, 0, 'Frames#reset sets iterations to 0');
-    t.equal(ti.interval, 0, 'Frames#reset sets interval to 0');
-    t.equal(ti.time, SIXTY_FPS, `Frames#reset sets time to ${SIXTY_FPS}`);
-    t.equal(ti._initialTime, SIXTY_FPS, `Frames#reset sets _initialTime to ${SIXTY_FPS}`);
+    t.equal(timer2._state.prev, 0, 'Frames#reset sets state.prev to 0');
+    t.equal(timer2._state.elapsed, 0, 'Frames#reset sets state.elapsed to 0');
+    t.equal(timer2._state.iterations, 0, 'Frames#reset sets state.iterations to 0');
+    t.equal(timer2._state.interval, 0, 'Frames#reset sets state.interval to 0');
+    t.equal(timer2._state.time, SIXTY_FPS, `Frames#reset sets state.time to ${SIXTY_FPS}`);
+    t.equal(timer2._state.initialTime, SIXTY_FPS, `Frames#reset sets state.initialTime to ${SIXTY_FPS}`);
 
-    ti.stop();
+    timer2.stop();
 
     t.end();
   }, 100);

@@ -12,12 +12,12 @@ export default function delay (time, callback) {
 
   const def = new Deferred();
 
-  const timer = new Timer(time, () => {
+  const timer = new Timer(time, (interval, iterations, elapsed) => {
     const [err, res] = tryFn(
       callback,
-      timer.interval,
-      timer.iterations,
-      timer.elapsed,
+      interval,
+      iterations,
+      elapsed,
       stop
       );
 
@@ -27,14 +27,14 @@ export default function delay (time, callback) {
     }
 
     timer.setTime(res);
-    def.notify(timer.interval);
+    def.notify(interval);
   });
 
   timer.run();
 
   function stop () {
-    def.resolve(timer.elapsed);
-    timer.stop();
+    const elapsed = timer.stop();
+    def.resolve(elapsed);
   }
 
   return def.promise;

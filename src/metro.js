@@ -12,12 +12,12 @@ export default function metro (time, callback) {
 
   const def = new Deferred();
 
-  const timer = new Timer(time, () => {
+  const timer = new Timer(time, (interval, iterations, elapsed) => {
     const [err, res] = tryFn(
       callback,
-      timer.interval,
-      timer.iterations,
-      timer.elapsed,
+      interval,
+      iterations,
+      elapsed,
       stop
       );
 
@@ -32,8 +32,8 @@ export default function metro (time, callback) {
   timer.run();
 
   function stop (val) {
-    def.resolve(val);
     timer.stop();
+    def.resolve(val);
   }
 
   return def.promise;
