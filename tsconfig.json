@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "module": "nodenext",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "target": "es6",
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "dist",
+    "node_modules",
+  ],
+}
