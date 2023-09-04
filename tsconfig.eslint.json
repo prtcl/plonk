@@ -6,6 +6,7 @@
   "extends": "./tsconfig.json",
   "include": [
     "packages",
-    "./.eslintrc.js",
+    ".eslintrc.js",
+    "jest.config.js"
   ],
 }
