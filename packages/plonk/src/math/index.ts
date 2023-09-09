@@ -7,6 +7,7 @@ export {
   default as ms,
   type FPS,
 } from './ms';
+export { default as Drunk, type DrunkOptions, type DrunkState } from './Drunk';
 export { default as Rand, type RandOptions, type RandState } from './Rand';
 export {
   default as Scale,
