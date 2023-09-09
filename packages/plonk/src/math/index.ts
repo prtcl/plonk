@@ -8,3 +8,9 @@ export {
   type FPS,
 } from './ms';
 export { default as Rand, type RandOptions, type RandState } from './Rand';
+export {
+  default as Scale,
+  type ScaleOptions,
+  type ScaleRange,
+  type ScaleState,
+} from './Scale';
