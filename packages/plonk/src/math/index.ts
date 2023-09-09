@@ -7,3 +7,4 @@ export {
   default as ms,
   type FPS,
 } from './ms';
+export { default as Rand, type RandOptions, type RandState } from './Rand';
