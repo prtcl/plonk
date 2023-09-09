@@ -3,20 +3,16 @@
   "version": "2.0.0-alpha.0",
   "description": "",
   "main": "dist/index.js",
-  "devDependencies": {},
+  "author": "Cory O'Brien <cory@prtcl.cc>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prtcl/plonk.git"
+  },
   "scripts": {
     "build": "npm run clean | true && tsc",
     "clean": "rm -rf dist",
     "test": "npx jest --env=node && npx jest --env=jsdom"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/prtcl/plonk.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/prtcl/plonk/issues"
-  },
-  "homepage": "https://github.com/prtcl/plonk#readme"
+  "devDependencies": {}
 }

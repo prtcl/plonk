@@ -1,7 +1,6 @@
 {
   "name": "plonk-monorepo",
   "version": "0.0.0",
-  "description": "",
   "private": "true",
   "workspaces": [
     "packages/*"
@@ -10,12 +9,6 @@
     "type": "git",
     "url": "git+https://github.com/prtcl/plonk.git"
   },
-  "keywords": [],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/prtcl/plonk/issues"
-  },
-  "homepage": "https://github.com/prtcl/plonk#readme",
   "scripts": {
     "build": "npm run build -ws",
     "clean": "npm run clean -ws",
