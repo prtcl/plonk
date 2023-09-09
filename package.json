@@ -18,6 +18,7 @@
   "homepage": "https://github.com/prtcl/plonk#readme",
   "scripts": {
     "build": "npm run build -ws",
+    "clean": "npm run clean -ws",
     "test": "npx jest"
   },
   "dependencies": {

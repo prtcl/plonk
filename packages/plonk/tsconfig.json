@@ -1,11 +1,20 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*",
-  ],
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
     "outDir": "dist"
-  }
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    ".eslintrc.js",
+    "__tests__",
+    "dist",
+    "jest.config.js",
+    "node_modules",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+  ]
 }
