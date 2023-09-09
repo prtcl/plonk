@@ -1,4 +1,6 @@
 export { default as clamp } from './clamp';
+export { default as expo } from './expo';
+export { default as flip } from './flip';
 export { TimeFormat, default as ms, type FPS } from './ms';
 export { default as Drunk, type DrunkOptions, type DrunkState } from './Drunk';
 export { default as Env, type EnvOptions, type EnvState } from './Env';
