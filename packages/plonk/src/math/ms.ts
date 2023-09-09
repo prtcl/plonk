@@ -1,8 +1,6 @@
-export type FPS = 15 | 30 | 60;
+import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from '../constants';
 
-export const MS_IN_SECOND = 1000;
-export const MS_IN_MINUTE = 60 * MS_IN_SECOND;
-export const MS_IN_HOUR = MS_IN_MINUTE * 60;
+export type FPS = 15 | 30 | 60;
 
 export const enum TimeFormat {
   FPS = 'fps',
