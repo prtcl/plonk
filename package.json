@@ -19,7 +19,7 @@
   "scripts": {
     "build": "npm run build -ws",
     "clean": "npm run clean -ws",
-    "test": "npx jest --env=node && npx jest --env=jsdom"
+    "test": "npm run test -ws"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.6.0",
