@@ -23,12 +23,13 @@ export default class Rand {
   state: RandState;
 
   static rand(opts?: RandOptions) {
-    return new Rand(opts).next();
+    return new Rand(opts).value();
   }
 
   constructor(opts?: RandOptions) {
     const { min, max } = parseOptions(opts);
     this.state = { max, min, prev: undefined };
+    this.next();
   }
 
   setRange(partialOpts: RandOptions) {

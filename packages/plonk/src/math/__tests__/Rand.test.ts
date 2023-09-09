@@ -4,7 +4,8 @@ describe('Rand', () => {
   it('produces random numbers within a set range', () => {
     const r = new Rand({ min: -1, max: 1 });
 
-    expect(r.value()).toEqual(undefined);
+    expect(r.value()).toBeGreaterThanOrEqual(-1);
+    expect(r.value()).toBeLessThanOrEqual(1);
 
     let val = r.next();
 
