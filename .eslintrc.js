@@ -6,6 +6,7 @@ module.exports = {
     node: true,
     "jest/globals": true,
   },
+  files: ["packages/**/*"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -37,5 +38,6 @@ module.exports = {
       },
     ],
     "no-console": ["error", { allow: ["info", "error"] }],
+    quotes: ["error", "single"],
   },
 };
