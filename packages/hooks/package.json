@@ -14,5 +14,7 @@
     "clean": "rm -rf dist",
     "test": "npx jest --env=jsdom"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "plonk": "^2.0.0-alpha.0"
+  }
 }
