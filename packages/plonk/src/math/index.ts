@@ -10,3 +10,9 @@ export {
   type ScaleRange,
   type ScaleState,
 } from './Scale';
+export {
+  default as Sine,
+  type SineOptions,
+  type SineState,
+  SINE_PERIOD,
+} from './Sine';
