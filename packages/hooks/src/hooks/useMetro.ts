@@ -2,9 +2,15 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Metro, type MetroOptions, type TimerCallback } from 'plonk';
 import usePrevious from '../internal/usePrevious';
 
-const useMetro = (callback: TimerCallback<Metro>, opts?: MetroOptions) => {
+export type UseMetroOptions = MetroOptions & {
+  autostart?: boolean;
+};
+
+const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
+  const { autostart = true } = opts || {};
+
   const callbackRef = useRef<TimerCallback<Metro>>(callback);
-  const optsRef = useRef<MetroOptions>(opts);
+  const optsRef = useRef<UseMetroOptions>(opts);
   const prevOpts = usePrevious(opts);
 
   callbackRef.current = callback;
@@ -22,7 +28,9 @@ const useMetro = (callback: TimerCallback<Metro>, opts?: MetroOptions) => {
   }, [opts, prevOpts, metro]);
 
   useEffect(() => {
-    metro.run();
+    if (autostart) {
+      metro.run();
+    }
   }, [metro]);
 
   return metro;

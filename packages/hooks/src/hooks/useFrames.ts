@@ -2,9 +2,18 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Frames, type FramesOptions, type TimerCallback } from 'plonk';
 import usePrevious from '../internal/usePrevious';
 
-const useFrames = (callback: TimerCallback<Frames>, opts?: FramesOptions) => {
+export type UseFramesOptions = FramesOptions & {
+  autostart?: boolean;
+};
+
+const useFrames = (
+  callback: TimerCallback<Frames>,
+  opts?: UseFramesOptions,
+) => {
+  const { autostart = true } = opts || {};
+
   const callbackRef = useRef<TimerCallback<Frames>>(callback);
-  const optsRef = useRef<FramesOptions>(opts);
+  const optsRef = useRef<UseFramesOptions>(opts);
   const prevOpts = usePrevious(opts);
 
   callbackRef.current = callback;
@@ -22,7 +31,9 @@ const useFrames = (callback: TimerCallback<Frames>, opts?: FramesOptions) => {
   }, [opts, prevOpts, frames]);
 
   useEffect(() => {
-    frames.run();
+    if (autostart) {
+      frames.run();
+    }
   }, [frames]);
 
   return frames;
