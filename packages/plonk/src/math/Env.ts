@@ -46,7 +46,7 @@ export default class Env {
   state: EnvState;
   protected _interpolator: Scale;
 
-  constructor(opts?: EnvOptions) {
+  constructor(opts: EnvOptions) {
     const { from, to, duration } = parseOptions(opts);
 
     this._interpolator = new Scale({
