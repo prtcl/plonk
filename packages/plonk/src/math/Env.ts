@@ -1,3 +1,4 @@
+import now from '../utils/now';
 import Scale from './Scale';
 
 export type EnvOptions = {
@@ -61,7 +62,7 @@ export default class Env {
     this.state = {
       duration,
       from,
-      prevNow: performance.now(),
+      prevNow: now(),
       prevValue: from,
       to,
       totalElapsed: 0,
@@ -87,7 +88,7 @@ export default class Env {
 
     this.state = {
       ...updates,
-      prevNow: performance.now(),
+      prevNow: now(),
       prevValue: updates.from,
     };
     this._interpolator.setRanges({
@@ -117,14 +118,14 @@ export default class Env {
       return to;
     }
 
-    const tickInterval = performance.now() - prevNow;
+    const tickInterval = now() - prevNow;
     const totalElapsed = prevTotalElapsed + tickInterval;
     const updates = this._interpolator.scale(totalElapsed);
     const value = from > to ? Math.min(updates, from) : Math.min(updates, to);
 
     this.state = {
       ...this.state,
-      prevNow: performance.now(),
+      prevNow: now(),
       prevValue: value,
       totalElapsed,
     };
