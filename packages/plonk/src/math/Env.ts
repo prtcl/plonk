@@ -77,7 +77,7 @@ export default class Env {
       ...(duration <= totalElapsed
         ? {
             duration,
-            prev: to,
+            value: to,
           }
         : { duration }),
     };
@@ -103,20 +103,26 @@ export default class Env {
     });
   }
 
-  hasEnded() {
+  hasFinished() {
     return this.state.duration <= this.state.totalElapsed;
   }
 
   value() {
-    return this.state.value;
+    const { to, value } = this.state;
+
+    if (this.hasFinished()) {
+      return to;
+    }
+
+    return value;
   }
 
   next() {
-    const { from, prev, to, totalElapsed: prevTotalElapsed } = this.state;
-
-    if (this.hasEnded()) {
-      return to;
+    if (this.hasFinished()) {
+      return this.value();
     }
+
+    const { from, prev, to, totalElapsed: prevTotalElapsed } = this.state;
 
     const curr = now();
     const tickInterval = curr - prev;

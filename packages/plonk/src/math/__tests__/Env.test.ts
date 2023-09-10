@@ -18,23 +18,38 @@ describe('Env', () => {
 
       loops += 1;
 
-      if (e.hasEnded()) {
+      if (e.hasFinished()) {
         clearInterval(timerId);
       }
     }, 10);
   });
 
-  it('allows resetting state', () => {
+  it('allows resetting state', (done) => {
     const e = new Env({ from: 0, to: 1, duration: 100 });
 
     expect(e.value()).toEqual(0);
 
     e.reset({
-      duration: 0,
+      duration: 10,
       from: 100,
+      to: 500,
     });
 
     expect(e.value()).toEqual(100);
-    expect(e.hasEnded()).toEqual(true);
+    expect(e.hasFinished()).toEqual(false);
+
+    setTimeout(() => {
+      expect(e.next()).toEqual(500);
+      expect(e.hasFinished()).toEqual(true);
+
+      done();
+    }, 25);
+  });
+
+  it('returns the target to value after duration has elapsed', () => {
+    const e = new Env({ from: 0, to: 1, duration: 0 });
+
+    expect(e.value()).toEqual(1);
+    expect(e.next()).toEqual(1);
   });
 });
