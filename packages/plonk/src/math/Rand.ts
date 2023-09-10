@@ -8,7 +8,7 @@ export type RandOptions = {
 export type RandState = {
   min: number;
   max: number;
-  prev: number | undefined;
+  value: number | undefined;
 };
 
 export const parseOptions = (opts?: RandOptions): RandOptions => {
@@ -28,7 +28,7 @@ export default class Rand {
 
   constructor(opts?: RandOptions) {
     const { min, max } = parseOptions(opts);
-    this.state = { max, min, prev: undefined };
+    this.state = { max, min, value: undefined };
     this.next();
   }
 
@@ -42,18 +42,18 @@ export default class Rand {
       ...this.state,
       max,
       min,
-      prev: clamp(this.state.prev, min, max),
+      value: clamp(this.state.value, min, max),
     };
   }
 
   value() {
-    return this.state.prev;
+    return this.state.value;
   }
 
   next() {
     const { min, max } = this.state;
     const value = Math.random() * (max - min) + min;
-    this.state.prev = value;
+    this.state.value = value;
 
     return value;
   }

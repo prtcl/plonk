@@ -10,10 +10,10 @@ export type EnvOptions = {
 export type EnvState = {
   duration: number;
   from: number;
-  prevNow: number;
-  prevValue: number;
+  prev: number;
   to: number;
   totalElapsed: number;
+  value: number;
 };
 
 export const parseOptions = (opts?: EnvOptions): EnvOptions => {
@@ -62,10 +62,10 @@ export default class Env {
     this.state = {
       duration,
       from,
-      prevNow: now(),
-      prevValue: from,
+      prev: now(),
       to,
       totalElapsed: 0,
+      value: from,
     };
   }
 
@@ -88,8 +88,8 @@ export default class Env {
 
     this.state = {
       ...updates,
-      prevNow: now(),
-      prevValue: updates.from,
+      prev: now(),
+      value: updates.from,
     };
     this._interpolator.setRanges({
       from: {
@@ -108,27 +108,25 @@ export default class Env {
   }
 
   value() {
-    return this.state.prevValue;
+    return this.state.value;
   }
 
   next() {
-    const { from, prevNow, to, totalElapsed: prevTotalElapsed } = this.state;
+    const { from, prev, to, totalElapsed: prevTotalElapsed } = this.state;
 
     if (this.hasEnded()) {
       return to;
     }
 
-    const tickInterval = now() - prevNow;
+    const curr = now();
+    const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
     const updates = this._interpolator.scale(totalElapsed);
     const value = from > to ? Math.min(updates, from) : Math.min(updates, to);
 
-    this.state = {
-      ...this.state,
-      prevNow: now(),
-      prevValue: value,
-      totalElapsed,
-    };
+    this.state.prev = curr;
+    this.state.totalElapsed = totalElapsed;
+    this.state.value = value;
 
     return value;
   }

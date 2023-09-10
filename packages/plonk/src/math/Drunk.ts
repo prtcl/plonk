@@ -14,8 +14,8 @@ export type DrunkState = {
   initialValue: number;
   max: number;
   min: number;
-  prev: number;
   step: number;
+  value: number;
 };
 
 export const parseStepSize = (step?: number): number =>
@@ -52,8 +52,8 @@ export default class Drunk {
       initialValue,
       max,
       min,
-      prev: initialValue,
       step,
+      value: initialValue,
     };
   }
 
@@ -72,7 +72,7 @@ export default class Drunk {
             initialValue: clamp(this._initialValue.value(), min, max),
             max,
             min,
-            prev: clamp(this.state.prev, min, max),
+            value: clamp(this.state.value, min, max),
           }
         : {
             max,
@@ -102,19 +102,19 @@ export default class Drunk {
     this.state = {
       ...this.state,
       initialValue,
-      prev: initialValue,
+      value: initialValue,
     };
   }
 
   value() {
-    return this.state.prev;
+    return this.state.value;
   }
 
   next() {
-    const { min, max, step, prev } = this.state;
-    const updates = clamp(prev + max * this._step.next() * step, min, max);
+    const { min, max, step, value } = this.state;
+    const updates = clamp(value + max * this._step.next() * step, min, max);
 
-    this.state.prev = updates;
+    this.state.value = updates;
 
     return updates;
   }
