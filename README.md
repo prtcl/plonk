@@ -2,7 +2,7 @@
 
 :warning: v2 is a complete rewrite of the old library and is currently in alpha status :warning:
 
-Plonk is a tiny library that provides timers, envelopes, and random generators. 
+Tiny library that provides timers, envelopes, and random generators. 
 
 Cool things about plonk:
 

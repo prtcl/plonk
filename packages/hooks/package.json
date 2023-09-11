@@ -1,10 +1,13 @@
 {
-  "name": "@plonk/hooks",
+  "name": "plonk-hooks",
   "version": "1.0.0-alpha.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "React Hooks for Plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/prtcl/plonk.git"
