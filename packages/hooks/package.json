@@ -1,5 +1,5 @@
 {
-  "name": "@plonk/hooks",
+  "name": "plonk-hooks",
   "version": "1.0.0-alpha.0",
   "description": "React Hooks for Plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
