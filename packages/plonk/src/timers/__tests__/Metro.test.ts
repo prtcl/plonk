@@ -8,11 +8,9 @@ describe('Metro', () => {
     const m = new Metro(
       ({ stop, state }) => {
         if (state.iterations === 0) {
-          expect(state.iterations).toEqual(0);
           expect(state.totalElapsed).toEqual(0);
           expect(state.tickInterval).toEqual(0);
         } else {
-          expect(state.iterations).toBeGreaterThanOrEqual(1);
           expect(state.totalElapsed).toBeGreaterThanOrEqual(
             state.iterations * 30,
           );
@@ -25,7 +23,7 @@ describe('Metro', () => {
         expect(state.time).toEqual(30);
         expect(state.initialTime).toEqual(30);
 
-        if (state.iterations === 10) {
+        if (state.iterations === 9) {
           stop();
           done();
         }

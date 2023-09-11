@@ -14,5 +14,6 @@
     "jest.config.js",
     "node_modules",
     "packages/**/dist",
+    "packages/**/jest.config.js"
   ],
 }
