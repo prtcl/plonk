@@ -31,6 +31,10 @@ const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
     if (autostart) {
       metro.run();
     }
+
+    return () => {
+      metro.stop();
+    };
   }, [metro]);
 
   return metro;

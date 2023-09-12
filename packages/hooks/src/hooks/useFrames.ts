@@ -34,6 +34,10 @@ const useFrames = (
     if (autostart) {
       frames.run();
     }
+
+    return () => {
+      frames.stop();
+    };
   }, [frames]);
 
   return frames;
