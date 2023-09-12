@@ -1,6 +1,6 @@
 {
   "name": "plonk-hooks",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "React Hooks for Plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
