@@ -1,5 +1,5 @@
 {
-  "name": "plonk",
+  "name": "plonk-core",
   "version": "2.0.0-alpha.2",
   "description": "Tiny library that provides timers, envelopes, and random generators",
   "author": "Cory O'Brien <cory@prtcl.cc>",
