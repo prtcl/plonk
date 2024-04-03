@@ -1,5 +1,5 @@
 {
-  "name": "plonk-hooks",
+  "name": "@prtcl/plonk-hooks",
   "version": "1.0.0-alpha.2",
   "description": "React Hooks for Plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
@@ -18,7 +18,7 @@
     "test": "npx jest --env=jsdom"
   },
   "dependencies": {
-    "plonk": "^2.0.0-alpha.2"
+    "@prtcl/plonk-core": "^2.0.0-alpha.2"
   },
   "peerDependencies": {
     "react": "17 - 18"
@@ -26,8 +26,10 @@
   "devDependencies": {
     "@testing-library/react": "^14.2.2",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.3",
     "@types/react": "^18.2.74",
-    "prettier": "^3.2.5",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "react": "^18.2.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.3"

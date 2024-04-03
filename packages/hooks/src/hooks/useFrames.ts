@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Frames, type FramesOptions, type TimerCallback } from 'plonk';
+import {
+  Frames,
+  type FramesOptions,
+  type TimerCallback,
+} from '@prtcl/plonk-core';
 import usePrevious from '../internal/usePrevious';
 
 export type UseFramesOptions = FramesOptions & {

@@ -1,3 +1,3 @@
-# plonk
+# @prtcl/plonk-core
 
-Tiny library that provides timers, envelopes, and random generators. 
+Core timer and utils package for [plonk](https://github.com/prtcl/plonk)
