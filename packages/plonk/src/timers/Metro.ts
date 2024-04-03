@@ -1,10 +1,6 @@
 import now from '../utils/now';
 import { SIXTY_FPS } from '../constants';
 
-export type MetroOptions = {
-  time?: number;
-};
-
 export type TimerState = {
   initialTime: number;
   isRunning: boolean;
@@ -15,17 +11,46 @@ export type TimerState = {
   totalElapsed: number;
 };
 
-export type TimerCallback<TimerApi extends Metro> = (timer: TimerApi) => void;
+export const getInitialState = (initialTime: number): TimerState => {
+  return {
+    initialTime,
+    isRunning: false,
+    iterations: -1,
+    prev: 0,
+    tickInterval: 0,
+    time: initialTime,
+    totalElapsed: 0,
+  };
+};
 
-export const getInitialState = (initialTime: number): TimerState => ({
-  initialTime,
-  isRunning: false,
-  iterations: -1,
-  prev: 0,
-  tickInterval: 0,
-  time: initialTime,
-  totalElapsed: 0,
-});
+export const processTimerState = (state: TimerState): TimerState | null => {
+  if (state.iterations === -1) {
+    return {
+      ...state,
+      prev: now(),
+      iterations: 0,
+    };
+  }
+
+  const { time, prev, totalElapsed, iterations } = state;
+  const tickInterval = now() - prev;
+
+  if (tickInterval <= time) {
+    return null;
+  }
+
+  return {
+    ...state,
+    iterations: iterations + 1,
+    prev: now(),
+    tickInterval,
+    totalElapsed: totalElapsed + tickInterval,
+  };
+};
+
+export type MetroOptions = {
+  time?: number;
+};
 
 export const parseOptions = (opts?: MetroOptions): MetroOptions => {
   return {
@@ -34,41 +59,7 @@ export const parseOptions = (opts?: MetroOptions): MetroOptions => {
   };
 };
 
-export const processTimerState = (
-  state: TimerState,
-  callback: (state: TimerState) => void,
-): TimerState => {
-  if (state.iterations === -1) {
-    const updates: TimerState = {
-      ...state,
-      prev: now(),
-      iterations: 0,
-    };
-
-    callback(updates);
-
-    return updates;
-  }
-
-  const { time, prev, totalElapsed, iterations } = state;
-  const tickInterval = now() - prev;
-
-  if (tickInterval <= time) {
-    return state;
-  }
-
-  const updates = {
-    ...state,
-    iterations: iterations + 1,
-    prev: now(),
-    tickInterval,
-    totalElapsed: totalElapsed + tickInterval,
-  };
-
-  callback(updates);
-
-  return updates;
-};
+export type TimerCallback<TimerApi extends Metro> = (timer: TimerApi) => void;
 
 export default class Metro {
   state: TimerState;
@@ -77,7 +68,6 @@ export default class Metro {
 
   constructor(callback: TimerCallback<Metro>, opts?: MetroOptions) {
     const { time } = parseOptions(opts);
-
     this.state = getInitialState(time);
     this._listeners = [callback];
   }
@@ -114,10 +104,8 @@ export default class Metro {
   };
 
   run = () => {
-    const { isRunning } = this.state;
-
-    if (isRunning) {
-      return;
+    if (this.state.isRunning) {
+      this.stop();
     }
 
     this.state = {
@@ -127,14 +115,14 @@ export default class Metro {
     };
 
     const tick = () => {
-      this.clearAsyncHandler();
+      const updates = processTimerState(this.state);
 
-      processTimerState(this.state, (updates) => {
+      if (updates) {
         this.state = updates;
         this._listeners.forEach((listener) => {
           listener(this);
         });
-      });
+      }
 
       if (this.state.isRunning) {
         this.asyncHandler(tick);

@@ -1,6 +1,8 @@
-const now = (() => {
+const createNow = () => {
   if (typeof performance !== 'undefined' && 'now' in performance) {
-    return () => performance.now();
+    return () => {
+      return performance.now();
+    };
   }
 
   if (
@@ -13,15 +15,17 @@ const now = (() => {
       return hr[0] * 1e9 + hr[1];
     };
     const initial = timestamp();
+
     return () => {
       return (timestamp() - initial) / 1e6;
     };
   }
 
   const initial = Date.now();
+
   return () => {
     return Date.now() - initial;
   };
-})();
+};
 
-export default now;
+export default createNow();
