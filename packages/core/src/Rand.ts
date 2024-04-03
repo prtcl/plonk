@@ -28,6 +28,7 @@ export default class Rand {
 
   constructor(opts?: RandOptions) {
     const { min, max } = parseOptions(opts);
+
     this.state = { max, min, value: undefined };
     this.next();
   }
@@ -52,9 +53,10 @@ export default class Rand {
 
   next() {
     const { min, max } = this.state;
-    const value = Math.random() * (max - min) + min;
-    this.state.value = value;
+    const updates = Math.random() * (max - min) + min;
 
-    return value;
+    this.state.value = updates;
+
+    return updates;
   }
 }

@@ -86,13 +86,13 @@ export default class Scale {
 
   scale(n: number) {
     const { from, to } = this.state;
-    const value =
+    const updates =
       to.min +
       ((clamp(n, from.min, from.max) - from.min) * (to.max - to.min)) /
         (from.max - from.min);
 
-    this.state.value = value;
+    this.state.value = updates;
 
-    return value;
+    return updates;
   }
 }
