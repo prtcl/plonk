@@ -37,7 +37,7 @@ export const parseOptions = (opts?: ScaleOptions): ScaleOptions => {
   };
 };
 
-export const getDerivedStateFromOptions = (
+export const updateStateFromOptions = (
   opts: ScaleOptions,
   prevState: ScaleState,
 ): ScaleState => {
@@ -72,7 +72,7 @@ export default class Scale {
   }
 
   setRanges(opts: ScaleOptions) {
-    this.state = getDerivedStateFromOptions(opts, this.state);
+    this.state = updateStateFromOptions(opts, this.state);
   }
 
   reset(opts: ScaleOptions) {
