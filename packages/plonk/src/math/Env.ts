@@ -1,12 +1,6 @@
 import now from '../utils/now';
 import Scale from './Scale';
 
-export type EnvOptions = {
-  duration: number;
-  from?: number;
-  to?: number;
-};
-
 export type EnvState = {
   duration: number;
   from: number;
@@ -14,6 +8,12 @@ export type EnvState = {
   to: number;
   totalElapsed: number;
   value: number;
+};
+
+export type EnvOptions = {
+  duration: number;
+  from?: number;
+  to?: number;
 };
 
 export const parseOptions = (opts?: EnvOptions): EnvOptions => {
@@ -24,7 +24,18 @@ export const parseOptions = (opts?: EnvOptions): EnvOptions => {
   };
 };
 
-export const getDerivedStateFromOptions = (
+const getInitialState = ({ from, to, duration }: EnvOptions): EnvState => {
+  return {
+    duration,
+    from,
+    prev: now(),
+    to,
+    totalElapsed: 0,
+    value: from,
+  };
+};
+
+export const updateStateFromOptions = (
   opts: EnvOptions | undefined,
   prevState: EnvState,
 ): EnvState => {
@@ -49,6 +60,7 @@ export default class Env {
   constructor(opts: EnvOptions) {
     const { from, to, duration } = parseOptions(opts);
 
+    this.state = getInitialState({ from, to, duration });
     this._interpolator = new Scale({
       from: {
         min: 0,
@@ -59,14 +71,6 @@ export default class Env {
         max: to,
       },
     });
-    this.state = {
-      duration,
-      from,
-      prev: now(),
-      to,
-      totalElapsed: 0,
-      value: from,
-    };
   }
 
   setDuration(duration: number) {
@@ -84,7 +88,7 @@ export default class Env {
   }
 
   reset(opts?: EnvOptions) {
-    const updates = getDerivedStateFromOptions(opts, this.state);
+    const updates = updateStateFromOptions(opts, this.state);
 
     this.state = {
       ...updates,
@@ -122,18 +126,17 @@ export default class Env {
       return this.value();
     }
 
-    const { from, prev, to, totalElapsed: prevTotalElapsed } = this.state;
+    const { prev, totalElapsed: prevTotalElapsed } = this.state;
 
     const curr = now();
     const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
     const updates = this._interpolator.scale(totalElapsed);
-    const value = from > to ? Math.min(updates, from) : Math.min(updates, to);
 
     this.state.prev = curr;
     this.state.totalElapsed = totalElapsed;
-    this.state.value = value;
+    this.state.value = updates;
 
-    return value;
+    return updates;
   }
 }

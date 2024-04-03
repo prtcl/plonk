@@ -20,6 +20,26 @@ describe('Env', () => {
 
       if (e.hasFinished()) {
         clearInterval(timerId);
+        expect(e.value()).toEqual(1);
+      }
+    }, 10);
+  });
+
+  it('allows reversing the from and to inputs', () => {
+    const e = new Env({ from: 1, to: 0, duration: 100 });
+    let prev = 0;
+
+    expect(e.value()).toEqual(1);
+
+    const timerId = setInterval(() => {
+      prev = e.value();
+      const val = e.next();
+
+      expect(val).toBeLessThan(prev);
+
+      if (e.hasFinished()) {
+        clearInterval(timerId);
+        expect(e.value()).toEqual(0);
       }
     }, 10);
   });
