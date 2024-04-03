@@ -6,6 +6,9 @@ export type UseFramesOptions = FramesOptions & {
   autostart?: boolean;
 };
 
+/**
+ * Hook wrapper for Frames which provides an animation loop with variable frame rate
+ */
 const useFrames = (
   callback: TimerCallback<Frames>,
   opts?: UseFramesOptions,

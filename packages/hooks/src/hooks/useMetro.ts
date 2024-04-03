@@ -6,6 +6,9 @@ export type UseMetroOptions = MetroOptions & {
   autostart?: boolean;
 };
 
+/**
+ * Hook wrapper for Metro which provides a timer loop with variable interval.
+ */
 const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
   const { autostart = true } = opts || {};
 

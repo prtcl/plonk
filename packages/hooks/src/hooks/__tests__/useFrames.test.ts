@@ -1,10 +1,10 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { type FPS } from 'plonk';
 import useFrames from '../useFrames';
 
 describe('useFrames', () => {
   it('wraps Metro in a memo and updates time based on props change', (done) => {
-    const { result, rerender } = renderHook(
+    const { rerender } = renderHook(
       ({ fps }) =>
         useFrames(
           ({ state, stop }) => {
