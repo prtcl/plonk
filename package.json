@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": "true",
   "workspaces": [
-    "packages/*"
+    "packages/plonk",
+    "packages/hooks"
   ],
   "repository": {
     "type": "git",
@@ -11,25 +12,27 @@
   },
   "scripts": {
     "build": "npm run build -ws",
-    "clean": "npm run clean -ws",
+    "clean": "rm -rf node_modules | true && npm run clean -ws",
+    "lint": "npx tsc --noEmit --pretty --skipLibCheck && npx eslint packages",
+    "setup": "npm run clean && npm ci && npm ci -ws && npm run build",
     "test": "npm run test -ws"
-  },
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "eslint": "^8.48.0"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.5.4",
-    "@types/node": "^20.5.9",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.3",
+    "@types/react": "^18.2.74",
+    "@typescript-eslint/eslint-plugin": "^7.5.0",
+    "@typescript-eslint/parser": "^7.5.0",
+    "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jest": "^27.9.0",
     "jest": "^29.6.4",
     "jest-environment-jsdom": "^29.6.4",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.3"
   }
 }

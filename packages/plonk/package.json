@@ -1,6 +1,6 @@
 {
   "name": "plonk",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.2",
   "description": "Tiny library that provides timers, envelopes, and random generators",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
@@ -13,9 +13,14 @@
     "url": "git+https://github.com/prtcl/plonk.git"
   },
   "scripts": {
-    "build": "npm run clean | true && tsc",
-    "clean": "rm -rf dist",
+    "build": "npx tsc",
+    "clean": "rm -rf dist | true",
     "test": "npx jest --env=node && npx jest --env=jsdom"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.3",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.3"
+  }
 }

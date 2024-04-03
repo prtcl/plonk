@@ -5,6 +5,7 @@ const now = (() => {
 
   if (
     typeof process === 'object' &&
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     process.toString() === '[object process]'
   ) {
     const timestamp = () => {

@@ -1,6 +1,6 @@
 {
   "name": "plonk-hooks",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "React Hooks for Plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
@@ -13,14 +13,22 @@
     "url": "git+https://github.com/prtcl/plonk.git"
   },
   "scripts": {
-    "build": "npm run clean | true && tsc",
-    "clean": "rm -rf dist",
+    "build": "npx tsc",
+    "clean": "rm -rf dist | true",
     "test": "npx jest --env=jsdom"
   },
   "dependencies": {
-    "plonk": "^2.0.0-alpha.0"
+    "plonk": "^2.0.0-alpha.2"
   },
   "peerDependencies": {
     "react": "17 - 18"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.2.2",
+    "@types/jest": "^29.5.12",
+    "@types/react": "^18.2.74",
+    "react": "^18.2.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.3"
   }
 }
