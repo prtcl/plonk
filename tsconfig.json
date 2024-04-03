@@ -7,7 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "module": "NodeNext",
     "noImplicitAny": true,
-    "target": "es6",
+    "target": "es6"
   },
   "exclude": [
     ".eslintrc.js",
@@ -15,5 +15,5 @@
     "node_modules",
     "packages/**/dist",
     "packages/**/jest.config.js"
-  ],
+  ]
 }
