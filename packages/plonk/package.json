@@ -13,6 +13,10 @@
     "./hooks": {
       "types": "./dist/hooks/index.d.ts",
       "default": "./dist/hooks/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
     }
   },
   "repository": {
@@ -25,10 +29,8 @@
   },
   "dependencies": {
     "@prtcl/plonk-core": "^2.0.0-alpha.2",
-    "@prtcl/plonk-hooks": "^1.0.0-alpha.2"
-  },
-  "peerDependencies": {
-    "react": "17 - 18"
+    "@prtcl/plonk-hooks": "^1.0.0-alpha.2",
+    "@prtcl/plonk-utils": "^1.0.0-alpha.2"
   },
   "devDependencies": {
     "typescript": "^5.4.3"

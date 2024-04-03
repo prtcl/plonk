@@ -1,4 +1,4 @@
-import clamp from './clamp';
+import { clamp } from '@prtcl/plonk-utils';
 
 export type ScaleRange = {
   min?: number;

@@ -1,4 +1,4 @@
-import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from '../constants';
+import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from './constants';
 
 export type FPS = 15 | 30 | 60;
 

@@ -4,7 +4,7 @@ import {
   type FramesOptions,
   type TimerCallback,
 } from '@prtcl/plonk-core';
-import usePrevious from '../internal/usePrevious';
+import usePrevious from './usePrevious';
 
 export type UseFramesOptions = FramesOptions & {
   autostart?: boolean;

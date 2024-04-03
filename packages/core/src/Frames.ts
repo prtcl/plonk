@@ -1,4 +1,4 @@
-import ms, { TimeFormat, type FPS } from '../utils/ms';
+import { ms, TimeFormat, type FPS } from '@prtcl/plonk-utils';
 import Metro, { type TimerCallback, type MetroOptions } from './Metro';
 
 export type FramesOptions = {

@@ -1,4 +1,4 @@
-import clamp from './clamp';
+import { clamp } from '@prtcl/plonk-utils';
 import Rand from './Rand';
 
 export const DEFAULT_DRUNK_STEP = 0.1;

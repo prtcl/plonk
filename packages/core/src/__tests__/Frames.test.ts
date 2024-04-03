@@ -1,4 +1,3 @@
-import now from '../../utils/now';
 import Frames from '../Frames';
 
 describe('Frames', () => {

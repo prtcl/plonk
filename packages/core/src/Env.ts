@@ -1,4 +1,4 @@
-import now from '../utils/now';
+import { now } from '@prtcl/plonk-utils';
 import Scale from './Scale';
 
 export type EnvState = {

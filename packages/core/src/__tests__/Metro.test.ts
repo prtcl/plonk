@@ -1,4 +1,4 @@
-import now from '../../utils/now';
+import { now } from '@prtcl/plonk-utils';
 import Metro from '../Metro';
 
 describe('Metro', () => {

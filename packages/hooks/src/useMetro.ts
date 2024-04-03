@@ -4,7 +4,7 @@ import {
   type MetroOptions,
   type TimerCallback,
 } from '@prtcl/plonk-core';
-import usePrevious from '../internal/usePrevious';
+import usePrevious from './usePrevious';
 
 export type UseMetroOptions = MetroOptions & {
   autostart?: boolean;

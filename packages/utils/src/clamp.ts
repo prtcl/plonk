@@ -2,6 +2,12 @@ export function clamp(n: number): number;
 export function clamp(n: number, max: number): number;
 export function clamp(n: number, min: number, max: number): number;
 
+/** Constrains an input value by min...max range.
+ * ```
+ * clamp(10, -1, 1)
+ * => 1
+ * ```
+ */
 export default function clamp(n: number, min?: number, max?: number) {
   let a = 0;
   let b = 1;
