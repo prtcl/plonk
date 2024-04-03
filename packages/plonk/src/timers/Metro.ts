@@ -24,16 +24,18 @@ export const getInitialState = (initialTime: number): TimerState => {
 };
 
 export const processTimerState = (state: TimerState): TimerState | null => {
-  if (state.iterations === -1) {
+  const { time, prev, totalElapsed, iterations } = state;
+  const curr = now();
+
+  if (iterations === -1) {
     return {
       ...state,
-      prev: now(),
+      prev: curr,
       iterations: 0,
     };
   }
 
-  const { time, prev, totalElapsed, iterations } = state;
-  const tickInterval = now() - prev;
+  const tickInterval = curr - prev;
 
   if (tickInterval <= time) {
     return null;
@@ -42,7 +44,7 @@ export const processTimerState = (state: TimerState): TimerState | null => {
   return {
     ...state,
     iterations: iterations + 1,
-    prev: now(),
+    prev: curr,
     tickInterval,
     totalElapsed: totalElapsed + tickInterval,
   };
