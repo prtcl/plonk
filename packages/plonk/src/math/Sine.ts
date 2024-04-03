@@ -74,18 +74,23 @@ export default class Sine {
     const curr = now();
     const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
-    const updates = this._interpolator.scale(totalElapsed);
-    const value = clamp(Math.sin(updates), -1, 1);
+
+    const updates = clamp(
+      Math.sin(this._interpolator.scale(totalElapsed)),
+      -1,
+      1,
+    );
 
     if (cycle >= duration) {
       this.state.cycle = 0;
     } else {
       this.state.cycle = cycle + tickInterval;
     }
+
     this.state.prev = curr;
     this.state.totalElapsed = totalElapsed;
-    this.state.value = value;
+    this.state.value = updates;
 
-    return value;
+    return updates;
   }
 }
