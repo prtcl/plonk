@@ -28,7 +28,7 @@
     "clean": "rm -rf dist | true"
   },
   "dependencies": {
-    "@prtcl/plonk-core": "^2.0.0-alpha.2",
+    "@prtcl/plonk-core": "^1.0.0-alpha.2",
     "@prtcl/plonk-hooks": "^1.0.0-alpha.2",
     "@prtcl/plonk-utils": "^1.0.0-alpha.2"
   },
