@@ -42,25 +42,33 @@ const parseStringValAndFormat = (val: string) => {
     const format = FORMAT_IDENTIFIERS[i];
 
     if (val.includes(format)) {
+      const value = Number(val.replace(' ', '').replace(format, ''));
+
       return {
-        format: FORMAT_IDENTIFIERS[i],
-        parsed: Number(val.replace(' ', '').replace(format, '')),
+        format,
+        value,
       };
     }
   }
 
   return {
     format: undefined,
-    parsed: undefined,
+    value: undefined,
   };
 };
 
-export function ms(val: string | number | undefined | null): number | undefined;
+export function ms(val: string | undefined | null): number | undefined;
 export function ms(
   val: number | undefined | null,
   format: AvailableTimeFormats | TimeFormat,
 ): number | undefined;
 
+/** Converts a time format string into equivalent milliseconds.
+ * ```
+ * ms('60fps')
+ * => 16.666666
+ * ```
+ */
 export default function ms(
   val: string | number | undefined | null,
   format = TimeFormat.MILLISECONDS,
@@ -73,13 +81,14 @@ export default function ms(
   }
 
   if (typeof val === 'string') {
-    const { parsed: p, format: f } = parseStringValAndFormat(
-      sanitizeStringVal(val),
-    );
+    const parsed = parseStringValAndFormat(sanitizeStringVal(val));
 
-    if (typeof p !== 'undefined' && format) {
-      parsedValue = p;
-      parsedFormat = f;
+    if (typeof parsed.value !== 'undefined') {
+      parsedValue = parsed.value;
+    }
+
+    if (parsed.format) {
+      parsedFormat = parsed.format;
     }
   } else {
     parsedValue = val;
