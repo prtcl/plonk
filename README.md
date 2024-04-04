@@ -42,6 +42,8 @@ import { useMetro } from 'plonk/hooks';
 import { clamp } from 'plonk/utils';
 ```
 
+In general, plonk is written for both client and server usage, while hooks are React-only and client-only.
+
 ## Documentation
 
 Coming soon!
