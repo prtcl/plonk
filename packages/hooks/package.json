@@ -1,6 +1,6 @@
 {
   "name": "@prtcl/plonk-hooks",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0",
   "description": "React hook wrappers for plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
