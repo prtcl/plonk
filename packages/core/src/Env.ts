@@ -107,14 +107,14 @@ export default class Env {
     });
   }
 
-  hasFinished() {
+  done() {
     return this.state.duration <= this.state.totalElapsed;
   }
 
   value() {
     const { to, value } = this.state;
 
-    if (this.hasFinished()) {
+    if (this.done()) {
       return to;
     }
 
@@ -122,7 +122,7 @@ export default class Env {
   }
 
   next() {
-    if (this.hasFinished()) {
+    if (this.done()) {
       return this.value();
     }
 

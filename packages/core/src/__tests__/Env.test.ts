@@ -18,7 +18,7 @@ describe('Env', () => {
 
       loops += 1;
 
-      if (e.hasFinished()) {
+      if (e.done()) {
         clearInterval(timerId);
         expect(e.value()).toEqual(1);
       }
@@ -37,7 +37,7 @@ describe('Env', () => {
 
       expect(val).toBeLessThan(prev);
 
-      if (e.hasFinished()) {
+      if (e.done()) {
         clearInterval(timerId);
         expect(e.value()).toEqual(0);
       }
@@ -56,11 +56,11 @@ describe('Env', () => {
     });
 
     expect(e.value()).toEqual(100);
-    expect(e.hasFinished()).toEqual(false);
+    expect(e.done()).toEqual(false);
 
     setTimeout(() => {
       expect(e.next()).toEqual(500);
-      expect(e.hasFinished()).toEqual(true);
+      expect(e.done()).toEqual(true);
 
       done();
     }, 25);
