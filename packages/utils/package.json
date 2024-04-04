@@ -1,6 +1,6 @@
 {
   "name": "@prtcl/plonk-utils",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0",
   "description": "Utils and helpers for plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
