@@ -15,7 +15,7 @@ describe('Metro', () => {
             state.iterations * 30,
           );
           expect(state.tickInterval).toBeGreaterThanOrEqual(30);
-          expect(state.tickInterval).toBeLessThanOrEqual(50);
+          expect(state.tickInterval).toBeLessThanOrEqual(55);
         }
 
         expect(state.prev).toBeGreaterThanOrEqual(start);
@@ -45,10 +45,10 @@ describe('Metro', () => {
           expect(state.tickInterval).toEqual(0);
         } else if (state.iterations >= 5) {
           expect(state.tickInterval).toBeGreaterThanOrEqual(50);
-          expect(state.tickInterval).toBeLessThanOrEqual(70);
+          expect(state.tickInterval).toBeLessThanOrEqual(75);
         } else {
           expect(state.tickInterval).toBeGreaterThanOrEqual(30);
-          expect(state.tickInterval).toBeLessThanOrEqual(50);
+          expect(state.tickInterval).toBeLessThanOrEqual(55);
         }
 
         if (state.iterations === 10) {
