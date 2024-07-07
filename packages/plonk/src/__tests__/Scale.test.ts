@@ -1,4 +1,4 @@
-import Scale from '../math/Scale';
+import { Scale } from '../math/Scale';
 
 describe('Scale', () => {
   it('scales an incoming value from a given range to an output range', () => {

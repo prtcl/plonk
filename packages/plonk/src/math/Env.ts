@@ -1,5 +1,5 @@
-import { now } from '../utils';
-import Scale from './Scale';
+import { now } from '../utils/now';
+import { Scale } from './Scale';
 
 export type EnvState = {
   duration: number;
@@ -53,7 +53,7 @@ export const updateStateFromOptions = (
   };
 };
 
-export default class Env {
+export class Env {
   state: EnvState;
   protected _interpolator: Scale;
 

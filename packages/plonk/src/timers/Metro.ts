@@ -1,4 +1,5 @@
-import { now, SIXTY_FPS } from '../utils';
+import { SIXTY_FPS } from '../constants';
+import { now } from '../utils/now';
 
 export type TimerState = {
   initialTime: number;
@@ -62,7 +63,7 @@ export const parseOptions = (opts?: MetroOptions): MetroOptions => {
 
 export type TimerCallback<TimerApi extends Metro> = (timer: TimerApi) => void;
 
-export default class Metro {
+export class Metro {
   state: TimerState;
   protected _listeners: TimerCallback<Metro>[];
   protected _timerId: ReturnType<typeof setTimeout> | number;

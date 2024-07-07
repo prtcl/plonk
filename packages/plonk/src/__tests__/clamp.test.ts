@@ -1,4 +1,4 @@
-import clamp from '../utils/clamp';
+import { clamp } from '../utils/clamp';
 
 describe('clamp', () => {
   it('constrains a number to a min/max range', () => {

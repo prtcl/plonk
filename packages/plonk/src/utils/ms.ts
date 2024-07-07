@@ -1,8 +1,8 @@
-import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from './constants';
+import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from '../constants';
 
 export type FPS = 15 | 30 | 60;
 
-export const enum TimeFormat {
+export enum TimeFormat {
   FPS = 'fps',
   HOURS = 'h',
   HZ = 'hz',
@@ -57,10 +57,10 @@ const parseStringValAndFormat = (val: string) => {
   };
 };
 
-export function ms(val: string | undefined | null): number | undefined;
+export function ms(val: string | number | undefined | null): number | undefined;
 export function ms(
-  val: number | undefined | null,
-  format: AvailableTimeFormats | TimeFormat,
+  val: string | number | undefined | null,
+  format: AvailableTimeFormats | TimeFormat | undefined,
 ): number | undefined;
 
 /** Converts a time format string into equivalent milliseconds.
@@ -69,7 +69,7 @@ export function ms(
  * => 16.666666
  * ```
  */
-export default function ms(
+export function ms(
   val: string | number | undefined | null,
   format = TimeFormat.MILLISECONDS,
 ): number | undefined {

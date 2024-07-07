@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Frames, type FramesOptions, type TimerCallback } from '@prtcl/plonk';
-import usePrevious from './usePrevious';
+import { usePrevious } from './usePrevious';
 
 export type UseFramesOptions = FramesOptions & {
   autostart?: boolean;
@@ -9,12 +9,11 @@ export type UseFramesOptions = FramesOptions & {
 /**
  * Hook wrapper for Frames which provides an animation loop with variable frame rate
  */
-const useFrames = (
+export const useFrames = (
   callback: TimerCallback<Frames>,
   opts?: UseFramesOptions,
 ) => {
   const { autostart = true } = opts || {};
-
   const callbackRef = useRef<TimerCallback<Frames>>(callback);
   const optsRef = useRef<UseFramesOptions>(opts);
   const prevOpts = usePrevious(opts);
@@ -45,5 +44,3 @@ const useFrames = (
 
   return frames;
 };
-
-export default useFrames;

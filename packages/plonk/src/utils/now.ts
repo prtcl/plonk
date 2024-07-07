@@ -27,6 +27,6 @@ if (typeof performance !== 'undefined' && 'now' in performance) {
 }
 
 /** performance.now polyfill for running across envs. */
-export default function now() {
+export function now() {
   return internal();
 }

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import useMetro from '../useMetro';
+import { useMetro } from '../hooks/useMetro';
 
 describe('useMetro', () => {
   it('wraps Metro in a memo and updates time based on props change', (done) => {

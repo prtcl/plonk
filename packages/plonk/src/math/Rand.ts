@@ -1,4 +1,4 @@
-import { clamp } from '../utils';
+import { clamp } from '../utils/clamp';
 
 export type RandOptions = {
   min?: number;
@@ -19,7 +19,7 @@ export const parseOptions = (opts?: RandOptions): RandOptions => {
   };
 };
 
-export default class Rand {
+export class Rand {
   state: RandState;
 
   static rand(opts?: RandOptions) {

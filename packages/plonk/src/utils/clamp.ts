@@ -8,7 +8,7 @@ export function clamp(n: number, min: number, max: number): number;
  * => 1
  * ```
  */
-export default function clamp(n: number, min?: number, max?: number) {
+export function clamp(n: number, min?: number, max?: number) {
   let a = 0;
   let b = 1;
 

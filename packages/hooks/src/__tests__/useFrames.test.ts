@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { type FPS } from '@prtcl/plonk';
-import useFrames from '../useFrames';
+import { useFrames } from '../hooks/useFrames';
 
 describe('useFrames', () => {
   it('wraps Metro in a memo and updates time based on props change', (done) => {

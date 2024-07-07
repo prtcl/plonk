@@ -1,5 +1,6 @@
-import { clamp, now } from '../utils';
-import Scale from './Scale';
+import { clamp } from '../utils/clamp';
+import { now } from '../utils/now';
+import { Scale } from './Scale';
 
 export const SINE_PERIOD = Math.PI * 2 - 0.0001;
 
@@ -23,7 +24,7 @@ const getInitialState = (duration: number): SineState => ({
   value: 0,
 });
 
-export default class Sine {
+export class Sine {
   state: SineState;
   protected _interpolator: Scale;
 

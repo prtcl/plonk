@@ -6,7 +6,7 @@ type ValueCache<Value> = {
 };
 
 /** Returns the previous value without causing additional updates. */
-const usePrevious = <Value>(value: Value): Value | undefined => {
+export const usePrevious = <Value>(value: Value): Value | undefined => {
   const ref = useRef<ValueCache<Value>>({
     value,
     prev: undefined,
@@ -23,5 +23,3 @@ const usePrevious = <Value>(value: Value): Value | undefined => {
 
   return ref.current.prev;
 };
-
-export default usePrevious;

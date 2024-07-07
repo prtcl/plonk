@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Metro, type MetroOptions, type TimerCallback } from '@prtcl/plonk';
-import usePrevious from './usePrevious';
+import { usePrevious } from './usePrevious';
 
 export type UseMetroOptions = MetroOptions & {
   autostart?: boolean;
@@ -9,9 +9,11 @@ export type UseMetroOptions = MetroOptions & {
 /**
  * Hook wrapper for Metro which provides a timer loop with variable interval.
  */
-const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
+export const useMetro = (
+  callback: TimerCallback<Metro>,
+  opts?: UseMetroOptions,
+) => {
   const { autostart = true } = opts || {};
-
   const callbackRef = useRef<TimerCallback<Metro>>(callback);
   const optsRef = useRef<UseMetroOptions>(opts);
   const prevOpts = usePrevious(opts);
@@ -42,5 +44,3 @@ const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
 
   return metro;
 };
-
-export default useMetro;

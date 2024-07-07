@@ -1,5 +1,5 @@
-import { clamp } from '../utils';
-import Rand from './Rand';
+import { clamp } from '../utils/clamp';
+import { Rand } from './Rand';
 
 export const DEFAULT_DRUNK_STEP = 0.1;
 
@@ -34,7 +34,7 @@ export const parseOptions = (opts?: DrunkOptions): DrunkOptions => {
   };
 };
 
-export default class Drunk {
+export class Drunk {
   state: DrunkState;
   protected _initialValue: Rand;
   protected _step: Rand;

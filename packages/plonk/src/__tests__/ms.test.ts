@@ -1,4 +1,4 @@
-import ms, { TimeFormat } from '../utils/ms';
+import { ms, TimeFormat } from '../utils/ms';
 
 type TestCase = {
   val: string | number | undefined | null;

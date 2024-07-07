@@ -1,4 +1,4 @@
-import Drunk from '../math/Drunk';
+import { Drunk } from '../math/Drunk';
 
 type TestCase = {
   next: number;

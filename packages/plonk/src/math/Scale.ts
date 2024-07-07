@@ -1,4 +1,4 @@
-import { clamp } from '../utils';
+import { clamp } from '../utils/clamp';
 
 export type ScaleRange = {
   min?: number;
@@ -59,7 +59,7 @@ export const updateStateFromOptions = (
   };
 };
 
-export default class Scale {
+export class Scale {
   state: ScaleState;
 
   static scale(n: number, opts?: ScaleOptions) {
