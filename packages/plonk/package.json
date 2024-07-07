@@ -16,7 +16,7 @@
     "url": "git+https://github.com/prtcl/plonk.git"
   },
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsup --dts --format esm",
     "clean": "rm -rf dist | true",
     "test": "npx jest --env=node && npx jest --env=jsdom"
   }
