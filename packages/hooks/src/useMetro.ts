@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  Metro,
-  type MetroOptions,
-  type TimerCallback,
-} from '@prtcl/plonk-core';
+import { Metro, type MetroOptions, type TimerCallback } from '@prtcl/plonk';
 import usePrevious from './usePrevious';
 
 export type UseMetroOptions = MetroOptions & {

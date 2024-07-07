@@ -5,9 +5,10 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "noImplicitAny": true,
-    "target": "es6"
+    "target": "ESNext"
   },
   "exclude": [
     ".eslintrc.js",

@@ -1,4 +1,4 @@
-import Env from '../Env';
+import Env from '../math/Env';
 
 describe('Env', () => {
   it('interpolates a value over time and notifies when complete', () => {

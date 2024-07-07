@@ -1,4 +1,4 @@
-import { clamp, now } from '@prtcl/plonk-utils';
+import { clamp, now } from '../utils';
 import Scale from './Scale';
 
 export const SINE_PERIOD = Math.PI * 2 - 0.0001;

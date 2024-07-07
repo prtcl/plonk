@@ -1,4 +1,4 @@
-import Frames from '../Frames';
+import Frames from '../timers/Frames';
 
 describe('Frames', () => {
   it('providers a timer API which wraps requestAnimationFrame', (done) => {

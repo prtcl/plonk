@@ -1,4 +1,4 @@
-import flip from '../flip';
+import flip from '../utils/flip';
 
 describe('flip', () => {
   it('just inverts the sign of incoming numbers', () => {

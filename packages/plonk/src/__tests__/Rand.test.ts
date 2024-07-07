@@ -1,4 +1,4 @@
-import Rand from '../Rand';
+import Rand from '../math/Rand';
 
 describe('Rand', () => {
   it('produces random numbers within a set range', () => {

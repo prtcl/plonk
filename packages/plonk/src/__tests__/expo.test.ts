@@ -1,4 +1,4 @@
-import expo from '../expo';
+import expo from '../utils/expo';
 
 type TestCase = {
   from: number;

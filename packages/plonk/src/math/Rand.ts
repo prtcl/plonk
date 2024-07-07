@@ -1,4 +1,4 @@
-import { clamp } from '@prtcl/plonk-utils';
+import { clamp } from '../utils';
 
 export type RandOptions = {
   min?: number;

@@ -1,4 +1,4 @@
-import { now, SIXTY_FPS } from '@prtcl/plonk-utils';
+import { now, SIXTY_FPS } from '../utils';
 
 export type TimerState = {
   initialTime: number;

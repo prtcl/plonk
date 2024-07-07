@@ -1,4 +1,4 @@
-import { ms, TimeFormat, type FPS } from '@prtcl/plonk-utils';
+import { ms, TimeFormat, type FPS } from '../utils';
 import Metro, { type TimerCallback, type MetroOptions } from './Metro';
 
 export type FramesOptions = {
@@ -19,7 +19,7 @@ export const parseOptions = (opts?: FramesOptions): MetroOptions => {
 };
 
 export default class Frames extends Metro {
-  protected _timerId: ReturnType<typeof requestAnimationFrame>;
+  protected declare _timerId: ReturnType<typeof requestAnimationFrame>;
 
   constructor(callback: TimerCallback<Frames>, opts?: FramesOptions) {
     super(callback, parseOptions(opts));

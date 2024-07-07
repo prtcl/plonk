@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { type FPS } from '@prtcl/plonk-utils';
+import { type FPS } from '@prtcl/plonk';
 import useFrames from '../useFrames';
 
 describe('useFrames', () => {

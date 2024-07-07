@@ -1,4 +1,4 @@
-import now from '../now';
+import now from '../utils/now';
 
 describe('now', () => {
   it('returns a time offset from env start time using performance.now or fallbacks', (done) => {

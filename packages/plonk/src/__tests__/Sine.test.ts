@@ -1,4 +1,4 @@
-import Sine from '../Sine';
+import Sine from '../math/Sine';
 
 describe('Sine', () => {
   it('creates a sine wave generator which emits -1...1 values', (done) => {
