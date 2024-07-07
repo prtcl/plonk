@@ -16,7 +16,7 @@
     "format": "npx prettier . --write",
     "lint": "npx tsc --noEmit --pretty --skipLibCheck && npx eslint --config ./.eslintrc.js --resolve-plugins-relative-to ./ packages",
     "publish": "npm run setup && npm publish --access=public --workspace packages",
-    "setup": "npm run clean && npm i && npm i -ws && npm run build",
+    "setup": "npm run clean && npm ci && npm run build",
     "test": "npm run test -ws --if-present"
   },
   "devDependencies": {
