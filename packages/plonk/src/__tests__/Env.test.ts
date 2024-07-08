@@ -3,7 +3,7 @@ import { Env } from '../math/Env';
 
 describe('Env', () => {
   it('interpolates a value over time and notifies when complete', () => {
-    const e = new Env({ from: 0, to: 1, duration: 100 });
+    const e = new Env({ duration: 100 });
     let loops = 0;
     let prev = 0;
 

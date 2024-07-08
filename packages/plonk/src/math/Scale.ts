@@ -11,12 +11,14 @@ export type ScaleOptions = {
 };
 
 export type ScaleState = {
-  from: ScaleRange;
-  to: ScaleRange;
-  value: number | undefined;
+  from: Required<ScaleRange>;
+  to: Required<ScaleRange>;
+  value: number;
 };
 
-export const parseOptions = (opts?: ScaleOptions): ScaleOptions => {
+export const parseOptions = (
+  opts?: ScaleOptions,
+): { from: Required<ScaleRange>; to: Required<ScaleRange> } => {
   const { from, to } = {
     ...opts,
     from: {
@@ -68,7 +70,7 @@ export class Scale {
 
   constructor(opts?: ScaleOptions) {
     const { from, to } = parseOptions(opts);
-    this.state = { from, to, value: undefined };
+    this.state = { from, to, value: to.min };
   }
 
   setRanges(opts: ScaleOptions) {
@@ -77,7 +79,7 @@ export class Scale {
 
   reset(opts: ScaleOptions) {
     const { from, to } = parseOptions(opts);
-    this.state = { from, to, value: undefined };
+    this.state = { from, to, value: to.min };
   }
 
   value() {

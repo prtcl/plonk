@@ -22,19 +22,19 @@ export class Frames extends Metro {
   protected declare _timerId: ReturnType<typeof requestAnimationFrame>;
 
   constructor(callback: TimerCallback<Frames>, opts?: FramesOptions) {
-    super(callback, parseOptions(opts));
+    super(() => callback(this), parseOptions(opts));
   }
 
-  asyncHandler(callback: () => void) {
-    if (typeof window === 'undefined') {
+  protected asyncHandler(callback: () => void) {
+    if (typeof window === 'undefined' || !('requestAnimationFrame' in window)) {
       super.asyncHandler(callback);
     } else {
       this._timerId = requestAnimationFrame(callback);
     }
   }
 
-  clearAsyncHandler() {
-    if (typeof window === 'undefined') {
+  protected clearAsyncHandler() {
+    if (typeof window === 'undefined' || !('cancelAnimationFrame' in window)) {
       super.clearAsyncHandler();
     } else {
       cancelAnimationFrame(this._timerId);

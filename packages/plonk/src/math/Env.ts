@@ -16,15 +16,20 @@ export type EnvOptions = {
   to?: number;
 };
 
-export const parseOptions = (opts?: EnvOptions): EnvOptions => {
+export const parseOptions = (opts?: EnvOptions): Required<EnvOptions> => {
   return {
+    duration: 0,
     from: 0,
     to: 1,
     ...opts,
   };
 };
 
-const getInitialState = ({ from, to, duration }: EnvOptions): EnvState => {
+const getInitialState = ({
+  from,
+  to,
+  duration,
+}: Required<EnvOptions>): EnvState => {
   return {
     duration,
     from,
