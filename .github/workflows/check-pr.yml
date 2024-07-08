@@ -1,4 +1,4 @@
-name: 'Lint and Test PR'
+name: 'Check PR'
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-pr:
+  check-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,5 +28,7 @@ jobs:
       - run: npm run setup
       - name: Lint
         run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
       - name: Test
         run: npm run test
