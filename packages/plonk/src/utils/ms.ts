@@ -57,10 +57,10 @@ const parseStringValAndFormat = (val: string) => {
   };
 };
 
-export function ms(val: string | number | undefined | null): number | undefined;
+export function ms(val: string | null | undefined): number | undefined;
 export function ms(
-  val: string | number | undefined | null,
-  format: AvailableTimeFormats | TimeFormat | undefined,
+  val: string | number | null | undefined,
+  format?: AvailableTimeFormats | TimeFormat,
 ): number | undefined;
 
 /** Converts a time format string into equivalent milliseconds.
@@ -70,15 +70,11 @@ export function ms(
  * ```
  */
 export function ms(
-  val: string | number | undefined | null,
-  format = TimeFormat.MILLISECONDS,
+  val: string | number | null | undefined,
+  format?: AvailableTimeFormats | TimeFormat,
 ): number | undefined {
-  let parsedValue: number;
-  let parsedFormat: AvailableTimeFormats = format;
-
-  if (val === null || typeof val === 'undefined') {
-    return undefined;
-  }
+  let parsedValue: number | null | undefined = null;
+  let parsedFormat: AvailableTimeFormats = format || TimeFormat.MILLISECONDS;
 
   if (typeof val === 'string') {
     const parsed = parseStringValAndFormat(sanitizeStringVal(val));
@@ -94,7 +90,11 @@ export function ms(
     parsedValue = val;
   }
 
-  if (Number.isNaN(val)) {
+  if (
+    typeof parsedValue === 'undefined' ||
+    parsedValue === null ||
+    Number.isNaN(parsedValue)
+  ) {
     return undefined;
   }
 
