@@ -14,7 +14,7 @@ describe('Scale', () => {
       },
     });
 
-    expect(s.value()).toEqual(undefined);
+    expect(s.value()).toEqual(-1);
 
     let val = s.scale(0);
 
@@ -44,7 +44,7 @@ describe('Scale', () => {
       },
     });
 
-    expect(s.value()).toEqual(undefined);
+    expect(s.value()).toEqual(-1);
 
     let val = s.scale(0);
 
@@ -69,7 +69,7 @@ describe('Scale', () => {
       },
     });
 
-    expect(s.value()).toEqual(undefined);
+    expect(s.value()).toEqual(-1);
 
     let val = s.scale(0);
 
@@ -97,7 +97,7 @@ describe('Scale', () => {
       },
     });
 
-    expect(s.value()).toEqual(undefined);
+    expect(s.value()).toEqual(0);
 
     val = s.scale(-1);
 

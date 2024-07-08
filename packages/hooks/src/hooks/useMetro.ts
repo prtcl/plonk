@@ -15,7 +15,7 @@ export const useMetro = (
 ) => {
   const { autostart = true } = opts || {};
   const callbackRef = useRef<TimerCallback<Metro>>(callback);
-  const optsRef = useRef<UseMetroOptions>(opts);
+  const optsRef = useRef<UseMetroOptions | undefined>(opts);
   const prevOpts = usePrevious(opts);
 
   callbackRef.current = callback;

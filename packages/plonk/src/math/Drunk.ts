@@ -21,14 +21,14 @@ export type DrunkState = {
 export const parseStepSize = (step?: number): number =>
   typeof step !== 'undefined' ? clamp(step, 0, 1) : DEFAULT_DRUNK_STEP;
 
-export const parseOptions = (opts?: DrunkOptions): DrunkOptions => {
+export const parseOptions = (opts?: DrunkOptions): Required<DrunkOptions> => {
   const { step, ...restOpts } = opts || {};
   const parsedStepSize = parseStepSize(step);
 
   return {
     max: 1,
     min: 0,
-    startsAt: undefined,
+    startsAt: 0,
     step: parsedStepSize,
     ...restOpts,
   };
@@ -46,7 +46,9 @@ export class Drunk {
     this._step = new Rand({ min: -1, max: 1 });
 
     const initialValue =
-      typeof startsAt !== 'undefined' ? startsAt : this._initialValue.value();
+      typeof opts?.startsAt !== 'undefined'
+        ? startsAt
+        : this._initialValue.value();
 
     this.state = {
       initialValue,
@@ -82,7 +84,7 @@ export class Drunk {
   }
 
   setStepSize(partialOpts?: Pick<DrunkOptions, 'step'>) {
-    const step = parseStepSize(partialOpts.step);
+    const step = parseStepSize(partialOpts?.step);
 
     this.state = {
       ...this.state,
@@ -97,7 +99,9 @@ export class Drunk {
     this.setStepSize({ step });
 
     const initialValue =
-      typeof startsAt !== 'undefined' ? startsAt : this._initialValue.next();
+      typeof opts?.startsAt !== 'undefined'
+        ? startsAt
+        : this._initialValue.next();
 
     this.state = {
       ...this.state,

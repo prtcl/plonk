@@ -54,19 +54,19 @@ export type MetroOptions = {
   time?: number;
 };
 
-export const parseOptions = (opts?: MetroOptions): MetroOptions => {
+export const parseOptions = (opts?: MetroOptions): Required<MetroOptions> => {
   return {
     time: SIXTY_FPS,
     ...opts,
   };
 };
 
-export type TimerCallback<TimerApi extends Metro> = (timer: TimerApi) => void;
+export type TimerCallback<T extends Metro> = (timer: T) => void;
 
 export class Metro {
   state: TimerState;
   protected _listeners: TimerCallback<Metro>[];
-  protected _timerId: ReturnType<typeof setTimeout> | number;
+  protected declare _timerId: ReturnType<typeof setTimeout> | number;
 
   constructor(callback: TimerCallback<Metro>, opts?: MetroOptions) {
     const { time } = parseOptions(opts);

@@ -15,7 +15,7 @@ export const useFrames = (
 ) => {
   const { autostart = true } = opts || {};
   const callbackRef = useRef<TimerCallback<Frames>>(callback);
-  const optsRef = useRef<UseFramesOptions>(opts);
+  const optsRef = useRef<UseFramesOptions | undefined>(opts);
   const prevOpts = usePrevious(opts);
 
   callbackRef.current = callback;

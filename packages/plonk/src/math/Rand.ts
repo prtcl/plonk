@@ -8,10 +8,10 @@ export type RandOptions = {
 export type RandState = {
   min: number;
   max: number;
-  value: number | undefined;
+  value: number;
 };
 
-export const parseOptions = (opts?: RandOptions): RandOptions => {
+export const parseOptions = (opts?: RandOptions): Required<RandOptions> => {
   return {
     min: 0,
     max: 1,
@@ -29,11 +29,12 @@ export class Rand {
   constructor(opts?: RandOptions) {
     const { min, max } = parseOptions(opts);
 
-    this.state = { max, min, value: undefined };
+    this.state = { max, min, value: 0 };
     this.next();
   }
 
   setRange(partialOpts: RandOptions) {
+    const { value = 0 } = this.state;
     const { min, max } = {
       ...this.state,
       ...partialOpts,
@@ -43,7 +44,7 @@ export class Rand {
       ...this.state,
       max,
       min,
-      value: clamp(this.state.value, min, max),
+      value: clamp(value, min, max),
     };
   }
 
