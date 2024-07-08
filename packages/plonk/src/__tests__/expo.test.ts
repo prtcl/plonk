@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { expo } from '../utils/expo';
 
 type TestCase = {

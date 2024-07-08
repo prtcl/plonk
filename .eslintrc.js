@@ -4,25 +4,19 @@ module.exports = {
     es6: true,
     browser: true,
     node: true,
-    'jest/globals': true,
   },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended-type-checked',
     'prettier',
   ],
-  plugins: ['@typescript-eslint', 'jest'],
+  plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: ['tsconfig.json', 'packages/*/tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: [
-    'node_modules',
-    '**/node_modules',
-    '**/dist',
-    'jest.config.js',
-  ],
+  ignorePatterns: ['node_modules', '**/node_modules', '**/dist'],
   overrides: [
     {
       files: ['packages/**/*'],

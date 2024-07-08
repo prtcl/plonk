@@ -8,13 +8,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noImplicitAny": true,
+    "rootDir": ".",
     "target": "ESNext"
   },
-  "exclude": [
-    ".eslintrc.js",
-    "jest.config.js",
-    "node_modules",
-    "packages/**/dist",
-    "packages/**/jest.config.js"
-  ]
+  "exclude": [".eslintrc.js", "node_modules", "packages/**/dist"]
 }

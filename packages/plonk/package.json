@@ -22,6 +22,9 @@
   "scripts": {
     "build": "tsup --dts --format esm,cjs",
     "clean": "rm -rf dist | true",
-    "test": "npx jest --env=node && npx jest --env=jsdom"
+    "test": "vitest --watch=false && vitest --browser.name=chrome --browser.headless --watch=false"
+  },
+  "devDependencies": {
+    "@vitest/browser": "^1.6.0"
   }
 }

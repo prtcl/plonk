@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { flip } from '../utils/flip';
 
 describe('flip', () => {

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Env } from '../math/Env';
 
 describe('Env', () => {
@@ -44,7 +45,7 @@ describe('Env', () => {
     }, 10);
   });
 
-  it('allows resetting state', (done) => {
+  it('allows resetting state', () => {
     const e = new Env({ from: 0, to: 1, duration: 100 });
 
     expect(e.value()).toEqual(0);
@@ -58,12 +59,14 @@ describe('Env', () => {
     expect(e.value()).toEqual(100);
     expect(e.done()).toEqual(false);
 
-    setTimeout(() => {
-      expect(e.next()).toEqual(500);
-      expect(e.done()).toEqual(true);
+    return new Promise<void>((done) => {
+      setTimeout(() => {
+        expect(e.next()).toEqual(500);
+        expect(e.done()).toEqual(true);
 
-      done();
-    }, 25);
+        done();
+      }, 25);
+    });
   });
 
   it('returns the target to value after duration has elapsed', () => {

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Drunk } from '../math/Drunk';
 
 type TestCase = {

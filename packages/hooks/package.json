@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsup --dts --format esm,cjs",
     "clean": "rm -rf dist | true",
-    "test": "npx jest --env=jsdom"
+    "test": "vitest --browser.name=chrome --browser.headless --watch=false"
   },
   "dependencies": {
     "@prtcl/plonk": "1.0.1-beta.0",

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Rand } from '../math/Rand';
 
 describe('Rand', () => {
