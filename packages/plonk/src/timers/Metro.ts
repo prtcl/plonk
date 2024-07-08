@@ -74,11 +74,11 @@ export class Metro {
     this._listeners = [callback];
   }
 
-  asyncHandler(callback: () => void) {
+  protected asyncHandler(callback: () => void) {
     this._timerId = setTimeout(callback, SIXTY_FPS);
   }
 
-  clearAsyncHandler() {
+  protected clearAsyncHandler() {
     clearTimeout(this._timerId);
   }
 
