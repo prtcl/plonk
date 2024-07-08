@@ -4,8 +4,7 @@
     "baseUrl": ".",
     "declaration": true,
     "jsx": "react-jsx",
-    "outDir": "dist",
-    "rootDir": "src"
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }
