@@ -14,10 +14,11 @@
     "build": "npm run build -ws",
     "clean": "rm -rf node_modules | true && npm run clean -ws",
     "format": "npx prettier . --write",
-    "lint": "npx tsc --noEmit --pretty --skipLibCheck && npx eslint --config ./.eslintrc.js --resolve-plugins-relative-to ./ packages",
+    "lint": "npx eslint --config ./.eslintrc.js --resolve-plugins-relative-to ./ packages",
     "publish": "npm run setup && npm publish --access=public --workspace packages",
     "setup": "npm run clean && npm ci && npm run build",
-    "test": "npm run test -ws --if-present"
+    "test": "npm run test -ws --if-present",
+    "typecheck": "npx tsc --noEmit --pretty --skipLibCheck "
   },
   "devDependencies": {
     "@testing-library/react": "^14.2.2",
