@@ -5,10 +5,14 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "type": "module",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": {
+        "default": "./dist/index.js"
+      },
+      "require": "./dist/index.cjs"
     }
   },
   "repository": {
@@ -16,7 +20,7 @@
     "url": "git+https://github.com/prtcl/plonk.git"
   },
   "scripts": {
-    "build": "tsup --dts --format esm",
+    "build": "tsup --dts --format esm,cjs",
     "clean": "rm -rf dist | true",
     "test": "npx jest --env=jsdom"
   },
