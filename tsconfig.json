@@ -5,15 +5,11 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "noImplicitAny": true,
-    "target": "es6"
+    "rootDir": ".",
+    "target": "ESNext"
   },
-  "exclude": [
-    ".eslintrc.js",
-    "jest.config.js",
-    "node_modules",
-    "packages/**/dist",
-    "packages/**/jest.config.js"
-  ]
+  "exclude": [".eslintrc.js", "node_modules", "packages/**/dist"]
 }

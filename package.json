@@ -1,12 +1,10 @@
 {
   "name": "plonk-monorepo",
   "version": "0.0.0",
-  "private": "true",
+  "private": true,
   "workspaces": [
-    "packages/utils",
-    "packages/core",
-    "packages/hooks",
-    "packages/plonk"
+    "packages/plonk",
+    "packages/hooks"
   ],
   "repository": {
     "type": "git",
@@ -16,19 +14,25 @@
     "build": "npm run build -ws",
     "clean": "rm -rf node_modules | true && npm run clean -ws",
     "format": "npx prettier . --write",
-    "lint": "npx tsc --noEmit --pretty --skipLibCheck && npx eslint --config ./.eslintrc.js --resolve-plugins-relative-to ./ packages",
+    "lint": "npx eslint --config ./.eslintrc.js --resolve-plugins-relative-to ./ packages",
     "publish": "npm run setup && npm publish --access=public --workspace packages",
-    "setup": "npm run clean && npm i && npm i -ws && npm run build",
-    "test": "npm run test -ws --if-present"
+    "setup": "npm run clean && npm ci && npm run build",
+    "test": "npm run test -ws --if-present",
+    "typecheck": "npx tsc --noEmit --pretty --skipLibCheck "
   },
   "devDependencies": {
+    "@testing-library/react": "^14.2.2",
+    "@types/node": "^20.12.3",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
+    "@vitest/browser": "^1.6.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-jest": "^27.9.0",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.4.3"
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.3",
+    "vitest": "^1.6.0",
+    "webdriverio": "^7.16.4"
   }
 }

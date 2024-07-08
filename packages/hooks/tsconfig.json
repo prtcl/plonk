@@ -1,18 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
     "jsx": "react-jsx",
     "outDir": "dist"
   },
-  "include": ["src/**/*"],
-  "exclude": [
-    ".eslintrc.js",
-    "__tests__",
-    "dist",
-    "jest.config.js",
-    "node_modules",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts"
-  ]
+  "include": ["src/**/*"]
 }
