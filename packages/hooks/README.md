@@ -1,3 +1,3 @@
 # @prtcl/plonk-hooks
 
-React hook wrappers for [plonk](https://github.com/prtcl/plonk)
+React Hook wrappers for [plonk](https://github.com/prtcl/plonk)
