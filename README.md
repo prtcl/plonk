@@ -30,16 +30,18 @@ const useDust = () => {
 ## Installation
 
 ```
-npm i plonk
-yarn add plonk
+// For the core timers and random generators
+npm i @prtcl/plonk 
+
+// For React
+npm i @prtcl/plonk-hooks
 ```
 
 The library is built as ES modules and split into sub-packages:
 
 ```typescript
-import { Drunk } from 'plonk';
-import { useMetro } from 'plonk/hooks';
-import { clamp } from 'plonk/utils';
+import { Drunk, clamp } from '@prtcl/plonk';
+import { useMetro } from '@prtcl/plonk-hooks';
 ```
 
 In general, plonk is written for both client and server usage, while hooks are React-only and client-only.
