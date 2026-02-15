@@ -26,7 +26,10 @@ if (typeof performance !== 'undefined' && 'now' in performance) {
   };
 }
 
-/** performance.now polyfill for running across envs. */
+/**
+ * Cross-environment high-resolution timestamp (performance.now polyfill).
+ * @returns Elapsed milliseconds since initialization.
+ */
 export function now() {
   return internal();
 }

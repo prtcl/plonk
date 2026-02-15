@@ -5,7 +5,11 @@ type ValueCache<Value> = {
   prev: Value | undefined;
 };
 
-/** Returns the previous value without causing additional updates. */
+/**
+ * Returns the previous value of a variable without causing additional renders.
+ * @param value - The current value to track.
+ * @returns The value from the previous render, or undefined on the first render.
+ */
 export const usePrevious = <Value>(value: Value): Value | undefined => {
   const ref = useRef<ValueCache<Value>>({
     value,

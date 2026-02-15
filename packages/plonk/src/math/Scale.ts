@@ -1,15 +1,20 @@
 import { clamp } from '../utils/clamp';
 
+/** A numeric range with min and max bounds. */
 export type ScaleRange = {
   min?: number;
   max: number;
 };
 
+/** Options for configuring a Scale mapper. */
 export type ScaleOptions = {
+  /** Input range. Defaults to { min: 0, max: 1 }. */
   from?: ScaleRange;
+  /** Output range. Defaults to { min: 0, max: 1 }. */
   to?: ScaleRange;
 };
 
+/** Snapshot of a Scale mapper's internal state. */
 export type ScaleState = {
   from: Required<ScaleRange>;
   to: Required<ScaleRange>;
@@ -61,6 +66,10 @@ export const updateStateFromOptions = (
   };
 };
 
+/**
+ * Linear map of values from one range to another, supports negative values and inversion.
+ * @param opts - {@link ScaleOptions} for configuring input and output ranges.
+ */
 export class Scale {
   state: ScaleState;
 

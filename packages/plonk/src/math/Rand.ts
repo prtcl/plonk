@@ -1,10 +1,14 @@
 import { clamp } from '../utils/clamp';
 
+/** Options for configuring a Rand generator. */
 export type RandOptions = {
+  /** Lower bound of the range. Defaults to 0. */
   min?: number;
+  /** Upper bound of the range. Defaults to 1. */
   max?: number;
 };
 
+/** Snapshot of a Rand generator's internal state. */
 export type RandState = {
   min: number;
   max: number;
@@ -19,6 +23,10 @@ export const parseOptions = (opts?: RandOptions): Required<RandOptions> => {
   };
 };
 
+/**
+ * Random number generator that produces values within a bounded range.
+ * @param opts - {@link RandOptions} for configuring the range.
+ */
 export class Rand {
   state: RandState;
 

@@ -1,7 +1,9 @@
 import { ms, TimeFormat, type FPS } from '../utils/ms';
 import { Metro, type TimerCallback, type MetroOptions } from './Metro';
 
+/** Options for configuring a Frames timer. */
 export type FramesOptions = {
+  /** Target frames per second (15, 30, or 60). Defaults to 60. */
   fps: FPS;
 };
 
@@ -18,6 +20,11 @@ export const parseOptions = (opts?: FramesOptions): MetroOptions => {
   };
 };
 
+/**
+ * Animation-loop timer that uses requestAnimationFrame when available.
+ * @param callback - {@link TimerCallback} called on each frame tick.
+ * @param opts - {@link FramesOptions} for configuring the target frame rate.
+ */
 export class Frames extends Metro {
   protected declare _timerId: ReturnType<typeof requestAnimationFrame>;
 

@@ -7,7 +7,10 @@ export type UseMetroOptions = MetroOptions & {
 };
 
 /**
- * Hook wrapper for Metro which provides a timer loop with variable interval.
+ * Hook wrapper for Metro, autostart begins on mount and stops on unmount.
+ * @param callback - {@link TimerCallback} called on each tick.
+ * @param opts - {@link UseMetroOptions} for configuring the timer and autostart.
+ * @returns The underlying Metro instance.
  */
 export const useMetro = (
   callback: TimerCallback<Metro>,

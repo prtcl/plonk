@@ -7,7 +7,10 @@ export type UseFramesOptions = FramesOptions & {
 };
 
 /**
- * Hook wrapper for Frames which provides an animation loop with variable frame rate
+ * Hook wrapper for Frames, autostart begins on mount and stops on unmount.
+ * @param callback - {@link TimerCallback} called on each frame tick.
+ * @param opts - {@link UseFramesOptions} for configuring frame rate and autostart.
+ * @returns The underlying Frames instance.
  */
 export const useFrames = (
   callback: TimerCallback<Frames>,

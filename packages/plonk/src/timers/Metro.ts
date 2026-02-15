@@ -1,6 +1,7 @@
 import { SIXTY_FPS } from '../constants';
 import { now } from '../utils/now';
 
+/** Snapshot of a running timer's internal state. */
 export type TimerState = {
   initialTime: number;
   isRunning: boolean;
@@ -50,7 +51,9 @@ export const processTimerState = (state: TimerState): TimerState | null => {
   };
 };
 
+/** Options for configuring a Metro timer. */
 export type MetroOptions = {
+  /** Interval between ticks in milliseconds. Defaults to ~16.67ms (60fps). */
   time?: number;
 };
 
@@ -61,8 +64,14 @@ export const parseOptions = (opts?: MetroOptions): Required<MetroOptions> => {
   };
 };
 
+/** Callback invoked on each timer tick with the timer instance. */
 export type TimerCallback<T extends Metro> = (timer: T) => void;
 
+/**
+ * High-resolution recursive timer with variable interval, provides runtime metrics via callback for time-based calculations.
+ * @param callback - {@link TimerCallback} called on each tick with the timer instance.
+ * @param opts - {@link MetroOptions} for configuring the timer interval.
+ */
 export class Metro {
   state: TimerState;
   protected _listeners: TimerCallback<Metro>[];
