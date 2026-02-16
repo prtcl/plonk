@@ -1,8 +1,10 @@
 export { Drunk, type DrunkOptions, type DrunkState } from './Drunk';
 export { Env, type EnvOptions, type EnvState } from './Env';
+export { Fold, type FoldOptions, type FoldState, fold } from './fold';
 export { Rand, type RandOptions, type RandState } from './Rand';
 export { Scale, type ScaleOptions, type ScaleRange, type ScaleState } from './Scale';
 export { Sine, type SineOptions, type SineState, SINE_PERIOD } from './Sine';
+export { Wrap, type WrapOptions, type WrapState, wrap } from './wrap';
 export { Frames, type FramesOptions } from './Frames';
 export { Metro, type MetroOptions, type TimerCallback } from './Metro';
 export { clamp } from './clamp';

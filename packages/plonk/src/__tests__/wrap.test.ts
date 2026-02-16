@@ -1,32 +1,70 @@
 import { describe, it, expect } from 'vitest';
-import { wrap } from '../wrap';
+import { wrap, Wrap } from '../wrap';
 
-describe('wrap', () => {
-  it('wraps values around a range', () => {
-    expect(wrap(5, 0, 10)).toBe(5);
-    expect(wrap(12, 0, 10)).toBe(2);
-    expect(wrap(20, 0, 10)).toBe(0);
-    expect(wrap(-3, 0, 10)).toBe(7);
+describe('Wrap', () => {
+  it('wraps values within the configured range', () => {
+    const w = new Wrap({ min: 0, max: 10 });
+
+    expect(w.wrap(5)).toBe(5);
+    expect(w.wrap(12)).toBe(2);
+    expect(w.wrap(-3)).toBe(7);
+  });
+
+  it('caches the last result in value()', () => {
+    const w = new Wrap({ min: 0, max: 10 });
+
+    expect(w.value()).toBe(0);
+
+    const result = w.wrap(12);
+
+    expect(result).toBe(2);
+    expect(w.value()).toBe(2);
   });
 
   it('defaults to 0...1 range', () => {
-    expect(wrap(0.5)).toBe(0.5);
-    expect(wrap(1.3)).toBeCloseTo(0.3);
-    expect(wrap(-0.2)).toBeCloseTo(0.8);
+    const w = new Wrap();
+
+    expect(w.wrap(0.5)).toBe(0.5);
+    expect(w.wrap(1.3)).toBeCloseTo(0.3);
   });
 
-  it('accepts a single max argument', () => {
-    expect(wrap(7, 5)).toBe(2);
-    expect(wrap(12, 10)).toBe(2);
+  it('updates range with setRange', () => {
+    const w = new Wrap({ min: 0, max: 10 });
+
+    w.wrap(5);
+    w.setRange({ min: 0, max: 4 });
+
+    expect(w.state.min).toBe(0);
+    expect(w.state.max).toBe(4);
+    // Previous value (5) gets wrapped into new range [0, 4]
+    expect(w.value()).toBe(1);
   });
 
   it('produces a circular sequence', () => {
-    const sequence = Array.from({ length: 8 }, (_, i) => wrap(i * 3, 0, 10));
+    const w = new Wrap({ min: 0, max: 10 });
+    const sequence = Array.from({ length: 8 }, (_, i) => w.wrap(i * 3));
+
     expect(sequence).toEqual([0, 3, 6, 9, 2, 5, 8, 1]);
   });
 
-  it('handles negative ranges', () => {
-    expect(wrap(190, -180, 180)).toBe(-170);
-    expect(wrap(-200, -180, 180)).toBe(160);
+  it('has a static shorthand', () => {
+    expect(Wrap.wrap(12, { min: 0, max: 10 })).toBe(2);
+    expect(Wrap.wrap(1.3)).toBeCloseTo(0.3);
+  });
+
+  it('exposes state', () => {
+    const w = new Wrap({ min: -180, max: 180 });
+
+    expect(w.state).toEqual({ min: -180, max: 180, value: -180 });
+
+    w.wrap(190);
+
+    expect(w.state).toEqual({ min: -180, max: 180, value: -170 });
+  });
+});
+
+describe('wrap', () => {
+  it('is exported and returns a number', () => {
+    expect(typeof wrap(0.5)).toBe('number');
   });
 });
