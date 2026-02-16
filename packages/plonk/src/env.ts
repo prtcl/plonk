@@ -1,5 +1,5 @@
-import { Scale } from './Scale';
 import { now } from './now';
+import { Scale } from './scale';
 
 /** Snapshot of an Env's internal state. */
 export type EnvState = {
@@ -67,6 +67,11 @@ export class Env {
   state: EnvState;
   protected _interpolator: Scale;
 
+  /** Creates a new Env instance. Alternative form of `new Env(opts)`. */
+  static env(opts: EnvOptions) {
+    return new Env(opts);
+  }
+
   constructor(opts: EnvOptions) {
     const { from, to, duration } = parseOptions(opts);
 
@@ -83,6 +88,7 @@ export class Env {
     });
   }
 
+  /** Updates the envelope duration. */
   setDuration(duration: number) {
     const { to, totalElapsed } = this.state;
 
@@ -97,6 +103,7 @@ export class Env {
     };
   }
 
+  /** Restarts the envelope with optional new options. */
   reset(opts?: EnvOptions) {
     const updates = updateStateFromOptions(opts, this.state);
 
@@ -117,10 +124,12 @@ export class Env {
     });
   }
 
+  /** Returns true when the envelope has completed. */
   done() {
     return this.state.duration <= this.state.totalElapsed;
   }
 
+  /** Returns the current interpolated value. */
   value() {
     const { to, value } = this.state;
 
@@ -131,6 +140,7 @@ export class Env {
     return value;
   }
 
+  /** Advances the envelope and returns the new value. */
   next() {
     if (this.done()) {
       return this.value();
@@ -150,3 +160,9 @@ export class Env {
     return updates;
   }
 }
+
+/**
+ * Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+ * Alternative form of `new Env(opts)`.
+ */
+export const env = Env.env;

@@ -30,6 +30,7 @@ export const parseOptions = (opts?: RandOptions): Required<RandOptions> => {
 export class Rand {
   state: RandState;
 
+  /** Returns a single random value. One-off form of `new Rand(opts).value()`. */
   static rand(opts?: RandOptions) {
     return new Rand(opts).value();
   }
@@ -41,6 +42,7 @@ export class Rand {
     this.next();
   }
 
+  /** Updates the range bounds, clamping the current value if needed. */
   setRange(partialOpts: RandOptions) {
     const { value = 0 } = this.state;
     const { min, max } = {
@@ -56,10 +58,12 @@ export class Rand {
     };
   }
 
+  /** Returns the current value. */
   value() {
     return this.state.value;
   }
 
+  /** Generates a new random value within the range. */
   next() {
     const { min, max } = this.state;
     const updates = Math.random() * (max - min) + min;
@@ -69,3 +73,9 @@ export class Rand {
     return updates;
   }
 }
+
+/**
+ * Random number generator that produces values within a bounded range.
+ * One-off form of `new Rand(opts).value()`.
+ */
+export const rand = Rand.rand;

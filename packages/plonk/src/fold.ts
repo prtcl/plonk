@@ -1,8 +1,78 @@
 import { clamp } from './clamp';
 
-export function fold(n: number): number;
-export function fold(n: number, max: number): number;
-export function fold(n: number, min: number, max: number): number;
+/** Options for configuring a Fold transformer. */
+export type FoldOptions = {
+  /** Lower bound of the range. Defaults to 0. */
+  min?: number;
+  /** Upper bound of the range. Defaults to 1. */
+  max?: number;
+};
+
+/** Snapshot of a Fold transformer's internal state. */
+export type FoldState = {
+  min: number;
+  max: number;
+  value: number;
+};
+
+export const parseOptions = (opts?: FoldOptions): Required<FoldOptions> => {
+  return {
+    min: 0,
+    max: 1,
+    ...opts,
+  };
+};
+
+/**
+ * Folds (reflects) values back and forth within a configured range.
+ * @param opts - {@link FoldOptions} for configuring the range.
+ */
+export class Fold {
+  state: FoldState;
+
+  /** Folds a single value. One-off form of `new Fold(opts).fold(n)`. */
+  static fold(n: number, opts?: FoldOptions) {
+    return new Fold(opts).fold(n);
+  }
+
+  constructor(opts?: FoldOptions) {
+    const { min, max } = parseOptions(opts);
+    this.state = { min, max, value: min };
+  }
+
+  /** Updates the range bounds, folding the current value into the new range. */
+  setRange(partialOpts: FoldOptions) {
+    const { min, max } = { ...this.state, ...partialOpts };
+
+    this.state = {
+      ...this.state,
+      min,
+      max,
+      value: transform(this.state.value, min, max),
+    };
+  }
+
+  /** Returns the last folded value. */
+  value() {
+    return this.state.value;
+  }
+
+  /** Folds a value into the configured range and caches the result. */
+  fold(n: number) {
+    const { min, max } = this.state;
+    const updates = transform(n, min, max);
+
+    this.state.value = updates;
+
+    return updates;
+  }
+}
+
+/**
+ * Folds (reflects) values back and forth within a configured range.
+ * One-off form of `new Fold(opts).fold(n)`.
+ */
+export const fold = Fold.fold;
 
 /**
  * Folds (reflects) a value back and forth within a range.
@@ -11,7 +81,7 @@ export function fold(n: number, min: number, max: number): number;
  * @param max - Upper bound (defaults to 1).
  * @returns The folded value within [min, max].
  */
-export function fold(n: number, min?: number, max?: number) {
+export function transform(n: number, min?: number, max?: number) {
   let a = 0;
   let b = 1;
 

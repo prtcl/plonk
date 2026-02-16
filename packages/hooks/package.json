@@ -1,6 +1,6 @@
 {
   "name": "@prtcl/plonk-hooks",
-  "version": "1.0.10",
+  "version": "1.1.1",
   "description": "React hook wrappers for plonk",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "test": "vitest --browser.name=chrome --browser.headless --watch=false"
   },
   "dependencies": {
-    "@prtcl/plonk": "1.0.10",
+    "@prtcl/plonk": "1.1.1",
     "client-only": "^0.0.1"
   },
   "peerDependencies": {

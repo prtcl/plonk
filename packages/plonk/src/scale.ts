@@ -80,6 +80,7 @@ export const updateStateFromOptions = (opts: ScaleOptions, prevState: ScaleState
 export class Scale {
   state: ScaleState;
 
+  /** Scales a single value. One-off form of `new Scale(opts).scale(n)`. */
   static scale(n: number, opts?: ScaleOptions) {
     return new Scale(opts).scale(n);
   }
@@ -88,18 +89,22 @@ export class Scale {
     this.state = parseInitialState(opts);
   }
 
+  /** Updates input and/or output ranges, recomputing the internal ratio. */
   setRanges(opts: ScaleOptions) {
     this.state = updateStateFromOptions(opts, this.state);
   }
 
+  /** Resets with new range options. */
   reset(opts: ScaleOptions) {
     this.state = parseInitialState(opts);
   }
 
+  /** Returns the last scaled value. */
   value() {
     return this.state.value;
   }
 
+  /** Maps a value from the input range to the output range. */
   scale(n: number) {
     const { from, to, ratio } = this.state;
     const updates = to.min + (clamp(n, from.min, from.max) - from.min) * ratio;
@@ -109,3 +114,9 @@ export class Scale {
     return updates;
   }
 }
+
+/**
+ * Linear map of values from one range to another, supports negative values and inversion.
+ * One-off form of `new Scale(opts).scale(n)`.
+ */
+export const scale = Scale.scale;

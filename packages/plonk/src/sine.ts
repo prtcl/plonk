@@ -1,6 +1,6 @@
-import { Scale } from './Scale';
 import { clamp } from './clamp';
 import { now } from './now';
+import { Scale } from './scale';
 
 export const SINE_PERIOD = Math.PI * 2 - 0.0001;
 
@@ -35,6 +35,11 @@ export class Sine {
   state: SineState;
   protected _interpolator: Scale;
 
+  /** Creates a new Sine instance. Alternative form of `new Sine(opts)`. */
+  static sine(opts: SineOptions) {
+    return new Sine(opts);
+  }
+
   constructor(opts: SineOptions) {
     const { duration } = opts;
 
@@ -51,6 +56,7 @@ export class Sine {
     this.state = getInitialState(duration);
   }
 
+  /** Updates the cycle duration. */
   setDuration(duration: number) {
     this.state = {
       ...this.state,
@@ -58,6 +64,7 @@ export class Sine {
     };
   }
 
+  /** Resets the oscillator with optional new options. */
   reset(opts?: SineOptions) {
     const { duration } = {
       ...this.state,
@@ -67,10 +74,12 @@ export class Sine {
     this.state = getInitialState(duration);
   }
 
+  /** Returns the current oscillator value. */
   value() {
     return this.state.value;
   }
 
+  /** Advances the oscillator and returns the new value. */
   next() {
     const { cycle, duration, prev, totalElapsed: prevTotalElapsed } = this.state;
     const curr = now();
@@ -92,3 +101,9 @@ export class Sine {
     return updates;
   }
 }
+
+/**
+ * Time-based sine wave oscillator that outputs values between -1 and 1.
+ * Alternative form of `new Sine(opts)`.
+ */
+export const sine = Sine.sine;

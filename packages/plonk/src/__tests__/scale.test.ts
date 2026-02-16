@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Scale } from '../Scale';
+import { Scale } from '../scale';
 
 describe('Scale', () => {
   it('scales an incoming value from a given range to an output range', () => {

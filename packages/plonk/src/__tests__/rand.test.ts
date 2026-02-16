@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Rand } from '../Rand';
+import { Rand } from '../rand';
 
 describe('Rand', () => {
   it('produces random numbers within a set range', () => {

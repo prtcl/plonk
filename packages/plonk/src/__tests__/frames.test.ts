@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Frames } from '../Frames';
+import { Frames } from '../frames';
 
 describe('Frames', () => {
   it('providers a timer API which wraps requestAnimationFrame', () => {
