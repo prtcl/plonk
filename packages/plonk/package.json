@@ -1,6 +1,6 @@
 {
   "name": "@prtcl/plonk",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Tiny library that provides timers, envelopes, and random generators",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",

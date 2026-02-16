@@ -86,15 +86,23 @@ if [ "$DRY_RUN" = true ]; then
   step "Dry run, skipped commit and publish"
 else
   echo ""
-  step "Committing and tagging..."
-  git add -A
-  git commit -m "v$NEW_VERSION"
-  git tag "v$NEW_VERSION"
-  git push && git push --tags
-  success "Committed, tagged, and pushed v$NEW_VERSION"
+  echo -e "Publish ${GREEN}v$NEW_VERSION${NC}? [Y/n] "
+  read -r CONFIRM
+  if [[ "$CONFIRM" =~ ^[Nn]$ ]]; then
+    warn "Aborted"
+    exit 0
+  fi
 
   step "Publishing packages..."
   npm publish --access=public -ws
+  success "Published to npm"
+
+  step "Committing and tagging..."
+  git add -A
+  git commit -m "v$NEW_VERSION"
+  git tag -f "v$NEW_VERSION"
+  git push && git push --tags -f
+  success "Committed, tagged, and pushed v$NEW_VERSION"
 fi
 
 echo ""
