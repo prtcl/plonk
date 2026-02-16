@@ -49,6 +49,7 @@ export class Drunk {
   protected _initialValue: Rand;
   protected _step: Rand;
 
+  /** Creates a new Drunk instance. Alternative form of `new Drunk(opts)`. */
   static drunk(opts?: DrunkOptions) {
     return new Drunk(opts);
   }
@@ -71,6 +72,7 @@ export class Drunk {
     };
   }
 
+  /** Updates the walk bounds, clamping the current value if needed. */
   setRange(partialOpts?: Pick<DrunkOptions, 'min' | 'max'>) {
     const { max, min } = {
       min: this.state.min,
@@ -95,6 +97,7 @@ export class Drunk {
     };
   }
 
+  /** Updates the maximum step size. */
   setStepSize(partialOpts?: Pick<DrunkOptions, 'step'>) {
     const step = parseStepSize(partialOpts?.step);
 
@@ -104,6 +107,7 @@ export class Drunk {
     };
   }
 
+  /** Resets the walk with optional new options. */
   reset(opts?: DrunkOptions) {
     const { min, max, startsAt, step } = parseOptions(opts);
 
@@ -120,10 +124,12 @@ export class Drunk {
     };
   }
 
+  /** Returns the current value. */
   value() {
     return this.state.value;
   }
 
+  /** Advances one step and returns the new value. */
   next() {
     const { min, max, step, value } = this.state;
     const updates = clamp(value + max * this._step.next() * step, min, max);

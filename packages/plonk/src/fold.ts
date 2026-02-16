@@ -30,6 +30,7 @@ export const parseOptions = (opts?: FoldOptions): Required<FoldOptions> => {
 export class Fold {
   state: FoldState;
 
+  /** Folds a single value. One-off form of `new Fold(opts).fold(n)`. */
   static fold(n: number, opts?: FoldOptions) {
     return new Fold(opts).fold(n);
   }
@@ -39,6 +40,7 @@ export class Fold {
     this.state = { min, max, value: min };
   }
 
+  /** Updates the range bounds, folding the current value into the new range. */
   setRange(partialOpts: FoldOptions) {
     const { min, max } = { ...this.state, ...partialOpts };
 
@@ -50,10 +52,12 @@ export class Fold {
     };
   }
 
+  /** Returns the last folded value. */
   value() {
     return this.state.value;
   }
 
+  /** Folds a value into the configured range and caches the result. */
   fold(n: number) {
     const { min, max } = this.state;
     const updates = transform(n, min, max);

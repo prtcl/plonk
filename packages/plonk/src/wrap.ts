@@ -28,6 +28,7 @@ export const parseOptions = (opts?: WrapOptions): Required<WrapOptions> => {
 export class Wrap {
   state: WrapState;
 
+  /** Wraps a single value. One-off form of `new Wrap(opts).wrap(n)`. */
   static wrap(n: number, opts?: WrapOptions) {
     return new Wrap(opts).wrap(n);
   }
@@ -38,6 +39,7 @@ export class Wrap {
     this.state = { min, max, value: min };
   }
 
+  /** Updates the range bounds, wrapping the current value into the new range. */
   setRange(partialOpts: WrapOptions) {
     const { min, max } = {
       ...this.state,
@@ -52,10 +54,12 @@ export class Wrap {
     };
   }
 
+  /** Returns the last wrapped value. */
   value() {
     return this.state.value;
   }
 
+  /** Wraps a value into the configured range and caches the result. */
   wrap(n: number) {
     const { min, max } = this.state;
     const updates = transform(n, min, max);

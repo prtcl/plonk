@@ -77,6 +77,7 @@ export class Metro {
   protected _listeners: TimerCallback<Metro>[];
   declare protected _timerId: ReturnType<typeof setTimeout> | number;
 
+  /** Creates a new Metro instance. Alternative form of `new Metro(callback, opts)`. */
   static metro(callback: TimerCallback<Metro>, opts?: MetroOptions) {
     return new Metro(callback, opts);
   }
@@ -95,6 +96,7 @@ export class Metro {
     clearTimeout(this._timerId);
   }
 
+  /** Stops the timer and returns total elapsed time in milliseconds. */
   stop = () => {
     const { totalElapsed } = this.state;
     this.reset();
@@ -103,11 +105,13 @@ export class Metro {
     return totalElapsed;
   };
 
+  /** Resets state to initial values. */
   reset = () => {
     const { initialTime } = this.state;
     this.state = getInitialState(initialTime);
   };
 
+  /** Updates the tick interval in milliseconds. */
   setTime = (updatedTime = this.state.time) => {
     const time = Math.max(updatedTime, 0);
 
@@ -118,6 +122,7 @@ export class Metro {
     };
   };
 
+  /** Starts the timer loop. */
   run = () => {
     if (this.state.isRunning) {
       this.stop();

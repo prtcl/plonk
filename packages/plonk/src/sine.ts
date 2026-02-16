@@ -35,6 +35,7 @@ export class Sine {
   state: SineState;
   protected _interpolator: Scale;
 
+  /** Creates a new Sine instance. Alternative form of `new Sine(opts)`. */
   static sine(opts: SineOptions) {
     return new Sine(opts);
   }
@@ -55,6 +56,7 @@ export class Sine {
     this.state = getInitialState(duration);
   }
 
+  /** Updates the cycle duration. */
   setDuration(duration: number) {
     this.state = {
       ...this.state,
@@ -62,6 +64,7 @@ export class Sine {
     };
   }
 
+  /** Resets the oscillator with optional new options. */
   reset(opts?: SineOptions) {
     const { duration } = {
       ...this.state,
@@ -71,10 +74,12 @@ export class Sine {
     this.state = getInitialState(duration);
   }
 
+  /** Returns the current oscillator value. */
   value() {
     return this.state.value;
   }
 
+  /** Advances the oscillator and returns the new value. */
   next() {
     const { cycle, duration, prev, totalElapsed: prevTotalElapsed } = this.state;
     const curr = now();
