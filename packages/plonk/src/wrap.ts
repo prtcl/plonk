@@ -66,7 +66,10 @@ export class Wrap {
   }
 }
 
-/** Export lowercase function for one-off stateless use cases */
+/**
+ * Wraps values around a configured range using modular arithmetic.
+ * One-off form of `new Wrap(opts).wrap(n)`.
+ */
 export const wrap = Wrap.wrap;
 
 /**

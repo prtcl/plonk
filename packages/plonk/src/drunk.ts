@@ -1,5 +1,5 @@
-import { Rand } from './rand';
 import { clamp } from './clamp';
+import { Rand } from './rand';
 
 export const DEFAULT_DRUNK_STEP = 0.1;
 
@@ -48,6 +48,10 @@ export class Drunk {
   state: DrunkState;
   protected _initialValue: Rand;
   protected _step: Rand;
+
+  static drunk(opts?: DrunkOptions) {
+    return new Drunk(opts);
+  }
 
   constructor(opts?: DrunkOptions) {
     const { min, max, step, startsAt } = parseOptions(opts);
@@ -129,3 +133,9 @@ export class Drunk {
     return updates;
   }
 }
+
+/**
+ * Stochastic random walk generator that produces values within a bounded range.
+ * Alternative form of `new Drunk(opts)`.
+ */
+export const drunk = Drunk.drunk;

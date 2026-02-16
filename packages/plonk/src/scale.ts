@@ -109,3 +109,9 @@ export class Scale {
     return updates;
   }
 }
+
+/**
+ * Linear map of values from one range to another, supports negative values and inversion.
+ * One-off form of `new Scale(opts).scale(n)`.
+ */
+export const scale = Scale.scale;

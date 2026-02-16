@@ -28,6 +28,10 @@ export const parseOptions = (opts?: FramesOptions): MetroOptions => {
 export class Frames extends Metro {
   declare protected _timerId: ReturnType<typeof requestAnimationFrame>;
 
+  static frames(callback: TimerCallback<Frames>, opts?: FramesOptions) {
+    return new Frames(callback, opts);
+  }
+
   constructor(callback: TimerCallback<Frames>, opts?: FramesOptions) {
     super(() => callback(this), parseOptions(opts));
   }
@@ -52,3 +56,9 @@ export class Frames extends Metro {
     this.setTime(ms(fps, TimeFormat.FPS));
   };
 }
+
+/**
+ * Animation-loop timer that uses requestAnimationFrame when available.
+ * Alternative form of `new Frames(callback, opts)`.
+ */
+export const frames = Frames.frames;

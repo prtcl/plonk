@@ -64,7 +64,10 @@ export class Fold {
   }
 }
 
-/** Export lowercase function for one-off stateless use cases */
+/**
+ * Folds (reflects) values back and forth within a configured range.
+ * One-off form of `new Fold(opts).fold(n)`.
+ */
 export const fold = Fold.fold;
 
 /**

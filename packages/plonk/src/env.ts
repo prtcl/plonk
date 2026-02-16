@@ -1,5 +1,5 @@
-import { Scale } from './scale';
 import { now } from './now';
+import { Scale } from './scale';
 
 /** Snapshot of an Env's internal state. */
 export type EnvState = {
@@ -66,6 +66,10 @@ export const updateStateFromOptions = (
 export class Env {
   state: EnvState;
   protected _interpolator: Scale;
+
+  static env(opts: EnvOptions) {
+    return new Env(opts);
+  }
 
   constructor(opts: EnvOptions) {
     const { from, to, duration } = parseOptions(opts);
@@ -150,3 +154,9 @@ export class Env {
     return updates;
   }
 }
+
+/**
+ * Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+ * Alternative form of `new Env(opts)`.
+ */
+export const env = Env.env;

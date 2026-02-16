@@ -77,6 +77,10 @@ export class Metro {
   protected _listeners: TimerCallback<Metro>[];
   declare protected _timerId: ReturnType<typeof setTimeout> | number;
 
+  static metro(callback: TimerCallback<Metro>, opts?: MetroOptions) {
+    return new Metro(callback, opts);
+  }
+
   constructor(callback: TimerCallback<Metro>, opts?: MetroOptions) {
     const { time } = parseOptions(opts);
     this.state = getInitialState(time);
@@ -143,3 +147,9 @@ export class Metro {
     tick();
   };
 }
+
+/**
+ * High-resolution recursive timer with variable interval, provides runtime metrics via callback for time-based calculations.
+ * Alternative form of `new Metro(callback, opts)`.
+ */
+export const metro = Metro.metro;

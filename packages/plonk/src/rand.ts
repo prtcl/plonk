@@ -69,3 +69,9 @@ export class Rand {
     return updates;
   }
 }
+
+/**
+ * Random number generator that produces values within a bounded range.
+ * One-off form of `new Rand(opts).value()`.
+ */
+export const rand = Rand.rand;
