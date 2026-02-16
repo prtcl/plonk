@@ -583,6 +583,38 @@ function Counter({ count }: { count: number }) {
 
 ---
 
+### Memoized Hooks
+
+Plonk also provides memoized wrappers for the following classes as a convenience. Each accepts the same options as the underlying class, so the choice is down to use case or preference.
+
+```typescript
+import { useDrunk, useScale } from '@prtcl/plonk-hooks';
+
+function RandomWalk() {
+  const d = useDrunk({ min: -1, max: 1, step: 0.1 });
+  const s = useScale({
+    from: { min: -1, max: 1 },
+    to: { min: 0, max: 200 },
+  });
+
+  console.log(s.scale(d.next()));
+
+  //...
+}
+```
+
+| Hook       | Options required? | Returns |
+| ---------- | ----------------- | ------- |
+| `useDrunk` | No                | `Drunk` |
+| `useRand`  | No                | `Rand`  |
+| `useEnv`   | Yes               | `Env`   |
+| `useSine`  | Yes               | `Sine`  |
+| `useScale` | No                | `Scale` |
+| `useFold`  | No                | `Fold`  |
+| `useWrap`  | No                | `Wrap`  |
+
+---
+
 ## Composition Examples
 
 ### Dust Generator
@@ -616,19 +648,18 @@ function useDust() {
 Fade in an element over 2 seconds using an envelope driven by a frame loop:
 
 ```typescript
-import { Env } from '@prtcl/plonk';
-import { useFrames } from '@prtcl/plonk-hooks';
+import { useFrames, useEnv } from '@prtcl/plonk-hooks';
 
 function FadeIn({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const env = useMemo(() => new Env({ duration: 2000, from: 0, to: 1 }), []);
+  const env = useEnv({ duration: 2000, from: 0, to: 1 });
 
-  const frames = useFrames(() => {
+  useFrames((timer) => {
     if (ref.current) {
       ref.current.style.opacity = `${env.next()}`;
     }
     if (env.done()) {
-      frames.stop();
+      timer.stop();
     }
   });
 
@@ -641,16 +672,15 @@ function FadeIn({ children }: { children: React.ReactNode }) {
 Smoothly oscillate an element's position using a sine wave:
 
 ```typescript
-import { Sine, Scale } from '@prtcl/plonk';
-import { useFrames } from '@prtcl/plonk-hooks';
+import { useFrames, useSine, useScale } from '@prtcl/plonk-hooks';
 
 function Oscillator() {
   const ref = useRef<HTMLDivElement>(null);
-  const sine = useMemo(() => new Sine({ duration: 3000 }), []);
-  const scale = useMemo(() => new Scale({
+  const sine = useSine({ duration: 3000 });
+  const scale = useScale({
     from: { min: -1, max: 1 },
     to: { min: 0, max: 200 },
-  }), []);
+  });
 
   useFrames(() => {
     if (ref.current) {
