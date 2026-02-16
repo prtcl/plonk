@@ -315,6 +315,28 @@ expo(1); // 1
 
 ---
 
+### fold
+
+Folds (reflects) a value back and forth within a range. Where `clamp` stops at the boundary and `wrap` teleports through it, `fold` bounces off it.
+
+```typescript
+import { fold } from '@prtcl/plonk';
+
+fold(12, 0, 10);  // 8  (overshot by 2, reflects back)
+fold(15, 0, 10);  // 5
+fold(-3, 0, 10);  // 3  (reflects upward)
+
+// Produces a zigzag pattern
+Array.from({ length: 5 }, (_, i) => fold(i * 5, 0, 10));
+// [0, 5, 10, 5, 0]
+
+fold(1.3);  // 0.7 (default range 0-1)
+```
+
+**Signature:** `fold(n, min?, max?) → number`
+
+---
+
 ### ms
 
 Converts time format strings or numeric values to their corresponding value in milliseconds.
@@ -373,6 +395,28 @@ for (let i = 0; i < 10; i++) {
 ```
 
 **Signature:** `wait(time) → Promise<void>`
+
+---
+
+### wrap
+
+Wraps a value around a range using modular arithmetic. When the value exceeds the boundary, it reappears on the other side.
+
+```typescript
+import { wrap } from '@prtcl/plonk';
+
+wrap(12, 0, 10);  // 2  (wraps past max)
+wrap(-3, 0, 10);  // 7  (wraps below min)
+wrap(20, 0, 10);  // 0
+
+// Circular sequence
+Array.from({ length: 8 }, (_, i) => wrap(i * 3, 0, 10));
+// [0, 3, 6, 9, 2, 5, 8, 1]
+
+wrap(1.3);  // 0.3 (default range 0-1)
+```
+
+**Signature:** `wrap(n, min?, max?) → number`
 
 ---
 
