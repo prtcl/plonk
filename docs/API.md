@@ -365,7 +365,7 @@ clamp(50, 100); // 50  (range 0-100)
 
 ### expo
 
-Raises a 0-1 value by Euler's number to produce a natural-feeling exponential curve.
+Raises a 0...1 value by Euler's number to produce a natural-feeling exponential curve.
 
 ```typescript
 import { expo } from '@prtcl/plonk';
@@ -376,6 +376,63 @@ expo(1); // 1
 ```
 
 **Signature:** `expo(n) → number`
+
+---
+
+### sigmoid
+
+Normalized sigmoid curve which maps 0...1 → 0...1, for use as a transfer function or waveshaper. The steepness parameter `k` controls the shape — higher values produce a more aggressive S-curve, while k = 0 is linear.
+
+```typescript
+import { sigmoid } from '@prtcl/plonk';
+
+sigmoid(0); // 0
+sigmoid(0.25); // ~0.173 (pulled toward 0)
+sigmoid(0.5); // 0.5
+sigmoid(0.75); // ~0.827 (pulled toward 1)
+sigmoid(1); // 1
+
+// Gentle curve
+sigmoid(0.25, 2); // ~0.216
+
+// Aggressive S-curve
+sigmoid(0.25, 20); // ~0.018
+```
+
+**Signature:** `sigmoid(n, k?) → number`
+
+| Param | Type     | Default | Description               |
+| ----- | -------- | ------- | ------------------------- |
+| `n`   | `number` | —       | Input value (clamped 0-1) |
+| `k`   | `number` | `5`     | Steepness of the curve    |
+
+---
+
+### tanh
+
+Normalized tanh curve which maps -1...1 → -1...1, for use as a transfer function or waveshaper. The steepness parameter `k` controls saturation — higher values push the curve toward hard clipping at the edges, while k = 0 is linear.
+
+```typescript
+import { tanh } from '@prtcl/plonk';
+
+tanh(0); // 0
+tanh(0.5); // ~0.987 (saturates quickly)
+tanh(-0.5); // ~-0.987
+tanh(1); // 1
+
+// Gentler saturation
+tanh(0.5, 2); // ~0.762
+
+// Near-linear
+tanh(0.5, 0); // 0.5
+```
+
+**Signature:** `tanh(n, k?) → number`
+
+| Param | Type     | Default | Description                  |
+| ----- | -------- | ------- | ---------------------------- |
+| `n`   | `number` | —       | Input value (clamped -1...1) |
+| `k`   | `number` | `5`     | Steepness of the curve       |
 
 ---
 

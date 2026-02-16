@@ -11,5 +11,7 @@ export { clamp } from './clamp';
 export { expo } from './expo';
 export { ms, type FPS, TimeFormat } from './ms';
 export { now } from './now';
+export { sigmoid } from './sigmoid';
+export { tanh } from './tanh';
 export { wait } from './wait';
 export * from './constants';
