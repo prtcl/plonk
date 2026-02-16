@@ -101,7 +101,8 @@ else
   git add -A
   git commit -m "v$NEW_VERSION"
   git tag -f "v$NEW_VERSION"
-  git push && git push --tags -f
+  git push origin
+  git push --tags -f
   success "Committed, tagged, and pushed v$NEW_VERSION"
 fi
 
