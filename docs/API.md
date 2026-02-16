@@ -6,7 +6,9 @@ Plonk's generators (`Drunk`, `Rand`, `Env`, `Sine`, `Scale`) follow an iterator-
 
 The timers (`Metro`, `Frames`) provide the "when" — high-resolution loops that fire callbacks at regular intervals with runtime metrics. The generators provide the "what" — streams of values shaped by envelopes, random walks, and oscillations. Compose them however you like.
 
-The React hooks in `@prtcl/plonk-hooks` are a thin integration layer that manages timer lifecycle on mount/unmount. The core library has no framework dependencies.
+For convenience, every class and function has a lowercase counterpart, for those who wish to `import * as p from '@prtcl/plonk'` and work in a terse, functional style via `p.drunk()`, `p.fold(n)`, etc.
+
+The React hooks in `@prtcl/plonk-hooks` are a thin integration layers which manage timer lifecycle on mount/unmount. The core library has no framework dependencies.
 
 ## Timers
 
@@ -139,7 +141,7 @@ const env = new Env({ duration: 1000, from: 0, to: 1 });
 
 const frames = new Frames(() => {
   const val = env.next();
-  console.log(val); // 0 → 1 over 1 second
+  console.log(val); // 0...1 over 1 second
 
   if (env.done()) {
     frames.stop();
@@ -180,9 +182,6 @@ const r = new Rand({ min: 0, max: 100 });
 
 r.value(); // current random value
 r.next(); // generate a new random value
-
-// Static shorthand
-Rand.rand({ min: 0, max: 100 }); // one-off random value
 ```
 
 #### Options
@@ -218,12 +217,6 @@ const s = new Scale({
 s.scale(64); // ~0.504
 s.scale(127); // 1
 s.scale(0); // 0
-
-// Static shorthand
-Scale.scale(64, {
-  from: { min: 0, max: 127 },
-  to: { min: 0, max: 1 },
-});
 ```
 
 #### Options
@@ -245,6 +238,77 @@ Scale.scale(64, {
 
 ---
 
+### Fold
+
+Folds (reflects) values back and forth within a configured range. Where `clamp` stops at the boundary and `wrap` teleports through it, `fold` bounces off it.
+
+```typescript
+import { Fold } from '@prtcl/plonk';
+
+const f = new Fold({ min: 0, max: 10 });
+
+f.fold(12); // 8  (overshot by 2, reflects back)
+f.fold(15); // 5
+f.fold(-3); // 3  (reflects upward)
+
+// Produces a zigzag pattern
+Array.from({ length: 7 }, (_, i) => f.fold(i * 5));
+// [0, 5, 10, 5, 0, 5, 10]
+```
+
+#### Options
+
+| Option | Type     | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `min`  | `number` | `0`     | Lower bound |
+| `max`  | `number` | `1`     | Upper bound |
+
+#### Methods
+
+| Method                   | Returns  | Description                                                   |
+| ------------------------ | -------- | ------------------------------------------------------------- |
+| `fold(n)`                | `number` | Folds a value into the configured range and caches the result |
+| `value()`                | `number` | Returns the last folded value                                 |
+| `setRange({ min, max })` | `void`   | Updates the range bounds                                      |
+| `Fold.fold(n, opts?)`    | `number` | Static method for one-off folding                             |
+
+---
+
+### Wrap
+
+Wraps values around a configured range using modular arithmetic. When the value exceeds the boundary, it reappears on the other side.
+
+```typescript
+import { Wrap } from '@prtcl/plonk';
+
+const w = new Wrap({ min: 0, max: 10 });
+
+w.wrap(12); // 2  (wraps past max)
+w.wrap(-3); // 7  (wraps below min)
+
+// Circular sequence
+Array.from({ length: 8 }, (_, i) => w.wrap(i * 3));
+// [0, 3, 6, 9, 2, 5, 8, 1]
+```
+
+#### Options
+
+| Option | Type     | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `min`  | `number` | `0`     | Lower bound |
+| `max`  | `number` | `1`     | Upper bound |
+
+#### Methods
+
+| Method                   | Returns  | Description                                                   |
+| ------------------------ | -------- | ------------------------------------------------------------- |
+| `wrap(n)`                | `number` | Wraps a value into the configured range and caches the result |
+| `value()`                | `number` | Returns the last wrapped value                                |
+| `setRange({ min, max })` | `void`   | Updates the range bounds                                      |
+| `Wrap.wrap(n, opts?)`    | `number` | Static method for one-off wrapping                            |
+
+---
+
 ### Sine
 
 Time-based sine wave oscillator that outputs values between -1 and 1.
@@ -256,7 +320,7 @@ import { Frames } from '@prtcl/plonk';
 const sine = new Sine({ duration: 2000 }); // 2-second cycle
 
 const frames = new Frames(() => {
-  const val = sine.next(); // -1 → 1 → -1 over 2 seconds
+  const val = sine.next(); // -1...1...-1 over 2 seconds
   console.log(val);
 });
 
@@ -312,28 +376,6 @@ expo(1); // 1
 ```
 
 **Signature:** `expo(n) → number`
-
----
-
-### fold
-
-Folds (reflects) a value back and forth within a range. Where `clamp` stops at the boundary and `wrap` teleports through it, `fold` bounces off it.
-
-```typescript
-import { fold } from '@prtcl/plonk';
-
-fold(12, 0, 10);  // 8  (overshot by 2, reflects back)
-fold(15, 0, 10);  // 5
-fold(-3, 0, 10);  // 3  (reflects upward)
-
-// Produces a zigzag pattern
-Array.from({ length: 5 }, (_, i) => fold(i * 5, 0, 10));
-// [0, 5, 10, 5, 0]
-
-fold(1.3);  // 0.7 (default range 0-1)
-```
-
-**Signature:** `fold(n, min?, max?) → number`
 
 ---
 
@@ -395,28 +437,6 @@ for (let i = 0; i < 10; i++) {
 ```
 
 **Signature:** `wait(time) → Promise<void>`
-
----
-
-### wrap
-
-Wraps a value around a range using modular arithmetic. When the value exceeds the boundary, it reappears on the other side.
-
-```typescript
-import { wrap } from '@prtcl/plonk';
-
-wrap(12, 0, 10);  // 2  (wraps past max)
-wrap(-3, 0, 10);  // 7  (wraps below min)
-wrap(20, 0, 10);  // 0
-
-// Circular sequence
-Array.from({ length: 8 }, (_, i) => wrap(i * 3, 0, 10));
-// [0, 3, 6, 9, 2, 5, 8, 1]
-
-wrap(1.3);  // 0.3 (default range 0-1)
-```
-
-**Signature:** `wrap(n, min?, max?) → number`
 
 ---
 
