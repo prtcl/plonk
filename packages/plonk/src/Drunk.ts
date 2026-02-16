@@ -1,5 +1,5 @@
-import { clamp } from '../utils/clamp';
 import { Rand } from './Rand';
+import { clamp } from './clamp';
 
 export const DEFAULT_DRUNK_STEP = 0.1;
 
@@ -56,9 +56,7 @@ export class Drunk {
     this._step = new Rand({ min: -1, max: 1 });
 
     const initialValue =
-      typeof opts?.startsAt !== 'undefined'
-        ? startsAt
-        : this._initialValue.value();
+      typeof opts?.startsAt !== 'undefined' ? startsAt : this._initialValue.value();
 
     this.state = {
       initialValue,
@@ -109,9 +107,7 @@ export class Drunk {
     this.setStepSize({ step });
 
     const initialValue =
-      typeof opts?.startsAt !== 'undefined'
-        ? startsAt
-        : this._initialValue.next();
+      typeof opts?.startsAt !== 'undefined' ? startsAt : this._initialValue.next();
 
     this.state = {
       ...this.state,

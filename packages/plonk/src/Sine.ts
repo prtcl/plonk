@@ -1,6 +1,6 @@
-import { clamp } from '../utils/clamp';
-import { now } from '../utils/now';
 import { Scale } from './Scale';
+import { clamp } from './clamp';
+import { now } from './now';
 
 export const SINE_PERIOD = Math.PI * 2 - 0.0001;
 
@@ -72,21 +72,12 @@ export class Sine {
   }
 
   next() {
-    const {
-      cycle,
-      duration,
-      prev,
-      totalElapsed: prevTotalElapsed,
-    } = this.state;
+    const { cycle, duration, prev, totalElapsed: prevTotalElapsed } = this.state;
     const curr = now();
     const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
 
-    const updates = clamp(
-      Math.sin(this._interpolator.scale(totalElapsed)),
-      -1,
-      1,
-    );
+    const updates = clamp(Math.sin(this._interpolator.scale(totalElapsed)), -1, 1);
 
     if (cycle >= duration) {
       this.state.cycle = 0;

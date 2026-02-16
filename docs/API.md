@@ -21,7 +21,7 @@ const metro = new Metro(
   (timer) => {
     console.log(timer.state.iterations, timer.state.tickInterval);
   },
-  { time: 100 },
+  { time: 100 }
 );
 
 metro.run();
@@ -68,7 +68,7 @@ const frames = new Frames(
   (timer) => {
     console.log(timer.state.iterations);
   },
-  { fps: 30 },
+  { fps: 30 }
 );
 
 frames.run();
@@ -315,18 +315,25 @@ expo(1); // 1
 
 ---
 
-### flip
+### fold
 
-Negates a number.
+Folds (reflects) a value back and forth within a range. Where `clamp` stops at the boundary and `wrap` teleports through it, `fold` bounces off it.
 
 ```typescript
-import { flip } from '@prtcl/plonk';
+import { fold } from '@prtcl/plonk';
 
-flip(1); // -1
-flip(-0.5); // 0.5
+fold(12, 0, 10);  // 8  (overshot by 2, reflects back)
+fold(15, 0, 10);  // 5
+fold(-3, 0, 10);  // 3  (reflects upward)
+
+// Produces a zigzag pattern
+Array.from({ length: 5 }, (_, i) => fold(i * 5, 0, 10));
+// [0, 5, 10, 5, 0]
+
+fold(1.3);  // 0.7 (default range 0-1)
 ```
 
-**Signature:** `flip(n) → number`
+**Signature:** `fold(n, min?, max?) → number`
 
 ---
 
@@ -367,6 +374,49 @@ const elapsed = now() - start;
 ```
 
 **Signature:** `now() → number`
+
+---
+
+### wait
+
+The classic promisified timeout.
+
+```typescript
+import { wait } from '@prtcl/plonk';
+
+await wait(1000); // pause for 1 second
+
+// Useful for sequencing generators
+const d = new Drunk({ min: 10, max: 100 });
+for (let i = 0; i < 10; i++) {
+  await wait(d.next());
+  console.log(i);
+}
+```
+
+**Signature:** `wait(time) → Promise<void>`
+
+---
+
+### wrap
+
+Wraps a value around a range using modular arithmetic. When the value exceeds the boundary, it reappears on the other side.
+
+```typescript
+import { wrap } from '@prtcl/plonk';
+
+wrap(12, 0, 10);  // 2  (wraps past max)
+wrap(-3, 0, 10);  // 7  (wraps below min)
+wrap(20, 0, 10);  // 0
+
+// Circular sequence
+Array.from({ length: 8 }, (_, i) => wrap(i * 3, 0, 10));
+// [0, 3, 6, 9, 2, 5, 8, 1]
+
+wrap(1.3);  // 0.3 (default range 0-1)
+```
+
+**Signature:** `wrap(n, min?, max?) → number`
 
 ---
 
@@ -477,7 +527,7 @@ function useDust() {
     () => {
       setValue(d.next());
     },
-    { time: r.next() },
+    { time: r.next() }
   );
 
   return value;

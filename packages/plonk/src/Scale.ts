@@ -1,4 +1,4 @@
-import { clamp } from '../utils/clamp';
+import { clamp } from './clamp';
 
 /** A numeric range with min and max bounds. */
 export type ScaleRange = {
@@ -16,16 +16,23 @@ export type ScaleOptions = {
 
 /** Snapshot of a Scale mapper's internal state. */
 export type ScaleState = {
+  /** Input range. */
   from: Required<ScaleRange>;
+  /** Precomputed (to.max - to.min) / (from.max - from.min), updated when ranges change. */
+  ratio: number;
+  /** Output range. */
   to: Required<ScaleRange>;
+  /** Last scaled value. */
   value: number;
 };
 
-export const parseOptions = (
-  opts?: ScaleOptions,
-): { from: Required<ScaleRange>; to: Required<ScaleRange> } => {
-  const { from, to } = {
-    ...opts,
+/** Precompute the scale factor so the hot path avoids a division per call. */
+const computeRatio = (from: Required<ScaleRange>, to: Required<ScaleRange>) =>
+  (to.max - to.min) / (from.max - from.min);
+
+/** Build initial state from options, applying defaults and computing the ratio. */
+export const parseInitialState = (opts?: ScaleOptions): ScaleState => {
+  const initialRange: Pick<ScaleState, 'from' | 'to'> = {
     from: {
       min: 0,
       max: 1,
@@ -39,28 +46,28 @@ export const parseOptions = (
   };
 
   return {
-    from,
-    to,
+    ...initialRange,
+    ratio: computeRatio(initialRange.from, initialRange.to),
+    value: initialRange.to.min,
   };
 };
 
-export const updateStateFromOptions = (
-  opts: ScaleOptions,
-  prevState: ScaleState,
-): ScaleState => {
+/** Merge partial range updates into existing state, recomputing the ratio. */
+export const updateStateFromOptions = (opts: ScaleOptions, prevState: ScaleState): ScaleState => {
   const { from, to } = opts;
-
-  const updatedTo = {
+  const updatedFrom: Required<ScaleRange> = {
+    ...prevState.from,
+    ...from,
+  };
+  const updatedTo: Required<ScaleRange> = {
     ...prevState.to,
     ...to,
   };
 
   return {
     ...prevState,
-    from: {
-      ...prevState.from,
-      ...from,
-    },
+    from: updatedFrom,
+    ratio: computeRatio(updatedFrom, updatedTo),
     to: updatedTo,
     value: clamp(prevState.value, updatedTo.min, updatedTo.max),
   };
@@ -78,8 +85,7 @@ export class Scale {
   }
 
   constructor(opts?: ScaleOptions) {
-    const { from, to } = parseOptions(opts);
-    this.state = { from, to, value: to.min };
+    this.state = parseInitialState(opts);
   }
 
   setRanges(opts: ScaleOptions) {
@@ -87,8 +93,7 @@ export class Scale {
   }
 
   reset(opts: ScaleOptions) {
-    const { from, to } = parseOptions(opts);
-    this.state = { from, to, value: to.min };
+    this.state = parseInitialState(opts);
   }
 
   value() {
@@ -96,11 +101,8 @@ export class Scale {
   }
 
   scale(n: number) {
-    const { from, to } = this.state;
-    const updates =
-      to.min +
-      ((clamp(n, from.min, from.max) - from.min) * (to.max - to.min)) /
-        (from.max - from.min);
+    const { from, to, ratio } = this.state;
+    const updates = to.min + (clamp(n, from.min, from.max) - from.min) * ratio;
 
     this.state.value = updates;
 

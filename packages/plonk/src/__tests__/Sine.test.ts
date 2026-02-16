@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Sine } from '../math/Sine';
+import { Sine } from '../Sine';
 
 describe('Sine', () => {
   it('creates a sine wave generator which emits -1...1 values', () => {

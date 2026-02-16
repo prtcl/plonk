@@ -5,13 +5,17 @@ Tiny library providing timers, envelopes, and random generators for creative cod
 ## Packages
 
 ### `@prtcl/plonk` (Core)
+
 Cross-platform utilities (client + server):
+
 - **Timers**: `Metro`, `Frames` - time-based triggers and frame counting
 - **Math/Generators**: `Drunk`, `Rand`, `Env`, `Sine`, `Scale` - random walks, envelopes, oscillators
-- **Utils**: `now`, `ms`, `flip`, `clamp`, `expo` - timing and math helpers
+- **Utils**: `now`, `ms`, `clamp`, `expo` - timing and math helpers
 
 ### `@prtcl/plonk-hooks` (React)
+
 Client-only React hooks wrapping core functionality:
+
 - `useMetro` - interval-based effects
 - `useFrames` - frame-based effects
 - `usePrevious` - memoization helper
@@ -35,13 +39,8 @@ The hooks package pins `@prtcl/plonk` to an exact version in its dependencies. T
 
 ```
 packages/
-  plonk/
-    src/
-      timers/     - Metro, Frames
-      math/       - Env, Sine, Scale, Drunk, Rand
-      utils/      - now, ms, flip, clamp, expo
-  hooks/
-    src/hooks/    - useMetro, useFrames, usePrevious
+  plonk/src/      - Metro, Frames, Drunk, Env, Rand, Scale, Sine, clamp, expo, ms, now
+  hooks/src/      - useMetro, useFrames, usePrevious
 ```
 
 ## Notes

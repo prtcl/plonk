@@ -20,7 +20,7 @@ const useDust = () => {
     () => {
       setValue(d.next());
     },
-    { time: r.next() },
+    { time: r.next() }
   );
 
   return value;
@@ -31,7 +31,7 @@ const useDust = () => {
 
 ```
 // For the core timers and random generators
-npm i @prtcl/plonk 
+npm i @prtcl/plonk
 
 // For React
 npm i @prtcl/plonk-hooks

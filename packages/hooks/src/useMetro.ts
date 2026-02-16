@@ -12,10 +12,7 @@ export type UseMetroOptions = MetroOptions & {
  * @param opts - {@link UseMetroOptions} for configuring the timer and autostart.
  * @returns The underlying Metro instance.
  */
-export const useMetro = (
-  callback: TimerCallback<Metro>,
-  opts?: UseMetroOptions,
-) => {
+export const useMetro = (callback: TimerCallback<Metro>, opts?: UseMetroOptions) => {
   const { autostart = true } = opts || {};
   const callbackRef = useRef<TimerCallback<Metro>>(callback);
   const optsRef = useRef<UseMetroOptions | undefined>(opts);

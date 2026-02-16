@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expo } from '../utils/expo';
+import { expo } from '../expo';
 
 type TestCase = {
   from: number;

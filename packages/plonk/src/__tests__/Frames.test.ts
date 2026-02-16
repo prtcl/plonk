@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Frames } from '../timers/Frames';
+import { Frames } from '../Frames';
 
 describe('Frames', () => {
   it('providers a timer API which wraps requestAnimationFrame', () => {
@@ -12,9 +12,7 @@ describe('Frames', () => {
             expect(state.tickInterval).toEqual(0);
           } else {
             expect(state.iterations).toBeGreaterThanOrEqual(1);
-            expect(state.totalElapsed).toBeGreaterThanOrEqual(
-              state.iterations * 33,
-            );
+            expect(state.totalElapsed).toBeGreaterThanOrEqual(state.iterations * 33);
             expect(state.tickInterval).toBeGreaterThanOrEqual(33);
             expect(state.tickInterval).toBeLessThanOrEqual(66);
           }
@@ -24,7 +22,7 @@ describe('Frames', () => {
             done();
           }
         },
-        { fps: 30 },
+        { fps: 30 }
       );
 
       f.run();

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { now } from '../utils/now';
-import { Metro } from '../timers/Metro';
+import { Metro } from '../Metro';
+import { now } from '../now';
 
 describe('Metro', () => {
   it('providers a timer API with run and stop methods', () => {
@@ -13,9 +13,7 @@ describe('Metro', () => {
             expect(state.totalElapsed).toEqual(0);
             expect(state.tickInterval).toEqual(0);
           } else {
-            expect(state.totalElapsed).toBeGreaterThanOrEqual(
-              state.iterations * 30,
-            );
+            expect(state.totalElapsed).toBeGreaterThanOrEqual(state.iterations * 30);
             expect(state.tickInterval).toBeGreaterThanOrEqual(30);
             expect(state.tickInterval).toBeLessThanOrEqual(55);
           }
@@ -30,7 +28,7 @@ describe('Metro', () => {
             done();
           }
         },
-        { time: 30 },
+        { time: 30 }
       );
 
       m.run();
@@ -60,7 +58,7 @@ describe('Metro', () => {
             done();
           }
         },
-        { time: 30 },
+        { time: 30 }
       );
 
       m.run();
@@ -88,7 +86,7 @@ describe('Metro', () => {
             done();
           }
         },
-        { time: 30 },
+        { time: 30 }
       );
 
       m.run();

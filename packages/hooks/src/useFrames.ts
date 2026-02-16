@@ -12,10 +12,7 @@ export type UseFramesOptions = FramesOptions & {
  * @param opts - {@link UseFramesOptions} for configuring frame rate and autostart.
  * @returns The underlying Frames instance.
  */
-export const useFrames = (
-  callback: TimerCallback<Frames>,
-  opts?: UseFramesOptions,
-) => {
+export const useFrames = (callback: TimerCallback<Frames>, opts?: UseFramesOptions) => {
   const { autostart = true } = opts || {};
   const callbackRef = useRef<TimerCallback<Frames>>(callback);
   const optsRef = useRef<UseFramesOptions | undefined>(opts);

@@ -1,7 +1,7 @@
 import { expect, it, describe } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { type FPS } from '@prtcl/plonk';
-import { useFrames } from '../hooks/useFrames';
+import { useFrames } from '../useFrames';
 
 describe('useFrames', () => {
   it('wraps Metro in a memo and updates time based on props change', () => {
@@ -27,11 +27,11 @@ describe('useFrames', () => {
             },
             {
               fps: fps as FPS,
-            },
+            }
           ),
         {
           initialProps: { fps: 60 },
-        },
+        }
       );
 
       rerender({ fps: 30 });

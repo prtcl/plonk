@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { clamp } from '../utils/clamp';
+import { clamp } from '../clamp';
 
 describe('clamp', () => {
   it('constrains a number to a min/max range', () => {

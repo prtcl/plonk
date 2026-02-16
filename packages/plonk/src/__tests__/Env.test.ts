@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Env } from '../math/Env';
+import { Env } from '../Env';
 
 describe('Env', () => {
   it('interpolates a value over time and notifies when complete', () => {
