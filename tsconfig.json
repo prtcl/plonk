@@ -12,5 +12,5 @@
     "rootDir": ".",
     "target": "ESNext"
   },
-  "exclude": [".eslintrc.js", "node_modules", "scripts", "packages/**/dist"]
+  "exclude": ["node_modules", "scripts", "packages/**/dist"]
 }

@@ -6,7 +6,6 @@ if (typeof performance !== 'undefined' && 'now' in performance) {
   };
 } else if (
   typeof process === 'object' &&
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   process.toString() === '[object process]'
 ) {
   const timestamp = () => {
