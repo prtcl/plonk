@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Drunk } from '../Drunk';
+import { Drunk } from '../drunk';
 
 type TestCase = {
   next: number;

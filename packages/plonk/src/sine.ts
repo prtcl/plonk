@@ -1,4 +1,4 @@
-import { Scale } from './Scale';
+import { Scale } from './scale';
 import { clamp } from './clamp';
 import { now } from './now';
 

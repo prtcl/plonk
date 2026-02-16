@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Metro } from '../Metro';
+import { Metro } from '../metro';
 import { now } from '../now';
 
 describe('Metro', () => {

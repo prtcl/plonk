@@ -1,4 +1,4 @@
-import { Scale } from './Scale';
+import { Scale } from './scale';
 import { now } from './now';
 
 /** Snapshot of an Env's internal state. */

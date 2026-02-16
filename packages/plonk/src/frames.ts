@@ -1,4 +1,4 @@
-import { Metro, type TimerCallback, type MetroOptions } from './Metro';
+import { Metro, type TimerCallback, type MetroOptions } from './metro';
 import { ms, TimeFormat, type FPS } from './ms';
 
 /** Options for configuring a Frames timer. */

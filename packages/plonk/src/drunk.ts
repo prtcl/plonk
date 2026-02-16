@@ -1,4 +1,4 @@
-import { Rand } from './Rand';
+import { Rand } from './rand';
 import { clamp } from './clamp';
 
 export const DEFAULT_DRUNK_STEP = 0.1;
