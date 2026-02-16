@@ -355,6 +355,27 @@ const elapsed = now() - start;
 
 ---
 
+### wait
+
+The classic promisified timeout.
+
+```typescript
+import { wait } from '@prtcl/plonk';
+
+await wait(1000); // pause for 1 second
+
+// Useful for sequencing generators
+const d = new Drunk({ min: 10, max: 100 });
+for (let i = 0; i < 10; i++) {
+  await wait(d.next());
+  console.log(i);
+}
+```
+
+**Signature:** `wait(time) → Promise<void>`
+
+---
+
 ## React Hooks
 
 ### useMetro

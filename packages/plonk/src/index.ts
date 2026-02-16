@@ -9,4 +9,5 @@ export { clamp } from './clamp';
 export { expo } from './expo';
 export { ms, type FPS, TimeFormat } from './ms';
 export { now } from './now';
+export { wait } from './wait';
 export * from './constants';
