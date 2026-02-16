@@ -69,7 +69,7 @@ function writeJSON(path: string, obj: Record<string, unknown>) {
   writeFileSync(path, JSON.stringify(obj, null, 2) + '\n');
 }
 
-function updateVersion(current, type) {
+function updateVersion(current: string, type: string) {
   const [major, minor, patch] = current.split('.').map(Number);
 
   switch (type) {
@@ -84,7 +84,7 @@ function updateVersion(current, type) {
   }
 }
 
-function isValidSemver(version) {
+function isValidSemver(version: string) {
   return /^\d+\.\d+\.\d+$/.test(version);
 }
 
