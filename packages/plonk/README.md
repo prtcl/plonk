@@ -24,10 +24,13 @@ import { Metro, Drunk, Rand } from '@prtcl/plonk';
 const d = new Drunk({ min: -1, max: 1 });
 const r = new Rand({ min: 50, max: 150 });
 
-const metro = new Metro(() => {
-  console.log(d.next());
-  metro.setTime(r.next());
-}, { time: 100 });
+const metro = new Metro(
+  () => {
+    console.log(d.next());
+    metro.setTime(r.next());
+  },
+  { time: 100 }
+);
 
 metro.run();
 ```

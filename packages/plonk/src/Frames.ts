@@ -1,5 +1,5 @@
-import { ms, TimeFormat, type FPS } from '../utils/ms';
 import { Metro, type TimerCallback, type MetroOptions } from './Metro';
+import { ms, TimeFormat, type FPS } from './ms';
 
 /** Options for configuring a Frames timer. */
 export type FramesOptions = {
@@ -26,7 +26,7 @@ export const parseOptions = (opts?: FramesOptions): MetroOptions => {
  * @param opts - {@link FramesOptions} for configuring the target frame rate.
  */
 export class Frames extends Metro {
-  protected declare _timerId: ReturnType<typeof requestAnimationFrame>;
+  declare protected _timerId: ReturnType<typeof requestAnimationFrame>;
 
   constructor(callback: TimerCallback<Frames>, opts?: FramesOptions) {
     super(() => callback(this), parseOptions(opts));

@@ -1,4 +1,4 @@
-import { clamp } from '../utils/clamp';
+import { clamp } from './clamp';
 
 /** Options for configuring a Rand generator. */
 export type RandOptions = {

@@ -8,10 +8,7 @@ const innerNow = ((): InnerNow => {
   }
 
   // Older Node — use process.hrtime, offset from first call
-  if (
-    typeof process === 'object' &&
-    process.toString() === '[object process]'
-  ) {
+  if (typeof process === 'object' && process.toString() === '[object process]') {
     const ts = () => {
       const hr = process.hrtime();
       return hr[0] * 1e9 + hr[1];

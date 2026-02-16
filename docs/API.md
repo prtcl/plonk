@@ -21,7 +21,7 @@ const metro = new Metro(
   (timer) => {
     console.log(timer.state.iterations, timer.state.tickInterval);
   },
-  { time: 100 },
+  { time: 100 }
 );
 
 metro.run();
@@ -68,7 +68,7 @@ const frames = new Frames(
   (timer) => {
     console.log(timer.state.iterations);
   },
-  { fps: 30 },
+  { fps: 30 }
 );
 
 frames.run();
@@ -462,7 +462,7 @@ function useDust() {
     () => {
       setValue(d.next());
     },
-    { time: r.next() },
+    { time: r.next() }
   );
 
   return value;

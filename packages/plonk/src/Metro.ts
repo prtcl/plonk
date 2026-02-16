@@ -1,5 +1,5 @@
-import { SIXTY_FPS } from '../constants';
-import { now } from '../utils/now';
+import { SIXTY_FPS } from './constants';
+import { now } from './now';
 
 /** Snapshot of a running timer's internal state. */
 export type TimerState = {
@@ -75,7 +75,7 @@ export type TimerCallback<T extends Metro> = (timer: T) => void;
 export class Metro {
   state: TimerState;
   protected _listeners: TimerCallback<Metro>[];
-  protected declare _timerId: ReturnType<typeof setTimeout> | number;
+  declare protected _timerId: ReturnType<typeof setTimeout> | number;
 
   constructor(callback: TimerCallback<Metro>, opts?: MetroOptions) {
     const { time } = parseOptions(opts);

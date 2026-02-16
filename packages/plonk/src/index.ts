@@ -1,22 +1,12 @@
-export { Drunk, type DrunkOptions, type DrunkState } from './math/Drunk';
-export { Env, type EnvOptions, type EnvState } from './math/Env';
-export { Rand, type RandOptions, type RandState } from './math/Rand';
-export {
-  Scale,
-  type ScaleOptions,
-  type ScaleRange,
-  type ScaleState,
-} from './math/Scale';
-export {
-  Sine,
-  type SineOptions,
-  type SineState,
-  SINE_PERIOD,
-} from './math/Sine';
-export { Frames, type FramesOptions } from './timers/Frames';
-export { Metro, type MetroOptions, type TimerCallback } from './timers/Metro';
-export { clamp } from './utils/clamp';
-export { expo } from './utils/expo';
-export { ms, type FPS, TimeFormat } from './utils/ms';
-export { now } from './utils/now';
+export { Drunk, type DrunkOptions, type DrunkState } from './Drunk';
+export { Env, type EnvOptions, type EnvState } from './Env';
+export { Rand, type RandOptions, type RandState } from './Rand';
+export { Scale, type ScaleOptions, type ScaleRange, type ScaleState } from './Scale';
+export { Sine, type SineOptions, type SineState, SINE_PERIOD } from './Sine';
+export { Frames, type FramesOptions } from './Frames';
+export { Metro, type MetroOptions, type TimerCallback } from './Metro';
+export { clamp } from './clamp';
+export { expo } from './expo';
+export { ms, type FPS, TimeFormat } from './ms';
+export { now } from './now';
 export * from './constants';

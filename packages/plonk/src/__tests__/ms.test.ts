@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ms, TimeFormat } from '../utils/ms';
+import { ms, TimeFormat } from '../ms';
 
 type TestCase = {
   val: string | number | undefined | null;

@@ -1,5 +1,5 @@
-import { now } from '../utils/now';
 import { Scale } from './Scale';
+import { now } from './now';
 
 /** Snapshot of an Env's internal state. */
 export type EnvState = {
@@ -30,11 +30,7 @@ export const parseOptions = (opts?: EnvOptions): Required<EnvOptions> => {
   };
 };
 
-const getInitialState = ({
-  from,
-  to,
-  duration,
-}: Required<EnvOptions>): EnvState => {
+const getInitialState = ({ from, to, duration }: Required<EnvOptions>): EnvState => {
   return {
     duration,
     from,
@@ -47,7 +43,7 @@ const getInitialState = ({
 
 export const updateStateFromOptions = (
   opts: EnvOptions | undefined,
-  prevState: EnvState,
+  prevState: EnvState
 ): EnvState => {
   const { from, to, duration } = {
     ...prevState,

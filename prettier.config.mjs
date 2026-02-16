@@ -4,7 +4,7 @@
  */
 export default {
   plugins: ['@trivago/prettier-plugin-sort-imports'],
-  importOrder: ['react', '<THIRD_PARTY_MODULES>', '^~/(.*)$', '^[./]'],
+  importOrder: ['vitest', 'react', '<THIRD_PARTY_MODULES>', '^~/(.*)$', '^[./]'],
   printWidth: 100,
   semi: true,
   singleQuote: true,

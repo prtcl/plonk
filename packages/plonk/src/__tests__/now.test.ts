@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { now } from '../utils/now';
+import { now } from '../now';
 
 describe('now', () => {
   it('returns a time offset from env start time using performance.now or fallbacks', () => {

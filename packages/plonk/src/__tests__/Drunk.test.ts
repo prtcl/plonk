@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Drunk } from '../math/Drunk';
+import { Drunk } from '../Drunk';
 
 type TestCase = {
   next: number;
@@ -51,21 +51,20 @@ describe('Drunk', () => {
             max: 500,
           };
 
-    const testCases = Array.from({ length: 20 })
-      .reduce<TestCase[]>((res, _n, index) => {
-        const { min, max, step } = getConfig(index);
+    const testCases = Array.from({ length: 20 }).reduce<TestCase[]>((res, _n, index) => {
+      const { min, max, step } = getConfig(index);
 
-        d.setRange({ min, max });
-        d.setStepSize({ step });
+      d.setRange({ min, max });
+      d.setStepSize({ step });
 
-        const value = d.value();
-        res.push({
-          next: d.next(),
-          value,
-        });
+      const value = d.value();
+      res.push({
+        next: d.next(),
+        value,
+      });
 
-        return res;
-      }, []);
+      return res;
+    }, []);
 
     testCases.forEach(({ value, next }, index) => {
       const { min, max, step } = getConfig(index);

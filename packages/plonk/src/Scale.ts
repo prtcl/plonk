@@ -1,4 +1,4 @@
-import { clamp } from '../utils/clamp';
+import { clamp } from './clamp';
 
 /** A numeric range with min and max bounds. */
 export type ScaleRange = {
@@ -53,10 +53,7 @@ export const parseInitialState = (opts?: ScaleOptions): ScaleState => {
 };
 
 /** Merge partial range updates into existing state, recomputing the ratio. */
-export const updateStateFromOptions = (
-  opts: ScaleOptions,
-  prevState: ScaleState,
-): ScaleState => {
+export const updateStateFromOptions = (opts: ScaleOptions, prevState: ScaleState): ScaleState => {
   const { from, to } = opts;
   const updatedFrom: Required<ScaleRange> = {
     ...prevState.from,

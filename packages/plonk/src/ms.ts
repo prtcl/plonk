@@ -1,4 +1,4 @@
-import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from '../constants';
+import { MS_IN_SECOND, MS_IN_MINUTE, MS_IN_HOUR } from './constants';
 
 export type FPS = 15 | 30 | 60;
 
@@ -60,7 +60,7 @@ const parseStringValAndFormat = (val: string) => {
 export function ms(val: string | null | undefined): number | undefined;
 export function ms(
   val: string | number | null | undefined,
-  format?: AvailableTimeFormats | TimeFormat,
+  format?: AvailableTimeFormats | TimeFormat
 ): number | undefined;
 
 /**
@@ -71,7 +71,7 @@ export function ms(
  */
 export function ms(
   val: string | number | null | undefined,
-  format?: AvailableTimeFormats | TimeFormat,
+  format?: AvailableTimeFormats | TimeFormat
 ): number | undefined {
   let parsedValue: number | null | undefined = null;
   let parsedFormat: AvailableTimeFormats = format || TimeFormat.MILLISECONDS;
@@ -90,11 +90,7 @@ export function ms(
     parsedValue = val;
   }
 
-  if (
-    typeof parsedValue === 'undefined' ||
-    parsedValue === null ||
-    Number.isNaN(parsedValue)
-  ) {
+  if (typeof parsedValue === 'undefined' || parsedValue === null || Number.isNaN(parsedValue)) {
     return undefined;
   }
 
