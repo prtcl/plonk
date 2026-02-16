@@ -3,6 +3,8 @@
  * @type {import("prettier").Config}
  */
 export default {
+  plugins: ['@trivago/prettier-plugin-sort-imports'],
+  importOrder: ['react', '<THIRD_PARTY_MODULES>', '^~/(.*)$', '^[./]'],
   printWidth: 100,
   semi: true,
   singleQuote: true,

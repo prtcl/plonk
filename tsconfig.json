@@ -12,5 +12,5 @@
     "rootDir": ".",
     "target": "ESNext"
   },
-  "exclude": ["prettier.config.js", "node_modules", "packages/**/dist"]
+  "exclude": ["prettier.config.mjs", "node_modules", "packages/**/dist"]
 }
