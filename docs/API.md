@@ -406,16 +406,20 @@ function Ticker() {
 Hook wrapper for `Frames`, autostart begins on mount and stops on unmount.
 
 ```typescript
+import { useRef } from 'react';
 import { useFrames } from '@prtcl/plonk-hooks';
 
 function Animation() {
-  const [progress, setProgress] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
 
   useFrames((timer) => {
-    setProgress(timer.state.totalElapsed / 1000);
-  }, { fps: 60 });
+    if (ref.current) {
+      const progress = Math.min(timer.state.totalElapsed / 1000, 1);
+      ref.current.style.opacity = `${progress}`;
+    }
+  });
 
-  return <div style={{ opacity: progress }}>{/* ... */}</div>;
+  return <div ref={ref}>{/* ... */}</div>;
 }
 ```
 
@@ -485,22 +489,23 @@ function useDust() {
 Fade in an element over 2 seconds using an envelope driven by a frame loop:
 
 ```typescript
-import { useState } from 'react';
 import { Env } from '@prtcl/plonk';
 import { useFrames } from '@prtcl/plonk-hooks';
 
 function FadeIn({ children }: { children: React.ReactNode }) {
-  const [opacity, setOpacity] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
   const env = useMemo(() => new Env({ duration: 2000, from: 0, to: 1 }), []);
 
   const frames = useFrames(() => {
-    setOpacity(env.next());
+    if (ref.current) {
+      ref.current.style.opacity = `${env.next()}`;
+    }
     if (env.done()) {
       frames.stop();
     }
   });
 
-  return <div style={{ opacity }}>{children}</div>;
+  return <div ref={ref}>{children}</div>;
 }
 ```
 
@@ -509,12 +514,11 @@ function FadeIn({ children }: { children: React.ReactNode }) {
 Smoothly oscillate an element's position using a sine wave:
 
 ```typescript
-import { useState } from 'react';
 import { Sine, Scale } from '@prtcl/plonk';
 import { useFrames } from '@prtcl/plonk-hooks';
 
 function Oscillator() {
-  const [x, setX] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
   const sine = useMemo(() => new Sine({ duration: 3000 }), []);
   const scale = useMemo(() => new Scale({
     from: { min: -1, max: 1 },
@@ -522,9 +526,11 @@ function Oscillator() {
   }), []);
 
   useFrames(() => {
-    setX(scale.scale(sine.next()));
+    if (ref.current) {
+      ref.current.style.transform = `translateX(${scale.scale(sine.next())}px)`;
+    }
   });
 
-  return <div style={{ transform: `translateX(${x}px)` }}>~</div>;
+  return <div ref={ref}>~</div>;
 }
 ```
