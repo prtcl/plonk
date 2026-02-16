@@ -315,21 +315,6 @@ expo(1); // 1
 
 ---
 
-### flip
-
-Negates a number.
-
-```typescript
-import { flip } from '@prtcl/plonk';
-
-flip(1); // -1
-flip(-0.5); // 0.5
-```
-
-**Signature:** `flip(n) → number`
-
----
-
 ### ms
 
 Converts time format strings or numeric values to their corresponding value in milliseconds.

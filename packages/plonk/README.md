@@ -12,7 +12,7 @@ npm i @prtcl/plonk
 
 - **Timers** — `Metro`, `Frames` — high-resolution recursive loops with runtime metrics
 - **Generators** — `Drunk`, `Rand`, `Env`, `Sine`, `Scale` — random walks, envelopes, oscillators, and range mapping
-- **Utilities** — `now`, `ms`, `clamp`, `expo`, `flip` — timing and math helpers
+- **Utilities** — `now`, `ms`, `clamp`, `expo` — timing and math helpers
 
 Generators follow an iterator-inspired `value()` / `next()` pattern — they're stateful objects you pull from on your own schedule (a timer callback, a Web Audio worklet, a game loop, etc).
 

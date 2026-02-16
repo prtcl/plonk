@@ -8,7 +8,7 @@ Tiny library providing timers, envelopes, and random generators for creative cod
 Cross-platform utilities (client + server):
 - **Timers**: `Metro`, `Frames` - time-based triggers and frame counting
 - **Math/Generators**: `Drunk`, `Rand`, `Env`, `Sine`, `Scale` - random walks, envelopes, oscillators
-- **Utils**: `now`, `ms`, `flip`, `clamp`, `expo` - timing and math helpers
+- **Utils**: `now`, `ms`, `clamp`, `expo` - timing and math helpers
 
 ### `@prtcl/plonk-hooks` (React)
 Client-only React hooks wrapping core functionality:

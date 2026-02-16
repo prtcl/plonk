@@ -17,7 +17,6 @@ export { Frames, type FramesOptions } from './timers/Frames';
 export { Metro, type MetroOptions, type TimerCallback } from './timers/Metro';
 export { clamp } from './utils/clamp';
 export { expo } from './utils/expo';
-export { flip } from './utils/flip';
 export { ms, type FPS, TimeFormat } from './utils/ms';
 export { now } from './utils/now';
 export * from './constants';
