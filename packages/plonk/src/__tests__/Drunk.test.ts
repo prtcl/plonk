@@ -13,7 +13,7 @@ describe('Drunk', () => {
     expect(d.value()).toBeGreaterThanOrEqual(-1);
     expect(d.value()).toBeLessThanOrEqual(1);
 
-    const testCases = new Array(20).fill(0).reduce<TestCase[]>((res) => {
+    const testCases = Array.from({ length: 20 }).reduce<TestCase[]>((res) => {
       const value = d.value();
       res.push({
         next: d.next(),
@@ -51,8 +51,7 @@ describe('Drunk', () => {
             max: 500,
           };
 
-    const testCases = new Array(20)
-      .fill(0)
+    const testCases = Array.from({ length: 20 })
       .reduce<TestCase[]>((res, _n, index) => {
         const { min, max, step } = getConfig(index);
 

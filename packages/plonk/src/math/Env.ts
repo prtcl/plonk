@@ -1,6 +1,7 @@
 import { now } from '../utils/now';
 import { Scale } from './Scale';
 
+/** Snapshot of an Env's internal state. */
 export type EnvState = {
   duration: number;
   from: number;
@@ -10,9 +11,13 @@ export type EnvState = {
   value: number;
 };
 
+/** Options for configuring an Env envelope. */
 export type EnvOptions = {
+  /** Duration of the envelope in milliseconds. */
   duration: number;
+  /** Starting value. Defaults to 0. */
   from?: number;
+  /** Ending value. Defaults to 1. */
   to?: number;
 };
 
@@ -58,6 +63,10 @@ export const updateStateFromOptions = (
   };
 };
 
+/**
+ * Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+ * @param opts - {@link EnvOptions} for configuring the envelope.
+ */
 export class Env {
   state: EnvState;
   protected _interpolator: Scale;

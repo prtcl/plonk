@@ -48,4 +48,4 @@ In general, plonk is written for both client and server usage, while hooks are R
 
 ## Documentation
 
-Coming soon!
+See the full [API Reference](./docs/API.md).

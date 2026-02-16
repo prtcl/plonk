@@ -3,13 +3,19 @@ import { Rand } from './Rand';
 
 export const DEFAULT_DRUNK_STEP = 0.1;
 
+/** Options for configuring a Drunk random walk. */
 export type DrunkOptions = {
+  /** Upper bound of the range. Defaults to 1. */
   max?: number;
+  /** Lower bound of the range. Defaults to 0. */
   min?: number;
+  /** Initial value. If omitted, a random value within the range is used. */
   startsAt?: number;
+  /** Maximum step size as a fraction of the range (0-1). Defaults to 0.1. */
   step?: number;
 };
 
+/** Snapshot of a Drunk walk's internal state. */
 export type DrunkState = {
   initialValue: number;
   max: number;
@@ -34,6 +40,10 @@ export const parseOptions = (opts?: DrunkOptions): Required<DrunkOptions> => {
   };
 };
 
+/**
+ * Stochastic random walk generator that produces values within a bounded range.
+ * @param opts - {@link DrunkOptions} for configuring the walk.
+ */
 export class Drunk {
   state: DrunkState;
   protected _initialValue: Rand;

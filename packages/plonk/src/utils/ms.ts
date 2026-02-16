@@ -63,11 +63,11 @@ export function ms(
   format?: AvailableTimeFormats | TimeFormat,
 ): number | undefined;
 
-/** Converts a time format string into equivalent milliseconds.
- * ```
- * ms('60fps')
- * => 16.666666
- * ```
+/**
+ * Converts time format strings or numeric values to their corresponding value in milliseconds.
+ * @param val - A string like `'60fps'`, `'2s'`, or a numeric value.
+ * @param format - Explicit time format when `val` is a number.
+ * @returns Milliseconds, or undefined if the input is invalid.
  */
 export function ms(
   val: string | number | null | undefined,

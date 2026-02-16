@@ -27,11 +27,9 @@ npm run publish     # Clean, install, build, and publish all packages
 
 ## Publishing
 
-Both packages use synchronized versioning. To publish:
+Both packages use synchronized versioning. Run `npm run publish` (or `./scripts/publish.sh`) which handles version bumping, building, testing, and publishing.
 
-1. Bump version in both `packages/plonk/package.json` and `packages/hooks/package.json`
-2. Update `@prtcl/plonk` dependency version in hooks package
-3. Run `npm run publish` from root
+The hooks package pins `@prtcl/plonk` to an exact version in its dependencies. The `scripts/update-version.ts` script writes the new version to three locations: both `package.json` version fields and the hooks dependency. This pinned version is what gets published to the registry. npm workspaces resolves the local symlink regardless of the version string, so build and test work even when the bumped version doesn't exist on the registry yet. The `workspace:` protocol would handle this more elegantly but isn't supported by npm (it's pnpm/Yarn only).
 
 ## Package Structure
 

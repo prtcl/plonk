@@ -6,7 +6,6 @@ if (typeof performance !== 'undefined' && 'now' in performance) {
   };
 } else if (
   typeof process === 'object' &&
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   process.toString() === '[object process]'
 ) {
   const timestamp = () => {
@@ -26,7 +25,10 @@ if (typeof performance !== 'undefined' && 'now' in performance) {
   };
 }
 
-/** performance.now polyfill for running across envs. */
+/**
+ * Cross-environment high-resolution timestamp (performance.now polyfill).
+ * @returns Elapsed milliseconds since initialization.
+ */
 export function now() {
   return internal();
 }

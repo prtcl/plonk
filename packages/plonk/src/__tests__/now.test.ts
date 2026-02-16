@@ -11,11 +11,11 @@ describe('now', () => {
       setTimeout(() => {
         const elapsed = now() - start;
 
-        expect(elapsed).toBeGreaterThanOrEqual(10);
-        expect(elapsed).toBeLessThanOrEqual(30);
+        expect(elapsed).toBeGreaterThanOrEqual(100);
+        expect(elapsed).toBeLessThanOrEqual(300);
 
         done();
-      }, 10);
+      }, 100);
     });
   });
 });

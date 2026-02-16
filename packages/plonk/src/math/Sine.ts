@@ -4,10 +4,13 @@ import { Scale } from './Scale';
 
 export const SINE_PERIOD = Math.PI * 2 - 0.0001;
 
+/** Options for configuring a Sine oscillator. */
 export type SineOptions = {
+  /** Duration of one full cycle in milliseconds. */
   duration: number;
 };
 
+/** Snapshot of a Sine oscillator's internal state. */
 export type SineState = {
   cycle: number;
   duration: number;
@@ -24,6 +27,10 @@ const getInitialState = (duration: number): SineState => ({
   value: 0,
 });
 
+/**
+ * Time-based sine wave oscillator that outputs values between -1 and 1.
+ * @param opts - {@link SineOptions} for configuring the oscillator.
+ */
 export class Sine {
   state: SineState;
   protected _interpolator: Scale;
