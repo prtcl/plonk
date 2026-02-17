@@ -7,7 +7,7 @@ export { Sine, type SineOptions, type SineState, SINE_PERIOD, sine } from './sin
 export { Slew, type SlewOptions, type SlewState, slew } from './slew';
 export { Wrap, type WrapOptions, type WrapState, wrap } from './wrap';
 export { Frames, type FramesOptions, frames } from './frames';
-export { Metro, type MetroOptions, type TimerCallback, metro } from './metro';
+export { Metro, type MetroOptions, type TimerCallback, type TimerState, metro } from './metro';
 export { clamp } from './clamp';
 export { expo } from './expo';
 export { ms, type FPS, TimeFormat } from './ms';
