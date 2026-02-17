@@ -47,9 +47,10 @@ describe('Fold', () => {
     expect(sequence).toEqual([0, 5, 10, 5, 0, 5, 10]);
   });
 
-  it('has a static shorthand', () => {
-    expect(Fold.fold(12, { min: 0, max: 10 })).toBe(8);
-    expect(Fold.fold(1.3)).toBeCloseTo(0.7);
+  it('has a static factory', () => {
+    const f = Fold.fold({ min: 0, max: 10 });
+    expect(f).toBeInstanceOf(Fold);
+    expect(f.fold(12)).toBe(8);
   });
 
   it('exposes state', () => {
@@ -64,7 +65,7 @@ describe('Fold', () => {
 });
 
 describe('fold', () => {
-  it('is exported and returns a number', () => {
-    expect(typeof fold(0.5)).toBe('number');
+  it('is exported and returns a Fold instance', () => {
+    expect(fold()).toBeInstanceOf(Fold);
   });
 });

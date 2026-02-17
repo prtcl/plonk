@@ -110,9 +110,10 @@ describe('Scale', () => {
     expect(s.value()).toEqual(0.75);
   });
 
-  it('has a static method which returns the results of scale()', () => {
-    const val = Scale.scale(0.5, { to: { min: 0, max: 255 } });
+  it('has a static method which returns a Scale instance', () => {
+    const s = Scale.scale({ to: { min: 0, max: 255 } });
 
-    expect(val).toEqual(127.5);
+    expect(s).toBeInstanceOf(Scale);
+    expect(s.scale(0.5)).toEqual(127.5);
   });
 });

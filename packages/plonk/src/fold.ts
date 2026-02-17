@@ -30,9 +30,9 @@ export const parseOptions = (opts?: FoldOptions): Required<FoldOptions> => {
 export class Fold {
   state: FoldState;
 
-  /** Folds a single value. One-off form of `new Fold(opts).fold(n)`. */
-  static fold(n: number, opts?: FoldOptions) {
-    return new Fold(opts).fold(n);
+  /** Creates a new Fold instance. Alternative form of `new Fold(opts)`. */
+  static fold(opts?: FoldOptions) {
+    return new Fold(opts);
   }
 
   constructor(opts?: FoldOptions) {
@@ -70,7 +70,7 @@ export class Fold {
 
 /**
  * Folds (reflects) values back and forth within a configured range.
- * One-off form of `new Fold(opts).fold(n)`.
+ * Alternative form of `new Fold(opts)`.
  */
 export const fold = Fold.fold;
 

@@ -80,9 +80,9 @@ export const updateStateFromOptions = (opts: ScaleOptions, prevState: ScaleState
 export class Scale {
   state: ScaleState;
 
-  /** Scales a single value. One-off form of `new Scale(opts).scale(n)`. */
-  static scale(n: number, opts?: ScaleOptions) {
-    return new Scale(opts).scale(n);
+  /** Creates a new Scale instance. Alternative form of `new Scale(opts)`. */
+  static scale(opts?: ScaleOptions) {
+    return new Scale(opts);
   }
 
   constructor(opts?: ScaleOptions) {
@@ -117,6 +117,6 @@ export class Scale {
 
 /**
  * Linear map of values from one range to another, supports negative values and inversion.
- * One-off form of `new Scale(opts).scale(n)`.
+ * Alternative form of `new Scale(opts)`.
  */
 export const scale = Scale.scale;
