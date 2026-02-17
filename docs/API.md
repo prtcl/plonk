@@ -193,12 +193,12 @@ r.next(); // generate a new random value
 
 #### Methods
 
-| Method                   | Returns  | Description                          |
-| ------------------------ | -------- | ------------------------------------ |
-| `value()`                | `number` | Returns the current value            |
-| `next()`                 | `number` | Generates and returns a new value    |
-| `setRange({ min, max })` | `void`   | Updates the range bounds             |
-| `Rand.rand(opts?)`       | `number` | Static method for one-off generation |
+| Method                   | Returns  | Description                             |
+| ------------------------ | -------- | --------------------------------------- |
+| `value()`                | `number` | Returns the current value               |
+| `next()`                 | `number` | Generates and returns a new value       |
+| `setRange({ min, max })` | `void`   | Updates the range bounds                |
+| `Rand.rand(opts?)`       | `number` | Static one-shot, returns a random value |
 
 ---
 
@@ -228,13 +228,13 @@ s.scale(0); // 0
 
 #### Methods
 
-| Method                 | Returns  | Description                                           |
-| ---------------------- | -------- | ----------------------------------------------------- |
-| `scale(n)`             | `number` | Maps a value from the input range to the output range |
-| `value()`              | `number` | Returns the last scaled value                         |
-| `setRanges(opts)`      | `void`   | Updates input and/or output ranges                    |
-| `reset(opts)`          | `void`   | Resets with new range options                         |
-| `Scale.scale(n, opts)` | `number` | Static method for one-off scaling                     |
+| Method              | Returns  | Description                                           |
+| ------------------- | -------- | ----------------------------------------------------- |
+| `scale(n)`          | `number` | Maps a value from the input range to the output range |
+| `value()`           | `number` | Returns the last scaled value                         |
+| `setRanges(opts)`   | `void`   | Updates input and/or output ranges                    |
+| `reset(opts)`       | `void`   | Resets with new range options                         |
+| `Scale.scale(opts)` | `Scale`  | Static factory, alternative to `new`                  |
 
 ---
 
@@ -270,7 +270,7 @@ Array.from({ length: 7 }, (_, i) => f.fold(i * 5));
 | `fold(n)`                | `number` | Folds a value into the configured range and caches the result |
 | `value()`                | `number` | Returns the last folded value                                 |
 | `setRange({ min, max })` | `void`   | Updates the range bounds                                      |
-| `Fold.fold(n, opts?)`    | `number` | Static method for one-off folding                             |
+| `Fold.fold(opts?)`       | `Fold`   | Static factory, alternative to `new`                          |
 
 ---
 
@@ -305,7 +305,7 @@ Array.from({ length: 8 }, (_, i) => w.wrap(i * 3));
 | `wrap(n)`                | `number` | Wraps a value into the configured range and caches the result |
 | `value()`                | `number` | Returns the last wrapped value                                |
 | `setRange({ min, max })` | `void`   | Updates the range bounds                                      |
-| `Wrap.wrap(n, opts?)`    | `number` | Static method for one-off wrapping                            |
+| `Wrap.wrap(opts?)`       | `Wrap`   | Static factory, alternative to `new`                          |
 
 ---
 

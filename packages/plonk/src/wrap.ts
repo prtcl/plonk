@@ -28,9 +28,9 @@ export const parseOptions = (opts?: WrapOptions): Required<WrapOptions> => {
 export class Wrap {
   state: WrapState;
 
-  /** Wraps a single value. One-off form of `new Wrap(opts).wrap(n)`. */
-  static wrap(n: number, opts?: WrapOptions) {
-    return new Wrap(opts).wrap(n);
+  /** Creates a new Wrap instance. Alternative form of `new Wrap(opts)`. */
+  static wrap(opts?: WrapOptions) {
+    return new Wrap(opts);
   }
 
   constructor(opts?: WrapOptions) {
@@ -72,7 +72,7 @@ export class Wrap {
 
 /**
  * Wraps values around a configured range using modular arithmetic.
- * One-off form of `new Wrap(opts).wrap(n)`.
+ * Alternative form of `new Wrap(opts)`.
  */
 export const wrap = Wrap.wrap;
 

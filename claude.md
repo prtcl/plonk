@@ -51,8 +51,8 @@ packages/
 
 Every class has a lowercase counterpart exported alongside it. Classes are the primary API — the lowercase versions are a convenience for people who prefer a terse, functional style:
 
-- **Generators/timers** (`drunk`, `env`, `sine`, `metro`, `frames`): factories which return a new instance
-- **Transformers** (`rand`, `scale`, `fold`, `wrap`): one-shots which return a computed value
+- **All classes** (`drunk`, `env`, `sine`, `metro`, `frames`, `scale`, `fold`, `wrap`, `slew`): factories which return a new instance
+- **Exception**: `rand` is a one-shot which returns a random number — use `new Rand()` when you need a persistent instance
 - **Utils** (`clamp`, `expo`, `sigmoid`, `tanh`, `ms`, `now`, `wait`): standalone functions
 
 The class is always the source of truth. Lowercase exports delegate to static methods on the class (e.g. `export const fold = Fold.fold`). Pure math lives in unexported `transform` functions within the same file when needed (e.g. fold.ts, wrap.ts).

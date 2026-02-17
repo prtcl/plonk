@@ -47,9 +47,10 @@ describe('Wrap', () => {
     expect(sequence).toEqual([0, 3, 6, 9, 2, 5, 8, 1]);
   });
 
-  it('has a static shorthand', () => {
-    expect(Wrap.wrap(12, { min: 0, max: 10 })).toBe(2);
-    expect(Wrap.wrap(1.3)).toBeCloseTo(0.3);
+  it('has a static factory', () => {
+    const w = Wrap.wrap({ min: 0, max: 10 });
+    expect(w).toBeInstanceOf(Wrap);
+    expect(w.wrap(12)).toBe(2);
   });
 
   it('exposes state', () => {
@@ -64,7 +65,7 @@ describe('Wrap', () => {
 });
 
 describe('wrap', () => {
-  it('is exported and returns a number', () => {
-    expect(typeof wrap(0.5)).toBe('number');
+  it('is exported and returns a Wrap instance', () => {
+    expect(wrap()).toBeInstanceOf(Wrap);
   });
 });
