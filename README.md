@@ -1,50 +1,48 @@
 # plonk
 
-Tiny library that provides timers, envelopes and random generators.
+A library for creative time processing and randomness generation. Inspired by the time-based functions found in environments like Max and Kyma.
 
-Cool things about plonk:
-
-- Inspired by the time-based functions from environments like Max and SuperCollider
-- Flexible API for use in animation loops, creative coding projects, synthesis engines, etc
-- Cross-platform, client or server, plays well with other libs
-
-Here's the famous dust generator using plonk:
+Each function is stateful, with a generator-like API, and you decide when to advance each step. They compose freely with each other to form data and signal chains. An example:
 
 ```typescript
-const d = new Drunk({ min: -1, max: 1 });
-const r = new Rand({ min: 50, max: 150 });
+import * as p from '@prtcl/plonk';
 
-const useDust = () => {
-  const [value, setValue] = useState(() => d.value());
-  useMetro(
-    () => {
-      setValue(d.next());
-    },
-    { time: r.next() }
-  );
+const d = new p.Drunk({ min: 0, max: 1, step: 0.05 });
+const s = new p.Slew({ duration: 500 });
+const sx = new p.Scale({ from: { min: 0, max: 1 }, to: { min: 20, max: 600 } });
 
-  return value;
-};
+p.frames(() => {
+  s.setValue(d.next());
+  const x = sx.scale(p.sigmoid(s.next()));
+  // ... do something with x
+});
 ```
 
 ## Installation
 
 ```
-// For the core timers and random generators
 npm i @prtcl/plonk
+```
 
-// For React
+React hooks are available as a separate package:
+
+```
 npm i @prtcl/plonk-hooks
 ```
 
-The library is built as ES modules and split into sub-packages:
+The core library works in any environment — browser, server, game loop, audio worklet. The hooks package is React-only and client-only.
 
-```typescript
-import { Drunk, clamp } from '@prtcl/plonk';
-import { useMetro } from '@prtcl/plonk-hooks';
-```
+## What's included
 
-In general, plonk is written for both client and server usage, while hooks are React-only and client-only.
+**Timers** — `Metro`, `Frames` — high-resolution loops with runtime metrics
+
+**Generators** — `Drunk`, `Rand`, `Sine`, `Env` — random walks, oscillators, envelopes
+
+**Processors** — `Slew`, `Integrator`, `Scale`, `Fold`, `Wrap` — interpolation, smoothing, range mapping, boundary transforms
+
+**Transfer functions** — `sigmoid`, `tanh`, `expo` — waveshaping and curvature
+
+**Utilities** — `ms`, `clamp`, `now`, `wait` — time conversion, clamping, timestamps
 
 ## Documentation
 
