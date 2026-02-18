@@ -309,6 +309,90 @@ Array.from({ length: 8 }, (_, i) => w.wrap(i * 3));
 
 ---
 
+### Slew
+
+Constant-time linear interpolation processor. When a new value is set via `setValue`, the output smoothly transitions from the current position to the target over the configured duration. Useful for sample-and-hold smoothing, parameter glides, and portamento effects.
+
+```typescript
+import { Slew } from '@prtcl/plonk';
+import { Frames } from '@prtcl/plonk';
+
+const slew = new Slew({ duration: 500, value: 0 });
+
+const frames = new Frames(() => {
+  console.log(slew.next()); // smoothly approaches target
+});
+
+frames.run();
+
+// Set a new target — interpolation begins from current position
+slew.setValue(1);
+
+// Change the glide time independently
+slew.setDuration(1000);
+```
+
+#### Options
+
+| Option     | Type     | Default | Description                 |
+| ---------- | -------- | ------- | --------------------------- |
+| `duration` | `number` | `0`     | Interpolation duration (ms) |
+| `value`    | `number` | `0`     | Initial value               |
+
+#### Methods
+
+| Method            | Returns   | Description                                              |
+| ----------------- | --------- | -------------------------------------------------------- |
+| `value()`         | `number`  | Returns the current interpolated value                   |
+| `next()`          | `number`  | Advances the interpolation and returns the current value |
+| `done()`          | `boolean` | Returns true when the target has been reached            |
+| `setValue(n)`     | `void`    | Sets a new target, interpolating from current position   |
+| `setDuration(ms)` | `void`    | Updates the interpolation duration                       |
+| `reset(opts?)`    | `void`    | Resets with optional new options                         |
+
+---
+
+### Integrator
+
+Exponential integrator which continuously smooths toward a target value. Uses frame-rate compensated one-pole filtering, so it behaves consistently regardless of tick rate. Useful for smoothing noisy inputs, creating inertial responses, and building feedback systems.
+
+```typescript
+import { Integrator } from '@prtcl/plonk';
+import { Frames } from '@prtcl/plonk';
+
+const smooth = new Integrator({ factor: 0.1 });
+
+const frames = new Frames(() => {
+  // Smoothly chases the target
+  console.log(smooth.next(100));
+});
+
+frames.run();
+
+// Call without arguments to continue toward the last target
+smooth.next();
+
+// Adjust responsiveness on the fly
+smooth.setFactor(0.5);
+```
+
+#### Options
+
+| Option   | Type     | Default | Description                                                |
+| -------- | -------- | ------- | ---------------------------------------------------------- |
+| `factor` | `number` | `0.1`   | Smoothing factor between 0 and 1. Lower values are smoother |
+| `value`  | `number` | `0`     | Initial value                                              |
+
+#### Methods
+
+| Method           | Returns  | Description                                              |
+| ---------------- | -------- | -------------------------------------------------------- |
+| `value()`        | `number` | Returns the current smoothed value                       |
+| `next(target?)`  | `number` | Advances toward the target and returns the smoothed value |
+| `setFactor(n)`   | `void`   | Updates the smoothing factor (0-1)                       |
+
+---
+
 ### Sine
 
 Time-based sine wave oscillator that outputs values between -1 and 1.
@@ -454,7 +538,7 @@ ms(60, 'fps'); // 16.6667
 ms(2, 's'); // 2000
 ```
 
-**Signature:** `ms(val, format?) → number | undefined`
+**Signature:** `ms(val, format?) → number`
 
 **Supported formats:** `fps`, `hz`, `ms`, `s`, `m`, `h`
 
