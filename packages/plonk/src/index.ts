@@ -1,6 +1,7 @@
 export { Drunk, type DrunkOptions, type DrunkState, drunk } from './drunk';
 export { Env, type EnvOptions, type EnvState, env } from './env';
 export { Fold, type FoldOptions, type FoldState, fold } from './fold';
+export { Integrator, type IntegratorOptions, type IntegratorState, integrator } from './integrator';
 export { Rand, type RandOptions, type RandState, rand } from './rand';
 export { Scale, type ScaleOptions, type ScaleRange, type ScaleState, scale } from './scale';
 export { Sine, type SineOptions, type SineState, SINE_PERIOD, sine } from './sine';

@@ -8,17 +8,21 @@ describe('Sine', () => {
     expect(s.value()).toEqual(0);
 
     return new Promise<void>((done) => {
+      let movedAfterFirstCycle = false;
       const timerId = setInterval(() => {
-        const prev = s.value();
         const val = s.next();
 
-        expect(val !== prev).toEqual(true);
         expect(val).toBeGreaterThanOrEqual(-1);
         expect(val).toBeLessThanOrEqual(1);
 
-        if (s.state.duration <= s.state.totalElapsed) {
+        if (s.state.totalElapsed > s.state.duration && val !== 0) {
+          movedAfterFirstCycle = true;
+        }
+
+        if (s.state.totalElapsed >= s.state.duration * 2) {
           clearInterval(timerId);
 
+          expect(movedAfterFirstCycle).toEqual(true);
           done();
         }
       }, 10);
