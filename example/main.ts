@@ -68,7 +68,6 @@ const makeBug = (id: number, updateInterval: number): Bug => {
 
     ctx.beginPath();
     ctx.arc(x, y, r.fold(state.iterations * flash), 0, Math.PI * 2);
-    ctx.fillStyle = '#000';
     ctx.fillStyle = `rgba(0,0,0,${o.fold(state.iterations / pulse) / 10})`;
     ctx.fill();
   };
@@ -80,20 +79,43 @@ const makeBug = (id: number, updateInterval: number): Bug => {
   };
 };
 
+const makeDyn = () => {
+  const ina = new p.Integrator({ factor: 0.005 });
+  const gen = new p.Sine({ duration: p.ms('0.33hz') });
+  const df = new p.Drunk({ min: 0.03, max: 0.07, step: 0.05 });
+  const rs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0, max: 33 } });
+
+  const tick = () => {
+    const no = ina.next(df.next());
+    const nr = ina.next(rs.scale(p.tanh(gen.next(), 2)));
+
+    ctx.fillStyle = `rgba(${nr},255,50,${no})`;
+    ctx.fillRect(mx, my, canvas.width - mx * 2, canvas.height - my * 2);
+  };
+
+  return { tick };
+};
+
+const ova = {
+  tick: () => {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  },
+};
+
 const br = new p.Drunk({ min: 50, max: 1000 });
 const bugs = Array.from({ length: 7 }, (_, k) => makeBug(k, Math.round(br.next())));
 
+const dyn = makeDyn();
+
 const { run } = p.frames(
   (timer) => {
-    ctx.fillStyle = 'rgba(0,255,50, 0.05)';
-    ctx.fillRect(mx, my, canvas.width - mx * 2, canvas.height - my * 2);
-
+    dyn.tick();
     for (const bug of bugs) {
       bug.tick(timer.state);
     }
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ova.tick();
   },
   { fps: 60 }
 );
