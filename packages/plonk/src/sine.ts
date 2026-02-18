@@ -1,8 +1,6 @@
-import { clamp } from './clamp';
 import { now } from './now';
-import { Scale } from './scale';
 
-export const SINE_PERIOD = Math.PI * 2 - 0.0001;
+export const SINE_PERIOD = Math.PI * 2;
 
 /** Options for configuring a Sine oscillator. */
 export type SineOptions = {
@@ -12,16 +10,16 @@ export type SineOptions = {
 
 /** Snapshot of a Sine oscillator's internal state. */
 export type SineState = {
-  cycle: number;
   duration: number;
+  phase: number;
   prev: number;
   totalElapsed: number;
   value: number;
 };
 
 const getInitialState = (duration: number): SineState => ({
-  cycle: 0,
   duration,
+  phase: 0,
   prev: now(),
   totalElapsed: 0,
   value: 0,
@@ -33,7 +31,6 @@ const getInitialState = (duration: number): SineState => ({
  */
 export class Sine {
   state: SineState;
-  protected _interpolator: Scale;
 
   /** Creates a new Sine instance. Alternative form of `new Sine(opts)`. */
   static sine(opts: SineOptions) {
@@ -41,37 +38,17 @@ export class Sine {
   }
 
   constructor(opts: SineOptions) {
-    const { duration } = opts;
-
-    this._interpolator = new Scale({
-      from: {
-        min: 0,
-        max: duration,
-      },
-      to: {
-        min: 0,
-        max: SINE_PERIOD,
-      },
-    });
-    this.state = getInitialState(duration);
+    this.state = getInitialState(opts.duration);
   }
 
   /** Updates the cycle duration. */
   setDuration(duration: number) {
-    this.state = {
-      ...this.state,
-      duration,
-    };
+    this.state.duration = duration;
   }
 
   /** Resets the oscillator with optional new options. */
   reset(opts?: SineOptions) {
-    const { duration } = {
-      ...this.state,
-      ...opts,
-    };
-
-    this.state = getInitialState(duration);
+    this.state = getInitialState(opts?.duration ?? this.state.duration);
   }
 
   /** Returns the current oscillator value. */
@@ -81,19 +58,16 @@ export class Sine {
 
   /** Advances the oscillator and returns the new value. */
   next() {
-    const { cycle, duration, prev, totalElapsed: prevTotalElapsed } = this.state;
+    const { duration, phase, prev, totalElapsed: prevTotalElapsed } = this.state;
     const curr = now();
     const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
 
-    const updates = clamp(Math.sin(this._interpolator.scale(totalElapsed)), -1, 1);
+    const increment = SINE_PERIOD * (tickInterval / duration);
+    const nextPhase = (phase + increment) % SINE_PERIOD;
+    const updates = Math.sin(nextPhase);
 
-    if (cycle >= duration) {
-      this.state.cycle = 0;
-    } else {
-      this.state.cycle = cycle + tickInterval;
-    }
-
+    this.state.phase = nextPhase;
     this.state.prev = curr;
     this.state.totalElapsed = totalElapsed;
     this.state.value = updates;
