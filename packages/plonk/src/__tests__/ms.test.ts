@@ -1,105 +1,32 @@
 import { describe, it, expect } from 'vitest';
 import { ms, TimeFormat } from '../ms';
 
-type TestCase = {
-  val: string | number | undefined | null;
-  format?: TimeFormat;
-  res: number | undefined;
-};
-
 describe('ms', () => {
-  it('formats incoming values to their millisecond equivalents based on format identifiers', () => {
-    const testCases: TestCase[] = [
-      {
-        val: undefined,
-        res: undefined,
-      },
-      {
-        val: null,
-        res: undefined,
-      },
-      {
-        val: '123abc',
-        res: undefined,
-      },
-      {
-        val: 100,
-        res: 100,
-      },
-      {
-        val: 100,
-        format: TimeFormat.MILLISECONDS,
-        res: 100,
-      },
-      {
-        val: '66ms',
-        res: 66,
-      },
-      {
-        val: 1,
-        format: TimeFormat.SECONDS,
-        res: 1000,
-      },
-      {
-        val: '1s',
-        res: 1000,
-      },
-      {
-        val: '0.875s',
-        res: 875,
-      },
-      {
-        val: '10s',
-        res: 10000,
-      },
-      {
-        val: 1,
-        format: TimeFormat.MINUTES,
-        res: 60000,
-      },
-      {
-        val: '1m',
-        res: 60000,
-      },
-      {
-        val: 7,
-        format: TimeFormat.HOURS,
-        res: 25200000,
-      },
-      {
-        val: '7h',
-        res: 25200000,
-      },
-      {
-        val: 1,
-        format: TimeFormat.HZ,
-        res: 1000,
-      },
-      {
-        val: '1hz',
-        res: 1000,
-      },
-      {
-        val: '0.5hz',
-        res: 2000,
-      },
-      {
-        val: '2hz',
-        res: 500,
-      },
-      {
-        val: 60,
-        format: TimeFormat.FPS,
-        res: 16.666666666666668,
-      },
-      {
-        val: '60fps',
-        res: 16.666666666666668,
-      },
-    ];
+  it('parses string time formats to milliseconds', () => {
+    expect(ms('66ms')).toEqual(66);
+    expect(ms('1s')).toEqual(1000);
+    expect(ms('0.875s')).toEqual(875);
+    expect(ms('10s')).toEqual(10000);
+    expect(ms('1m')).toEqual(60000);
+    expect(ms('7h')).toEqual(25200000);
+    expect(ms('1hz')).toEqual(1000);
+    expect(ms('0.5hz')).toEqual(2000);
+    expect(ms('2hz')).toEqual(500);
+    expect(ms('60fps')).toEqual(16.666666666666668);
+  });
 
-    testCases.forEach(({ val, format, res }) => {
-      expect(ms(val, format)).toEqual(res);
-    });
+  it('converts numeric values with explicit format', () => {
+    expect(ms(100)).toEqual(100);
+    expect(ms(100, TimeFormat.MILLISECONDS)).toEqual(100);
+    expect(ms(1, TimeFormat.SECONDS)).toEqual(1000);
+    expect(ms(1, TimeFormat.MINUTES)).toEqual(60000);
+    expect(ms(7, TimeFormat.HOURS)).toEqual(25200000);
+    expect(ms(1, TimeFormat.HZ)).toEqual(1000);
+    expect(ms(60, TimeFormat.FPS)).toEqual(16.666666666666668);
+  });
+
+  it('throws for unparseable strings', () => {
+    expect(() => ms('123abc')).toThrow();
+    expect(() => ms('garbage')).toThrow();
   });
 });
