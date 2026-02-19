@@ -1,6 +1,6 @@
 # @prtcl/plonk
 
-Tiny library providing timers, envelopes, and random generators for creative coding, animation loops, and synthesis engines. Inspired by time-based functions from Max/MSP and SuperCollider.
+A library for creative time processing and randomness generation. Inspired by the time-based functions found in environments like Max and Kyma.
 
 ## Installation
 
@@ -10,21 +10,27 @@ npm i @prtcl/plonk
 
 ## What's included
 
-- **Timers** — `Metro`, `Frames` — high-resolution recursive loops with runtime metrics
-- **Generators** — `Drunk`, `Rand`, `Env`, `Sine`, `Scale` — random walks, envelopes, oscillators, and range mapping
-- **Utilities** — `now`, `ms`, `clamp`, `expo` — timing and math helpers
+**Timers** — `Metro`, `Frames` — high-resolution loops with runtime metrics
 
-Generators follow an iterator-inspired `value()` / `next()` pattern — they're stateful objects you pull from on your own schedule (a timer callback, a Web Audio worklet, a game loop, etc).
+**Generators** — `Drunk`, `Rand`, `Sine`, `Env` — random walks, oscillators, envelopes
+
+**Processors** — `Slew`, `Integrator`, `Scale`, `Fold`, `Wrap` — interpolation, smoothing, range mapping, boundary transforms
+
+**Transfer functions** — `sigmoid`, `tanh`, `expo` — waveshaping and curvature
+
+**Utilities** — `ms`, `clamp`, `now`, `wait` — time conversion, clamping, timestamps
+
+Each function is stateful, with a generator-like API, and you decide when to advance each step. They compose freely with each other to form data and signal chains.
 
 ## Quick example
 
 ```typescript
-import { Metro, Drunk, Rand } from '@prtcl/plonk';
+import * as p from '@prtcl/plonk';
 
-const d = new Drunk({ min: -1, max: 1 });
-const r = new Rand({ min: 50, max: 150 });
+const d = new p.Drunk({ min: -1, max: 1 });
+const r = new p.Rand({ min: 50, max: 150 });
 
-const metro = new Metro(
+const metro = new p.Metro(
   () => {
     console.log(d.next());
     metro.setTime(r.next());
