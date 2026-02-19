@@ -171,6 +171,39 @@ frames.run();
 
 ---
 
+### Noise
+
+Noise generator using the Voss-McCartney algorithm with pink/white balance. Sums octave-spaced random sources, updating one band per sample for constant cost regardless of octave count. The `octaves` parameter controls the low-frequency depth — fewer octaves produce wider steps and more drift, more octaves concentrate the output closer to center. The `balance` parameter crossfades between the shaped pink noise and raw white noise.
+
+```typescript
+import { Noise } from '@prtcl/plonk';
+
+const n = new Noise({ octaves: 12, balance: 0.2 });
+
+n.next(); // pink noise with a little white dust
+n.next();
+
+// Adjust the balance on the fly
+n.setBalance(0.5);
+```
+
+#### Options
+
+| Option    | Type     | Default | Description                                      |
+| --------- | -------- | ------- | ------------------------------------------------ |
+| `octaves` | `number` | `8`     | Number of octave bands for low-frequency depth   |
+| `balance` | `number` | `0`     | Crossfade between pink (0) and white (1) noise   |
+
+#### Methods
+
+| Method           | Returns  | Description                                     |
+| ---------------- | -------- | ----------------------------------------------- |
+| `value()`        | `number` | Returns the current noise value                 |
+| `next()`         | `number` | Advances the generator and returns a new sample |
+| `setBalance(n)`  | `void`   | Updates the pink/white crossfade (0-1)          |
+
+---
+
 ### Rand
 
 Random number generator that produces values within a bounded range.
