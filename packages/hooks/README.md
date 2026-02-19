@@ -1,6 +1,6 @@
 # @prtcl/plonk-hooks
 
-React hook wrappers for [`@prtcl/plonk`](https://www.npmjs.com/package/@prtcl/plonk). Manages timer lifecycle on mount/unmount so you can use plonk's timers and generators directly in components.
+React hook wrappers for [`@prtcl/plonk`](https://www.npmjs.com/package/@prtcl/plonk). Manages timer lifecycle on mount/unmount and provides memoized instances of plonk's generators for use in components.
 
 ## Installation
 
@@ -12,21 +12,21 @@ Requires React 17–19 as a peer dependency.
 
 ## Hooks
 
-- **`useMetro`** — interval-based timer loop
-- **`useFrames`** — `requestAnimationFrame`-based loop
-- **`usePrevious`** — tracks the previous value of a variable
+**Timers** — `useMetro`, `useFrames` — lifecycle-managed timer loops
+
+**Generators** — `useDrunk`, `useRand`, `useEnv`, `useSine`, `useScale`, `useFold`, `useWrap` — memoized instances of the corresponding plonk classes
+
+**Utilities** — `usePrevious` — tracks the previous value of a variable
 
 ## Quick example
 
 ```typescript
 import { useRef } from 'react';
-import { Env } from '@prtcl/plonk';
-import { useFrames } from '@prtcl/plonk-hooks';
-
-const env = new Env({ duration: 2000, from: 0, to: 1 });
+import { useFrames, useEnv } from '@prtcl/plonk-hooks';
 
 function FadeIn({ children }) {
   const ref = useRef(null);
+  const env = useEnv({ duration: 2000, from: 0, to: 1 });
 
   const frames = useFrames(() => {
     if (ref.current) {
