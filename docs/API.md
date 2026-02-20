@@ -2,7 +2,7 @@
 
 ## Core Concepts
 
-Plonk's generators (`Drunk`, `Rand`, `Env`, `Sine`, `Scale`) follow an iterator-inspired pattern: each is a stateful object you pull values from by calling `next()`. They don't run on their own — you decide when and where to advance them, whether that's inside a `Metro` callback, a Web Audio `ScriptProcessorNode`, a game loop, or a React effect.
+Plonk's generators (`Drunk`, `Rand`, `Env`, `Sine`, `Scale`) follow an iterator-inspired pattern: each is a stateful object you pull values from by calling `next()`. They don't run on their own — you decide when and where to advance them, whether that's inside a `Metro` callback, AudioWorklet, game loop, or React effect.
 
 The timers (`Metro`, `Frames`) provide the "when" — high-resolution loops that fire callbacks at regular intervals with runtime metrics. The generators provide the "what" — streams of values shaped by envelopes, random walks, and oscillations. Compose them however you like.
 
@@ -131,17 +131,18 @@ d.next(); // take another step
 
 ### Env
 
-Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+Envelope which interpolates between two values over a duration, with optional curvature. Starts idle — call `start()` to trigger. Useful for audio envelopes, transitions, and animations.
 
 ```typescript
 import { Env } from '@prtcl/plonk';
 import { Frames } from '@prtcl/plonk';
 
-const env = new Env({ duration: 1000, from: 0, to: 1 });
+const env = new Env({ from: 0, to: 1, duration: 1000, curve: 2 });
+
+env.start();
 
 const frames = new Frames(() => {
-  const val = env.next();
-  console.log(val); // 0...1 over 1 second
+  const val = env.next(); // 0...1 over 1 second (ease-in)
 
   if (env.done()) {
     frames.stop();
@@ -153,21 +154,98 @@ frames.run();
 
 #### Options
 
-| Option     | Type     | Default | Description            |
-| ---------- | -------- | ------- | ---------------------- |
-| `duration` | `number` | `0`     | Envelope duration (ms) |
-| `from`     | `number` | `0`     | Starting value         |
-| `to`       | `number` | `1`     | Ending value           |
+| Option     | Type     | Default | Description                                     |
+| ---------- | -------- | ------- | ----------------------------------------------- |
+| `duration` | `number` | `0`     | Envelope duration (ms)                          |
+| `from`     | `number` | `0`     | Starting value                                  |
+| `to`       | `number` | `1`     | Ending value                                    |
+| `curve`    | `number` | `1`     | Curvature. 1 is linear, >1 ease-in, <1 ease-out |
 
 #### Methods
 
-| Method            | Returns   | Description                                     |
-| ----------------- | --------- | ----------------------------------------------- |
-| `value()`         | `number`  | Returns the current interpolated value          |
-| `next()`          | `number`  | Advances the envelope and returns the new value |
-| `done()`          | `boolean` | Returns true when the envelope has completed    |
-| `setDuration(ms)` | `void`    | Updates the envelope duration                   |
-| `reset(opts?)`    | `void`    | Restarts the envelope with optional new options |
+| Method               | Returns   | Description                                                       |
+| -------------------- | --------- | ----------------------------------------------------------------- |
+| `value()`            | `number`  | Returns the current interpolated value                            |
+| `next()`             | `number`  | Advances the envelope and returns the new value                   |
+| `done()`             | `boolean` | Returns true when the envelope has completed                      |
+| `start()`            | `void`    | Triggers or re-triggers the envelope from the beginning           |
+| `setFromTo(from,to)` | `void`    | Updates the output range                                          |
+| `setDuration(ms)`    | `void`    | Updates the envelope duration                                     |
+| `reset(opts?)`       | `void`    | Resets the envelope with optional new options, without triggering |
+
+#### State
+
+| Property       | Type      | Description                    |
+| -------------- | --------- | ------------------------------ |
+| `isRunning`    | `boolean` | Whether the envelope is active |
+| `from`         | `number`  | Current starting value         |
+| `to`           | `number`  | Current ending value           |
+| `curve`        | `number`  | Current curvature              |
+| `duration`     | `number`  | Current duration (ms)          |
+| `totalElapsed` | `number`  | Time elapsed since `start()`   |
+| `value`        | `number`  | Last computed value            |
+
+---
+
+### Stages
+
+Sequence multiple Env stages, auto-connecting `from`/`to` values between stages. Each stage is an `EnvOptions` config — if `from` is omitted, it defaults to the previous stage's `to`. The first stage's `from` defaults to 0. Useful for multi-segment envelopes like attack-release, ADSR, or complex trajectories.
+
+```typescript
+import { Stages } from '@prtcl/plonk';
+import { Frames } from '@prtcl/plonk';
+
+const s = new Stages([
+  { from: 0, to: 1, duration: 100, curve: 2 }, // attack
+  { to: 0.5, duration: 200 }, // decay (from auto-connects to 1)
+  { to: 0, duration: 300, curve: 0.5 }, // release (from auto-connects to 0.5)
+]);
+
+s.start();
+
+const frames = new Frames(() => {
+  const val = s.next();
+
+  if (s.done()) {
+    frames.stop();
+  }
+});
+
+frames.run();
+
+// Access individual stages for mutation
+s.at(0)!.setDuration(50);
+```
+
+#### Config
+
+Each element in the config array accepts the same options as `Env`:
+
+| Option     | Type     | Default         | Description                                     |
+| ---------- | -------- | --------------- | ----------------------------------------------- |
+| `duration` | `number` | `0`             | Stage duration (ms)                             |
+| `from`     | `number` | prev stage `to` | Starting value (auto-connects if omitted)       |
+| `to`       | `number` | _required_      | Ending value                                    |
+| `curve`    | `number` | `1`             | Curvature. 1 is linear, >1 ease-in, <1 ease-out |
+
+#### Methods
+
+| Method    | Returns       | Description                                        |
+| --------- | ------------- | -------------------------------------------------- |
+| `value()` | `number`      | Returns the current value from the active stage    |
+| `next()`  | `number`      | Advances the active stage and returns the value    |
+| `done()`  | `boolean`     | Returns true when all stages have completed        |
+| `start()` | `void`        | Starts the sequence from the first stage           |
+| `at(i)`   | `Env \| null` | Returns the Env at index, or null if out of bounds |
+| `first()` | `Env`         | Returns the first stage                            |
+| `last()`  | `Env`         | Returns the last stage                             |
+
+#### State
+
+| Property    | Type      | Description                         |
+| ----------- | --------- | ----------------------------------- |
+| `active`    | `number`  | Index of the currently active stage |
+| `isRunning` | `boolean` | Whether the sequence is active      |
 
 ---
 
@@ -189,18 +267,18 @@ n.setBalance(0.5);
 
 #### Options
 
-| Option    | Type     | Default | Description                                      |
-| --------- | -------- | ------- | ------------------------------------------------ |
-| `octaves` | `number` | `8`     | Number of octave bands for low-frequency depth   |
-| `balance` | `number` | `0`     | Crossfade between pink (0) and white (1) noise   |
+| Option    | Type     | Default | Description                                    |
+| --------- | -------- | ------- | ---------------------------------------------- |
+| `octaves` | `number` | `8`     | Number of octave bands for low-frequency depth |
+| `balance` | `number` | `0`     | Crossfade between pink (0) and white (1) noise |
 
 #### Methods
 
-| Method           | Returns  | Description                                     |
-| ---------------- | -------- | ----------------------------------------------- |
-| `value()`        | `number` | Returns the current noise value                 |
-| `next()`         | `number` | Advances the generator and returns a new sample |
-| `setBalance(n)`  | `void`   | Updates the pink/white crossfade (0-1)          |
+| Method          | Returns  | Description                                     |
+| --------------- | -------- | ----------------------------------------------- |
+| `value()`       | `number` | Returns the current noise value                 |
+| `next()`        | `number` | Advances the generator and returns a new sample |
+| `setBalance(n)` | `void`   | Updates the pink/white crossfade (0-1)          |
 
 ---
 
@@ -411,18 +489,18 @@ smooth.setFactor(0.5);
 
 #### Options
 
-| Option   | Type     | Default | Description                                                |
-| -------- | -------- | ------- | ---------------------------------------------------------- |
+| Option   | Type     | Default | Description                                                 |
+| -------- | -------- | ------- | ----------------------------------------------------------- |
 | `factor` | `number` | `0.1`   | Smoothing factor between 0 and 1. Lower values are smoother |
-| `value`  | `number` | `0`     | Initial value                                              |
+| `value`  | `number` | `0`     | Initial value                                               |
 
 #### Methods
 
-| Method           | Returns  | Description                                              |
-| ---------------- | -------- | -------------------------------------------------------- |
-| `value()`        | `number` | Returns the current smoothed value                       |
-| `next(target?)`  | `number` | Advances toward the target and returns the smoothed value |
-| `setFactor(n)`   | `void`   | Updates the smoothing factor (0-1)                       |
+| Method          | Returns  | Description                                               |
+| --------------- | -------- | --------------------------------------------------------- |
+| `value()`       | `number` | Returns the current smoothed value                        |
+| `next(target?)` | `number` | Advances toward the target and returns the smoothed value |
+| `setFactor(n)`  | `void`   | Updates the smoothing factor (0-1)                        |
 
 ---
 
