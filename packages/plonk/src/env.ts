@@ -1,10 +1,13 @@
+import { clamp } from './clamp';
 import { now } from './now';
 import { Scale } from './scale';
 
 /** Snapshot of an Env's internal state. */
 export type EnvState = {
+  curve: number;
   duration: number;
   from: number;
+  isRunning: boolean;
   prev: number;
   to: number;
   totalElapsed: number;
@@ -13,6 +16,8 @@ export type EnvState = {
 
 /** Options for configuring an Env envelope. */
 export type EnvOptions = {
+  /** Curvature of the envelope. 1 is linear, >1 ease-in, <1 ease-out. Defaults to 1. */
+  curve?: number;
   /** Duration of the envelope in milliseconds. */
   duration: number;
   /** Starting value. Defaults to 0. */
@@ -23,6 +28,7 @@ export type EnvOptions = {
 
 export const parseOptions = (opts?: EnvOptions): Required<EnvOptions> => {
   return {
+    curve: 1,
     duration: 0,
     from: 0,
     to: 1,
@@ -30,10 +36,12 @@ export const parseOptions = (opts?: EnvOptions): Required<EnvOptions> => {
   };
 };
 
-const getInitialState = ({ from, to, duration }: Required<EnvOptions>): EnvState => {
+const getInitialState = ({ curve, from, to, duration }: Required<EnvOptions>): EnvState => {
   return {
+    curve,
     duration,
     from,
+    isRunning: false,
     prev: now(),
     to,
     totalElapsed: 0,
@@ -45,13 +53,14 @@ export const updateStateFromOptions = (
   opts: EnvOptions | undefined,
   prevState: EnvState
 ): EnvState => {
-  const { from, to, duration } = {
+  const { curve, from, to, duration } = {
     ...prevState,
     ...opts,
   };
 
   return {
     ...prevState,
+    curve,
     duration,
     from,
     to,
@@ -60,7 +69,7 @@ export const updateStateFromOptions = (
 };
 
 /**
- * Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+ * Envelope which interpolates between two values over a duration, with optional curvature.
  * @param opts - {@link EnvOptions} for configuring the envelope.
  */
 export class Env {
@@ -73,18 +82,31 @@ export class Env {
   }
 
   constructor(opts: EnvOptions) {
-    const { from, to, duration } = parseOptions(opts);
+    const { curve, from, to, duration } = parseOptions(opts);
 
-    this.state = getInitialState({ from, to, duration });
+    this.state = getInitialState({ curve, from, to, duration });
     this._interpolator = new Scale({
-      from: {
-        min: 0,
-        max: duration,
-      },
       to: {
         min: from,
         max: to,
       },
+    });
+  }
+
+  /** Triggers or re-triggers the envelope from the beginning. */
+  start() {
+    this.state.isRunning = true;
+    this.state.prev = now();
+    this.state.totalElapsed = 0;
+    this.state.value = this.state.from;
+  }
+
+  /** Updates the output range. */
+  setFromTo(from: number, to: number) {
+    this.state.from = from;
+    this.state.to = to;
+    this._interpolator.setRanges({
+      to: { min: from, max: to },
     });
   }
 
@@ -103,20 +125,17 @@ export class Env {
     };
   }
 
-  /** Restarts the envelope with optional new options. */
+  /** Resets the envelope with optional new options, without triggering. */
   reset(opts?: EnvOptions) {
     const updates = updateStateFromOptions(opts, this.state);
 
     this.state = {
       ...updates,
+      isRunning: false,
       prev: now(),
       value: updates.from,
     };
     this._interpolator.setRanges({
-      from: {
-        min: 0,
-        max: updates.duration,
-      },
       to: {
         min: updates.from,
         max: updates.to,
@@ -142,27 +161,36 @@ export class Env {
 
   /** Advances the envelope and returns the new value. */
   next() {
+    if (!this.state.isRunning) return this.value();
     if (this.done()) {
+      this.state.isRunning = false;
       return this.value();
     }
 
-    const { prev, totalElapsed: prevTotalElapsed } = this.state;
+    const { curve, duration, prev, totalElapsed: prevTotalElapsed } = this.state;
 
     const curr = now();
     const tickInterval = curr - prev;
     const totalElapsed = prevTotalElapsed + tickInterval;
-    const updates = this._interpolator.scale(totalElapsed);
+
+    const progress = clamp(totalElapsed / duration, 0, 1);
+    const shaped = Math.pow(progress, curve);
+    const updates = this._interpolator.scale(shaped);
 
     this.state.prev = curr;
     this.state.totalElapsed = totalElapsed;
     this.state.value = updates;
+
+    if (this.done()) {
+      this.state.isRunning = false;
+    }
 
     return updates;
   }
 }
 
 /**
- * Linear envelope which interpolates between two values over a duration. Useful for audio envelopes, transitions, and animations.
+ * Envelope which interpolates between two values over a duration, with optional curvature.
  * Alternative form of `new Env(opts)`.
  */
 export const env = Env.env;
