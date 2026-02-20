@@ -27,18 +27,15 @@ Each function is stateful, with a generator-like API, and you decide when to adv
 ```typescript
 import * as p from '@prtcl/plonk';
 
-const d = new p.Drunk({ min: -1, max: 1 });
-const r = new p.Rand({ min: 50, max: 150 });
+const d = new p.Drunk({ min: 0, max: 1, step: 0.05 });
+const s = new p.Slew({ duration: 500 });
+const sx = new p.Scale({ from: { min: 0, max: 1 }, to: { min: 20, max: 600 } });
 
-const metro = new p.Metro(
-  () => {
-    console.log(d.next());
-    metro.setTime(r.next());
-  },
-  { time: 100 }
-);
-
-metro.run();
+p.frames(({ state }) => {
+  if (state.iterations % 30 === 0) s.setValue(d.next());
+  const x = sx.scale(p.sigmoid(s.next()));
+  // ... do something with x
+});
 ```
 
 ## Documentation
