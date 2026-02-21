@@ -3,22 +3,27 @@ import * as p from '@prtcl/plonk';
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
-const mx = screen.width / 6;
-const my = screen.height / 6;
+let mx = 0;
+let my = 0;
 
 const sx = new p.Scale({
   from: { min: 0, max: 1 },
-  to: { min: mx, max: canvas.width - mx },
+  to: { min: 0, max: canvas.width },
 });
 
 const sy = new p.Scale({
   from: { min: 0, max: 1 },
-  to: { min: my, max: canvas.height - my },
+  to: { min: 0, max: canvas.height },
 });
+
+const g = 1.618;
 
 const resize = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  mx = Math.max((canvas.width - canvas.width / (g * g)) / 2, 0);
+  my = window.innerHeight / 6;
 
   sx.setRanges({ to: { min: mx, max: canvas.width - mx } });
   sy.setRanges({ to: { min: my, max: canvas.height - my } });
@@ -47,8 +52,8 @@ const makeBug = (id: number, updateInterval: number): Bug => {
 
   const size = Math.round(p.rand({ min: 5, max: 50 }));
 
-  const r = new p.Fold({ min: size / 4, max: size });
-  const o = new p.Fold({ min: 1, max: 10 });
+  const rf = new p.Fold({ min: size / 4, max: size });
+  const oo = new p.Fold({ min: 1, max: 10 });
 
   const flash = Math.round(p.rand({ min: 1, max: 2 }));
   const pulse = Math.round(p.rand({ min: 1, max: 10 }));
@@ -65,10 +70,17 @@ const makeBug = (id: number, updateInterval: number): Bug => {
 
     const x = sx.scale(dx.next() + p.tanh(px.next(), 2) * 0.75);
     const y = sy.scale(dy.next() + p.tanh(py.next(), 2) * 0.75);
+    const r = rf.fold(state.iterations * flash);
+    const o = oo.fold(state.iterations / pulse) / 10;
 
     ctx.beginPath();
-    ctx.arc(x, y, r.fold(state.iterations * flash), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(0,0,0,${o.fold(state.iterations / pulse) / 10})`;
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,0,0,${o * 0.96})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, r / (Math.E * 3), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,0,0,${o})`;
     ctx.fill();
   };
 
@@ -77,6 +89,50 @@ const makeBug = (id: number, updateInterval: number): Bug => {
     meta: { duration, pulse, flash },
     tick,
   };
+};
+
+const makeWiggler = () => {
+  const fade = new p.Env({ duration: p.ms('.5s'), curve: Math.E * 2 });
+  const ff = new p.Integrator({ factor: 0.01 });
+  const acc = new p.Integrator();
+  const fs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0.01, max: 0.2 } });
+
+  const gen = new p.Sine({ duration: p.rand({ min: p.ms('0.11hz'), max: p.ms('0.33hz') }) });
+  const lnz = new p.Lorenz({ damping: 0.25 });
+  const nx = new p.Noise({ balance: 0.25 });
+
+  const isx = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0, max: canvas.width } });
+  const isy = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0, max: canvas.height } });
+
+  const r = Math.round(p.rand({ min: 5, max: 7 }));
+
+  fade.start();
+
+  const tick = () => {
+    const value = lnz.next();
+    lnz.setRate(fs.scale(ff.next(value.z + nx.next() - 0.12)));
+
+    const x = isx.scale(value.x + gen.next() * 0.15);
+    const y = isy.scale(value.y);
+    const o = fade.next();
+
+    ctx.beginPath();
+    ctx.arc(x, y, r * 12 * acc.next(Math.abs(value.x)), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,0,0,${o * 0.1})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,0,0,${o * 0.15})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,0,0,${o})`;
+    ctx.fill();
+  };
+
+  return { tick };
 };
 
 const makeDyn = () => {
@@ -89,7 +145,7 @@ const makeDyn = () => {
     const no = ina.next(df.next());
     const nr = ina.next(rs.scale(p.tanh(gen.next(), 2)));
 
-    ctx.fillStyle = `rgba(${nr},255,50,${no})`;
+    ctx.fillStyle = `rgba(${nr},13,1,${no * 0.25})`;
     ctx.fillRect(mx, my, canvas.width - mx * 2, canvas.height - my * 2);
   };
 
@@ -105,14 +161,17 @@ const ova = {
 
 const br = new p.Drunk({ min: 50, max: 1000 });
 const bugs = Array.from({ length: 7 }, (_, k) => makeBug(k, Math.round(br.next())));
-
+const wigglers = Array.from({ length: 3 }, () => makeWiggler());
 const dyn = makeDyn();
 
 const { run } = p.frames(
-  (timer) => {
+  ({ state }) => {
     dyn.tick();
     for (const bug of bugs) {
-      bug.tick(timer.state);
+      bug.tick(state);
+    }
+    for (const wiggler of wigglers) {
+      wiggler.tick();
     }
 
     ova.tick();

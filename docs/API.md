@@ -282,6 +282,56 @@ n.setBalance(0.5);
 
 ---
 
+### Lorenz
+
+Lorenz attractor — deterministic chaotic system that produces three coupled outputs as a normalized x/y/z vector. Each instance has slightly randomized internal parameters (sigma, rho) and initial conditions, so no two instances trace the same trajectory. The system settles onto its orbit during construction and is immediately usable.
+
+```typescript
+import { Lorenz } from '@prtcl/plonk';
+import { Frames } from '@prtcl/plonk';
+
+const lnz = new Lorenz({ damping: 0.2, rate: 0.5 });
+
+const frames = new Frames(() => {
+  const { x, y, z } = lnz.next(); // each axis in -1...1
+  console.log(x, y, z);
+});
+
+frames.run();
+
+// Adjust on the fly
+lnz.setRate(0.8);
+lnz.setDamping(0);
+```
+
+#### Options
+
+| Option    | Type     | Default  | Description                                                        |
+| --------- | -------- | -------- | ------------------------------------------------------------------ |
+| `damping` | `number` | `~0.238` | Damping factor (0-1). 0 is maximally chaotic, 1 is nearly periodic |
+| `rate`    | `number` | `~0.1`   | Evolution speed (0-1). 0 is nearly frozen, 1 is maximum speed      |
+
+#### Methods
+
+| Method          | Returns       | Description                                             |
+| --------------- | ------------- | ------------------------------------------------------- |
+| `value()`       | `LorenzValue` | Returns the current normalized x/y/z vector             |
+| `next()`        | `LorenzValue` | Advances one RK4 step and returns the normalized vector |
+| `setRate(n)`    | `void`        | Updates the evolution speed (0-1)                       |
+| `setDamping(n)` | `void`        | Updates the damping factor (0-1)                        |
+
+#### State
+
+| Property  | Type     | Description                   |
+| --------- | -------- | ----------------------------- |
+| `damping` | `number` | Current damping setting       |
+| `rate`    | `number` | Current rate setting          |
+| `x`       | `number` | Raw (unnormalized) x position |
+| `y`       | `number` | Raw (unnormalized) y position |
+| `z`       | `number` | Raw (unnormalized) z position |
+
+---
+
 ### Rand
 
 Random number generator that produces values within a bounded range.

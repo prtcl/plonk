@@ -2,6 +2,7 @@ export { Drunk, type DrunkOptions, type DrunkState, drunk } from './drunk';
 export { Env, type EnvOptions, type EnvState, env } from './env';
 export { Fold, type FoldOptions, type FoldState, fold } from './fold';
 export { Integrator, type IntegratorOptions, type IntegratorState, integrator } from './integrator';
+export { Lorenz, type LorenzOptions, type LorenzState, type LorenzValue, lorenz } from './lorenz';
 export { Noise, type NoiseOptions, type NoiseState, noise } from './noise';
 export { Rand, type RandOptions, type RandState, rand } from './rand';
 export { Scale, type ScaleOptions, type ScaleRange, type ScaleState, scale } from './scale';
