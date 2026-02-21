@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "paths": {
+      "@prtcl/plonk": ["../packages/plonk/src/index.ts"]
+    }
+  },
+  "include": ["./**/*"]
+}
